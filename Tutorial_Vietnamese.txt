@@ -10,6 +10,19 @@ g++ -Isrc/include -Lsrc/lib -o main main.cpp -lmingw32 -lSDL2main -lSDL2
 
 chạy file bằng lệnh "./main"
 
-Có vấn đề về lỗi vui lòng liên hệ Q.
 
-    3:55pm 4/3/2024 
+
+3:55pm 4/3/2024 
+
+
+
+
+Remote upload file Git:
+
+lệnh trong Terminal theo thứ tự:
+
+git add .
+git pull
+git commit -m "Your comment"
+git push origin master
+
