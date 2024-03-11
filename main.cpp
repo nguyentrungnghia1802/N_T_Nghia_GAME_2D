@@ -1,4 +1,7 @@
+
+
 #include <stdio.h>
+#include <iostream>
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
@@ -9,18 +12,20 @@ bool InitData()
     bool success=true;
     int ret=SDL_Init(SDL_INIT_VIDEO);
     if (ret < 0)
-    return false;
+        return false;
+
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", SDL_WINDOWPOS_UNDEFINED,
-                                                                                 SDL_WINDOWPOS_UNDEFINED,
-                                                                                 SCREEN_WIDTH,
-                                                                                 SCREEN_HEIGHT,
-                                                                                 SDL_WINDOW_SHOWN);
-    if(g_window==NULL)
+    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", 
+                                 SDL_WINDOWPOS_UNDEFINED,
+                                 SDL_WINDOWPOS_UNDEFINED,
+                                 SCREEN_WIDTH, SCREEN_HEIGHT,
+                                 SDL_WINDOW_SHOWN);
+    if (g_window == NULL)
     {
         success=false;
     }
+
     else
     {
         g_screen=SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
@@ -45,7 +50,6 @@ bool LoadBackground()
         return false;
 
     return true;
-
 }
 
 void close()
@@ -62,15 +66,14 @@ void close()
     SDL_Quit();
 }
 
-
 int main(int argc, char* argv[])
 {
     if (InitData()==false)
         return -1;
 
-
     if (LoadBackground()==false)
         return -1;
+
 
     bool is_quit = false;
     while (!is_quit)
@@ -82,12 +85,16 @@ int main(int argc, char* argv[])
                 is_quit=true;
             }
         }
+
         SDL_SetRenderDrawColor(g_screen,RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
         SDL_RenderClear(g_screen);
 
         g_background.Render(g_screen, NULL);
+
         SDL_RenderPresent(g_screen);
     }
+    
+    close();
 	return 0;
 }
 
