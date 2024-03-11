@@ -7,7 +7,7 @@
 
     build file bằng lệnh sau ( chỉ áp dụng với project SDL2 ):
 
-    g++ -Isrc/include -Lsrc/lib -o main main.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+    g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
     Nhớ "Ctrl + S" trước khi build file.
 
@@ -22,120 +22,65 @@
 and may not be redistributed without written permission.*/
 
 //Using SDL and standard IO
-#include "src/include/SDL2/SDL.h"
 #include <stdio.h>
+#include "CommonFunc.h"
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 1200;
-const int SCREEN_HEIGHT = 600;
+BaseObject g_background;
 
-//Starts up SDL and creates window
-bool init();
-
-//Loads media
-bool loadMedia();
-
-//Frees media and shuts down SDL
-void close();
-
-//The window we'll be rendering to
-SDL_Window* gWindow = NULL;
-	
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
-
-//The image we will load and show on the screen
-SDL_Surface* gHelloWorld = NULL;
-
-bool init()
+bool InitData()
 {
-	//Initialization flag
-	bool success = true;
+    bool success=true;
+    int ret=SDL_Init(SDL_INIT_VIDEO);
+    if (ret < 0)
+    return false;
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY."1");
 
-	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-	{
-		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
-		success = false;
-	}
-	else
-	{
-		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if( gWindow == NULL )
-		{
-			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
-			success = false;
-		}
-		else
-		{
-			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( gWindow );
-		}
-	}
+    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", SDL_WINDOWPOS_UNDERFINED,
+                                                                                 SDL_WINDOWPOS_UNDERFINED,
+                                                                                 SCREEN_WIDTH,
+                                                                                 SCREEN_HEIGHT,
+                                                                                 SDL_WINDOW_SHOWN);
+    if(g_window==NULL)
+    {
+        success=false;
+    }
+    else
+    {
+        g_screen=SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+        if(g_screen=NULL)
+        success = false;
+        else
+        {
+            SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+            int imgFlags=IMG_INIT_PNG;
+            if(!(IMG_Init(imgFlags) && imgFlags))
+            success=false;
+        }
+    }
 
-	return success;
+    return success;
 }
 
-bool loadMedia()
+bool LoadBackground()
 {
-	//Loading success flag
-	bool success = true;
+    bool set = g_background.LoadImg("background.png", g_screen);
+    if (ret==false)
+        return false;
 
-	//Load splash image
-	gHelloWorld = SDL_LoadBMP( "img/bg.bmp" );
-	if( gHelloWorld == NULL )
-	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
-		success = false;
-	}
+    return true;
 
-	return success;
 }
 
-void close()
+
+int main(int argc, char* argv[])
 {
-	//Deallocate surface
-	SDL_FreeSurface( gHelloWorld );
-	gHelloWorld = NULL;
+    if (InitData()==false)
+        return -1;
 
-	//Destroy window
-	SDL_DestroyWindow( gWindow );
-	gWindow = NULL;
 
-	//Quit SDL subsystems
-	SDL_Quit();
-}
-
-int main( int argc, char* args[] )
-{
-	//Start up SDL and create window
-	if( !init() )
-	{
-		printf( "Failed to initialize!\n" );
-	}
-	else
-	{
-		//Load media
-		if( !loadMedia() )
-		{
-			printf( "Failed to load media!\n" );
-		}
-		else
-		{
-			//Apply the image
-			SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
-			
-			//Update the surface
-			SDL_UpdateWindowSurface( gWindow );
-
-            //Hack to get window to stay up
-            SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
-		}
-	}
-
-	//Free resources and close SDL
-	close();
-
+        //...............LOADING
 	return 0;
 }
+
+
+

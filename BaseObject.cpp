@@ -12,7 +12,10 @@ BaseObject::BaseObject()
 
 }
 
-BaseObject::~BaseObject(){}
+BaseObject::~BaseObject()
+{
+
+}
 bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen)
 {
     SDL_Texture* new_texture=NULL;
@@ -40,7 +43,19 @@ void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip /* = NULL*/)
     SDL_Rect renderquad={rect_.x,rect_.y, rect_.w, rect_.h};
 
     SDL_RenderCopy(des, p_object_, clip, &renderquad);
-
 }
+
+void BaseObject::Free()
+{
+    if (p_object_ !=NULL)
+    {
+        SDL_DestroyTexture(p_object_);
+        p_object_ = NULL;
+        rect_.w = 0;
+        rect_.h = 0;
+    }
+}
+
+
  
 
