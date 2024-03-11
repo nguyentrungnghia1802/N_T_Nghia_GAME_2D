@@ -1,29 +1,6 @@
-/**
- * Code demo SDL2
- * Create SDL window.
- * Hướng dẫn:
-    Các thao tác build, chạy app đều thao tác bằng Terminal.
-    Nếu không có Terminal bấm "      Ctrl + `       " để gọi.
-
-    build file bằng lệnh sau ( chỉ áp dụng với project SDL2 ):
-
-    g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
-
-    Nhớ "Ctrl + S" trước khi build file.
-
-    chạy file bằng lệnh "./main"
-
-    Có vấn đề về lỗi vui lòng liên hệ Q.
-
-    3:55pm 4/3/2024 
-
-**/
-/*This source code copyrighted by Lazy Foo' Productions 2004-2024
-and may not be redistributed without written permission.*/
-
-//Using SDL and standard IO
 #include <stdio.h>
 #include "CommonFunc.h"
+#include "BaseObject.h"
 
 BaseObject g_background;
 
@@ -33,10 +10,10 @@ bool InitData()
     int ret=SDL_Init(SDL_INIT_VIDEO);
     if (ret < 0)
     return false;
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY."1");
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", SDL_WINDOWPOS_UNDERFINED,
-                                                                                 SDL_WINDOWPOS_UNDERFINED,
+    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", SDL_WINDOWPOS_UNDEFINED,
+                                                                                 SDL_WINDOWPOS_UNDEFINED,
                                                                                  SCREEN_WIDTH,
                                                                                  SCREEN_HEIGHT,
                                                                                  SDL_WINDOW_SHOWN);
@@ -63,12 +40,26 @@ bool InitData()
 
 bool LoadBackground()
 {
-    bool set = g_background.LoadImg("background.png", g_screen);
+    bool ret = g_background.LoadImg("background.png", g_screen);
     if (ret==false)
         return false;
 
     return true;
 
+}
+
+void close()
+{
+    g_background.Free();
+
+    SDL_DestroyRenderer(g_screen);
+    g_screen = NULL;
+
+    SDL_DestroyWindow(g_window);
+    g_window=NULL;
+
+    IMG_Quit();
+    SDL_Quit();
 }
 
 
@@ -78,7 +69,25 @@ int main(int argc, char* argv[])
         return -1;
 
 
-        //...............LOADING
+    if (LoadBackground()==false)
+        return -1;
+
+    bool is_quit = false;
+    while (!is_quit)
+    {
+        while (SDL_PollEvent(&g_event)!=0)
+        {
+            if (g_event.type==SDL_QUIT)
+            {
+                is_quit=true;
+            }
+        }
+        SDL_SetRenderDrawColor(g_screen,RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+        SDL_RenderClear(g_screen);
+
+        g_background.Render(g_screen, NULL);
+        SDL_RenderPresent(g_screen);
+    }
 	return 0;
 }
 
