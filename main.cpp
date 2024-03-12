@@ -29,7 +29,7 @@ bool InitData()
     else
     {
         g_screen=SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
-        if(g_screen=NULL)
+        if(g_screen==NULL)
         success = false;
         else
         {
@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 
         SDL_RenderPresent(g_screen);
     }
-    
+
     close();
 	return 0;
 }
