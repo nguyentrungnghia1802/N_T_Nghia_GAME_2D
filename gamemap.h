@@ -18,12 +18,12 @@ class TileMat : public BaseObject
 class GameMap
 {
 public:
-    GmaeMap(){;}
+    GameMap(){;}
     ~GameMap(){;}
 
     void LoadMap(char* name);
     void LoadTiles(SDL_Renderer* screen);
-    void DrawMap(SDL_Renderer* screen)
+    void DrawMap(SDL_Renderer* screen);
 private: 
     Map game_map_;
     TileMat tile_mat[MAX_TILES];
