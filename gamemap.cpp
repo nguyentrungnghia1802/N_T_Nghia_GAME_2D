@@ -19,7 +19,7 @@ void GameMap::LoadMap(char* name)
         for (int j=0; j<MAX_MAP_X; j++)
         {
             fscanf_s(fp,"%d",&game_map_.tile[i][j]);
-            int val=game_map.tile[i][j];
+            int val=game_map_.tile[i][j];
             if(val>0)
             {
                 if(j>game_map_.max_x_)
@@ -42,7 +42,7 @@ void GameMap::LoadMap(char* name)
     game_map_.start_y_=0;
 
     game_map_.file_name_=name;
-    fclose(fpl);
+    fclose(fp);
 
 }
 
@@ -55,15 +55,15 @@ void GameMap::LoadTiles(SDL_Renderer* screen)
     {
         sprintf_s(file_img,"map/%d.png",i);
 
-        fopen_s(&fp,file_img,"rb")
-        if(fb==NULL)
+        fopen_s(&fp,file_img,"rb");
+        if(fp==NULL)
         {
             continue;
         }
 
         fclose(fp);
 
-        title_mat[i].LoadImg(file_img, screen);
+        tile_mat[i].LoadImg(file_img, screen);
     }
 }
 

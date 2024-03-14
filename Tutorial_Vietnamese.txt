@@ -4,7 +4,7 @@ Nếu không có Terminal bấm "Ctrl + `" để gọi.
  
 build file bằng lệnh sau (chỉ áp dụng với project SDL2 ):
 
-g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp gamemap.cpp MainObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
 *** Nhớ "Ctrl + S" trước khi build file. ***
 
@@ -30,6 +30,5 @@ git push origin master
 // //thu vien "iostream" thay the cho thu vien "stdafx" cua chu video
 
 
-11/3/2024
-
+34:54   13/4/2023
 

@@ -30,6 +30,16 @@ const int RENDER_DRAW_COLOR=0xff;
 #define MAX_MAP_X 400
 #define MAX_MAP_Y 10
 
+
+typedef struct Input
+{
+    int left_;
+    int right_;
+    int up_;
+    int down_;
+    int jump_;
+}Input;
+
 typedef struct Map  
 {
     int start_x_;
@@ -39,7 +49,7 @@ typedef struct Map
     int max_y_;
 
     int tile[MAX_MAP_Y][MAX_MAP_X];
-    char* file_name_;
-};
+    std::string file_name_;
+}Map;
 
 #endif
