@@ -34,7 +34,7 @@ bool MainObject::LoadImg (std::string path, SDL_Renderer* screen)
 
 void MainObject::set_clips()
 {
-    if(width_frame_>0&height_frame_>0)
+    if(width_frame_>0 & height_frame_>0)
     {
         frame_clip_[0].x=0;
         frame_clip_[0].y=0;
@@ -87,7 +87,7 @@ void MainObject::Show(SDL_Renderer* des)
     }
     else
     {
-        LoadImg("img/player_right",des);
+        LoadImg("img/player_right.png",des);
     }
 
     if (input_type_.left_==1||
@@ -98,6 +98,11 @@ void MainObject::Show(SDL_Renderer* des)
         else
         {
             frame_=0;
+        }
+
+        if(frame_ >= 8)
+        {
+            frame_ =0;
         }
 
         rect_.x=x_pos_;
@@ -127,11 +132,23 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
                 status_=WALK_LEFT;
                 input_type_.left_=1;
             }
-            default:
             break;
         }
-    } else if (events.type==SDL_KEYUP)
+    } 
+    else if (events.type==SDL_KEYUP)
     {
-
+          switch(events.key.keysym.sym)
+        {
+            case SDLK_RIGHT:
+            {
+                input_type_.right_=0;
+            }
+            break;
+            case SDLK_LEFT:
+            {
+                input_type_.left_=0;
+            }
+            break;
+        }
     }
 }

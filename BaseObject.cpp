@@ -8,13 +8,11 @@ BaseObject::BaseObject()
     rect_.y=0;
     rect_.w=0;
     rect_.h=0;
-
-
 }
 
 BaseObject::~BaseObject()
 {
-
+    Free();
 }
 bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen)
 {
@@ -31,7 +29,10 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen)
             rect_.h=load_surface->h;
         }
         SDL_FreeSurface(load_surface);
-
+    }
+    else
+    {
+        std::cout<<"Unable to load"<<path<<"SDL Error: "<<SDL_GetError()<<"\n";
     }
     p_object_= new_texture;
     return p_object_ != NULL;

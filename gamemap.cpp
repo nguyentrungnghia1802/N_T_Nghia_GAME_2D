@@ -2,6 +2,7 @@
 #include <iostream>
 #include "gamemap.h"
 #include <fstream>
+#include <vector>
 
 void GameMap::LoadMap(const char path[])
 {
@@ -48,23 +49,12 @@ void GameMap::LoadMap(const char path[])
 
 void GameMap::LoadTiles(SDL_Renderer* screen)
 {
-    char file_img[30];
-    FILE* fp=NULL;
-
-    for(int i=0;i<MAX_TILES;i++)
-    {
-        sprintf_s(file_img,"map/%d.png",i);
-
-        fopen_s(&fp,file_img,"rb");
-        if(fp==NULL)
-        {
-            continue;
-        }
-
-        fclose(fp);
-
-        tile_mat[i].LoadImg(file_img, screen);
-    }
+    std::vector<std::string> map_path = { "map/0.png", "map/2.png", "map/3.png", "map/4.png", "map/5.png" };
+    tile_mat[0].LoadImg(map_path[0], screen);
+    tile_mat[2].LoadImg(map_path[1],screen);
+    tile_mat[3].LoadImg(map_path[2],screen);
+    tile_mat[4].LoadImg(map_path[3],screen);
+    tile_mat[5].LoadImg(map_path[4],screen);
 }
 
 void GameMap::DrawMap(SDL_Renderer* screen)
