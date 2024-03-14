@@ -21,7 +21,7 @@ public:
     GameMap(){;}
     ~GameMap(){;}
 
-    void LoadMap(char* name);
+    void LoadMap(const char path[]);
     void LoadTiles(SDL_Renderer* screen);
     void DrawMap(SDL_Renderer* screen);
 private: 

@@ -5,7 +5,7 @@
 #include <string>
 #include "src/include/SDL2/SDL.h"
 #include "src/include/SDL2/SDL_image.h"
-
+#include <fstream>
 
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;

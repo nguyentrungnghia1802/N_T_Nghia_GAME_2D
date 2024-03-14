@@ -18,7 +18,7 @@ bool InitData()
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    g_window = SDL_CreateWindow("Gane Cpp SDL 2.0- Blog: Phattrienphanmem123az", 
+    g_window = SDL_CreateWindow("Game 2d", 
                                  SDL_WINDOWPOS_UNDEFINED,
                                  SDL_WINDOWPOS_UNDEFINED,
                                  SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 
     GameMap game_map;
-    game_map.LoadMap("map/map01.dat");
+    game_map.LoadMap("map/map01.txt");
     game_map.LoadTiles(g_screen);
 
 

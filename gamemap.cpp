@@ -1,16 +1,16 @@
 
 #include <iostream>
 #include "gamemap.h"
+#include <fstream>
 
-void GameMap::LoadMap(char* name)
+void GameMap::LoadMap(const char path[])
 {
-    FILE* fp=NULL;
-    fopen_s(&fp,name,"rb");
-    if(fp=NULL)
-    {
+    std::ifstream file;
+    file.open(path);
+    if (!file.is_open()) {
+        std::cout<<"Uable to load "<<path<<"\n";
         return;
     }
-
     game_map_.max_x_=0;
     game_map_.max_y_=0;
 
@@ -18,7 +18,7 @@ void GameMap::LoadMap(char* name)
     {
         for (int j=0; j<MAX_MAP_X; j++)
         {
-            fscanf_s(fp,"%d",&game_map_.tile[i][j]);
+            file>>game_map_.tile[i][j];
             int val=game_map_.tile[i][j];
             if(val>0)
             {
@@ -41,8 +41,8 @@ void GameMap::LoadMap(char* name)
     game_map_.start_x_=0;
     game_map_.start_y_=0;
 
-    game_map_.file_name_=name;
-    fclose(fp);
+    game_map_.file_name_ = path;
+    file.close();
 
 }
 
