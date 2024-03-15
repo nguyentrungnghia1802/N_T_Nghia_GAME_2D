@@ -12,6 +12,12 @@ MainObject::MainObject()
     width_frame_=0;
     height_frame_=0;
     status_=-1;
+    input_type_.left_ = 0;
+    input_type_.right_ =0;
+    input_type_.jump_ =0;
+    input_type_.down_ =0;
+    input_type_.up_ =0;
+    on_ground_=false;
 }
 
 MainObject::~MainObject()
