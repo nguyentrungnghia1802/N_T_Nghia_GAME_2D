@@ -1,1 +1,1 @@
-g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp gamemap.cpp MainObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp gamemap.cpp MainObject.cpp ImpTimer.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
