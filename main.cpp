@@ -48,7 +48,7 @@ bool InitData()
 
 bool LoadBackground()
 {
-    bool ret = g_background.LoadImg("img/background.png", g_screen);
+    bool ret = g_background.LoadImg("img/background.jpg", g_screen);
     if (ret==false)
         return false;
 
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
 
     MainObject p_player;
-    p_player.LoadImg("img/player_right.png",g_screen);
+    p_player.LoadImg("img/player_right1.png",g_screen);
     p_player.set_clips();
 
 

@@ -33,7 +33,7 @@ bool MainObject::LoadImg (std::string path, SDL_Renderer* screen)
 
     if(ret==true)
     {
-        width_frame_= rect_.w/8;    // so luong frame la 8
+        width_frame_= (rect_.w/MAX_FRAME_PLAYER);    // so luong frame la 6
         height_frame_=rect_.h;
     }
 
@@ -75,15 +75,6 @@ void MainObject::set_clips()
         frame_clip_[5].w=width_frame_;
         frame_clip_[5].h=height_frame_;
 
-        frame_clip_[6].x=6*width_frame_;
-        frame_clip_[6].y=0;
-        frame_clip_[6].w=width_frame_;
-        frame_clip_[6].h=height_frame_;
-
-        frame_clip_[7].x=7*width_frame_;
-        frame_clip_[7].y=0;
-        frame_clip_[7].w=width_frame_;
-        frame_clip_[7].h=height_frame_;
     }
 }
 
@@ -91,11 +82,11 @@ void MainObject::Show(SDL_Renderer* des)
 {
     if(status_==WALK_LEFT)
     {
-        LoadImg("img//player_left.png",des);
+        LoadImg("img/player_left1.png",des);
     }
     else
     {
-        LoadImg("img/player_right.png",des);
+        LoadImg("img/player_right1.png",des);
     }
 
     if (input_type_.left_==1||
@@ -108,7 +99,7 @@ void MainObject::Show(SDL_Renderer* des)
             frame_=0;
         }
 
-        if(frame_ >= 8)
+        if(frame_ >= MAX_FRAME_PLAYER)
         {
             frame_ =0;
         }
@@ -129,15 +120,14 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
     {
         switch(events.key.keysym.sym)
         {
-            case SDLK_RIGHT:
+            case SDLK_d:
             {
                 status_=WALK_RIGHT;
                 input_type_.right_=1;
-                input_type_.left_ = 0;
-                
+                input_type_.left_ = 0; 
             }
             break;
-            case SDLK_LEFT:
+            case SDLK_a:
             {
                 status_=WALK_LEFT;
                 input_type_.left_=1;
@@ -149,16 +139,24 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
     {
           switch(events.key.keysym.sym)
         {
-            case SDLK_RIGHT:
+            case SDLK_d:
             {
                 input_type_.right_=0;
             }
             break;
-            case SDLK_LEFT:
+            case SDLK_a:
             {
                 input_type_.left_=0;
             }
             break;
+        }
+    }
+
+    if (events.type==SDL_KEYDOWN)
+    {
+    if(events.key.keysym.sym == SDLK_w) 
+        {
+             input_type_.jump_=1;
         }
     }
 }
@@ -181,6 +179,17 @@ void MainObject::DoPlayer(Map& map_data)
     else if(input_type_.right_==1)
     {
         x_val_+=PLAYER_SPEED;
+    }
+
+    if(input_type_.jump_==1)
+    {
+        if(on_ground_==true)
+        {
+        y_val_= - PLAYER_JUMP_VAL;
+        }
+        input_type_.jump_ =0;
+
+
     }
 
     CheckToMap(map_data);

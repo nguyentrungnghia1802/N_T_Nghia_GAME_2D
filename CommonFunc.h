@@ -14,7 +14,7 @@ static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
 // Screen
-const int FRAME_PER_SECOND=35;
+const int FRAME_PER_SECOND=40;
 const int SCREEN_WIDTH=1280;
 const int SCREEN_HEIGHT=640;
 const int SCREEN_BPP = 44;
@@ -22,16 +22,16 @@ const int SCREEN_BPP = 44;
 
 const int COLOR_KEY_R=167;
 const int COLOR_KEY_G=175;
-const int COLOR_KEY_B=180;
+const int COLOR_KEY_B=120;
 
 
 const int RENDER_DRAW_COLOR=0xff;
 
 #define BLANK_TILE 0
-#define TILE_SIZE 64
+#define TILE_SIZE 80
 
 #define MAX_MAP_X 400
-#define MAX_MAP_Y 10
+#define MAX_MAP_Y 8
 
 
 typedef struct Input
