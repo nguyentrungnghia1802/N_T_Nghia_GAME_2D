@@ -18,6 +18,8 @@ MainObject::MainObject()
     input_type_.down_ =0;
     input_type_.up_ =0;
     on_ground_=false;
+    map_x_ =0;
+    map_y_ =0;
 }
 
 MainObject::~MainObject()
@@ -111,8 +113,8 @@ void MainObject::Show(SDL_Renderer* des)
             frame_ =0;
         }
 
-        rect_.x=x_pos_;
-        rect_.y=y_pos_;
+        rect_.x=x_pos_ - map_x_;
+        rect_.y=y_pos_ - map_y_;
 
         SDL_Rect* current_clip=&frame_clip_[frame_];
 
@@ -182,6 +184,30 @@ void MainObject::DoPlayer(Map& map_data)
     }
 
     CheckToMap(map_data);
+    CenterEntityOnMap(map_data);
+}
+
+void MainObject::CenterEntityOnMap (Map& map_data)
+{
+    map_data.start_x_=x_pos_-(SCREEN_WIDTH/2);
+    if(map_data.start_x_<0)
+    {
+        map_data.start_x_=0;
+    }
+    else if(map_data.start_x_ + SCREEN_WIDTH >= map_data.max_x_)
+    {
+        map_data.start_x_=map_data.max_x_-SCREEN_WIDTH;
+    }
+
+    map_data.start_y_=y_pos_-(SCREEN_HEIGHT/2);
+    if(map_data.start_y_<0)
+    {
+        map_data.start_y_ = 0;
+    }
+    else if(map_data.start_y_+SCREEN_HEIGHT>=map_data.max_y_)
+    {
+        map_data.start_y_=map_data.max_y_-SCREEN_HEIGHT;
+    }
 }
 
 void MainObject::CheckToMap(Map& map_data)
