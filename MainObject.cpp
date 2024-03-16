@@ -187,6 +187,7 @@ void MainObject::DoPlayer(Map& map_data)
         {
         y_val_= - PLAYER_JUMP_VAL;
         }
+        on_ground_=false;    // sau nay co the xoa de nhay vo tan
         input_type_.jump_ =0;
 
 
