@@ -20,6 +20,8 @@ MainObject::MainObject()
     on_ground_=false;
     map_x_ =0;
     map_y_ =0;
+    come_back_time_=0;
+
 }
 
 MainObject::~MainObject()
@@ -104,6 +106,8 @@ void MainObject::Show(SDL_Renderer* des)
             frame_ =0;
         }
 
+        if(come_back_time_==0)
+        {
         rect_.x=x_pos_ - map_x_;
         rect_.y=y_pos_ - map_y_;
 
@@ -112,6 +116,9 @@ void MainObject::Show(SDL_Renderer* des)
         SDL_Rect renderQuad={rect_.x,rect_.y,width_frame_,height_frame_};
 
         SDL_RenderCopy(des,p_object_,current_clip,&renderQuad);
+        }
+
+        
 }
 
 void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
@@ -159,10 +166,53 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
              input_type_.jump_=1;
         }
     }
+    else if(events.type==SDL_MOUSEBUTTONDOWN)
+    {
+        if(events.button.button==SDL_BUTTON_LEFT)
+        {
+            BulletObject* p_bullet =new BulletObject();
+            p_bullet->LoadImg("img/fire2.png",screen);
+            p_bullet->SetRect(this->rect_.x+width_frame_-20, rect_.y+height_frame_*0.1);
+            p_bullet->set_x_val(20);
+            p_bullet->set_is_move(true);
+
+            p_bullet_list_.push_back(p_bullet);
+
+        }
+    }
 }
+
+void MainObject::HanleBullet(SDL_Renderer* des)
+{
+    for (int i=0; i<p_bullet_list_.size();i++)
+    {
+        BulletObject* p_bullet =p_bullet_list_.at(i);
+        if(p_bullet != NULL)
+        {
+            if (p_bullet->get_is_move()==true)
+            {
+                p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                p_bullet->Render(des);
+            }
+            else
+            {
+                p_bullet_list_.erase(p_bullet_list_.begin()+i);
+                if (p_bullet != NULL)
+                {
+                    delete p_bullet;
+                    p_bullet = NULL;
+                }
+            }
+        }
+    }
+}
+
 
 void MainObject::DoPlayer(Map& map_data)
 {
+   
+    if(come_back_time_==0)
+    {
     x_val_ =0;
     y_val_ += GRAVITY_SPEED;
 
@@ -189,12 +239,34 @@ void MainObject::DoPlayer(Map& map_data)
         }
         on_ground_=false;    // sau nay co the xoa de nhay vo tan
         input_type_.jump_ =0;
-
+    }
+    
+    CheckToMap(map_data);
+    CenterEntityOnMap(map_data);
 
     }
 
-    CheckToMap(map_data);
-    CenterEntityOnMap(map_data);
+    if(come_back_time_>0)
+    {
+        come_back_time_--;
+        if(come_back_time_==0)
+        {
+        if(x_pos_>1500)
+        {
+            x_pos_-=800;
+        }
+        else
+        {
+            x_pos_=0;
+
+        }
+            y_pos_=0;
+            x_val_=0;
+            y_val_=0;
+        }
+    }
+
+    
 }
 
 void MainObject::CenterEntityOnMap (Map& map_data)
@@ -235,7 +307,7 @@ void MainObject::CheckToMap(Map& map_data)
     x2=(x_pos_+x_val_+width_frame_-1)/TILE_SIZE;
 
     y1=(y_pos_)/TILE_SIZE;
-    y2=(y_pos_+height_min-1)/TILE_SIZE;
+    y2=(y_pos_ + height_min-1)/TILE_SIZE;
 
 
 /*1
@@ -313,5 +385,9 @@ void MainObject::CheckToMap(Map& map_data)
     {
         x_pos_=map_data.max_x_ - width_frame_ - 1;
     }
-
+    
+    if (y_pos_>map_data.max_y_)
+    {
+        come_back_time_=60;
+    }
 }

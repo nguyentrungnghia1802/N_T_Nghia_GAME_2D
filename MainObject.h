@@ -2,8 +2,11 @@
 #ifndef MAIN_OBJECT_H_
 #define MAIN_OBJECT_H_
 
+#include <vector>
 #include "CommonFunc.h"
 #include "BaseObject.h"
+#include "BulletObject.h"
+
 
 #define GRAVITY_SPEED 0.8
 #define MAX_FALL_SPEED 10
@@ -32,7 +35,16 @@ public:
         void CheckToMap(Map& map_data);
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
         void CenterEntityOnMap(Map& map_data);
+
+        void set_bullet_list(std::vector<BulletObject*>bullet_list)
+        {
+                p_bullet_list_=bullet_list;
+        }
+        std::vector<BulletObject*>get_bullet_list() const {return p_bullet_list_;}
+        void HanleBullet(SDL_Renderer* rec);
+
 private:
+        std::vector<BulletObject*> p_bullet_list_;
         float x_val_;
         float y_val_;
         
@@ -50,6 +62,8 @@ private:
 
         int map_x_;
         int map_y_;
+
+        int come_back_time_;
 };
 
 
