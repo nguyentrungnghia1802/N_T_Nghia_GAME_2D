@@ -21,6 +21,7 @@ MainObject::MainObject()
     map_x_ =0;
     map_y_ =0;
     come_back_time_=0;
+    money_count=0;
 
 }
 
@@ -237,7 +238,7 @@ void MainObject::DoPlayer(Map& map_data)
         {
         y_val_= - PLAYER_JUMP_VAL;
         }
-        on_ground_=false;    // sau nay co the xoa de nhay vo tan
+        
         input_type_.jump_ =0;
     }
     
@@ -310,34 +311,47 @@ void MainObject::CheckToMap(Map& map_data)
     y2=(y_pos_ + height_min-1)/TILE_SIZE;
 
 
-/*1
-2
-3
-4
-5
-6
-7
-8
-9*/
-
-
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
     {
-         if( x_val_>0)  //main object is moving to right
+         if( x_val_>0)  //nhan vat di chuyen sang phai
          {
-            if(map_data.tile[y1][x2]!=BLANK_TILE || map_data.tile[y2][x2]!=BLANK_TILE)
+            int val1 = map_data.tile[y1][x2];
+            int val2 = map_data.tile[y2][x2];
+
+            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
+            {
+                map_data.tile[y1][x2]=0;
+                map_data.tile[y2][x2]=0;
+                IncreaseMoney();
+            }
+            else
+            {
+            if(val1 !=BLANK_TILE || val2 !=BLANK_TILE)
             {
                   x_pos_=x2*TILE_SIZE;
                   x_pos_-=width_frame_+1;
                   x_val_=0;
             }
+            }
          }
          else if (x_val_<0)
          {
-            if(map_data.tile[y1][x1]!=BLANK_TILE|| map_data.tile[y2][x1]!=BLANK_TILE)
+            int val1 = map_data.tile[y1][x2];
+            int val2 = map_data.tile[y2][x2];
+
+            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
+            {
+                map_data.tile[y1][x2]=0;
+                map_data.tile[y2][x2]=0;
+                IncreaseMoney();
+            }
+            else
+            {
+            if(val1!=BLANK_TILE|| val2!=BLANK_TILE)
             {
                 x_pos_=(x1+1)*TILE_SIZE;
                 x_val_ = 0;
+            }
             }
         }
     }
@@ -356,20 +370,44 @@ void MainObject::CheckToMap(Map& map_data)
     {
         if (y_val_ > 0)
         {
-            if(map_data.tile[y2][x1]!=BLANK_TILE||map_data.tile[y2][x2]!=BLANK_TILE)
+            int val1=map_data.tile[y2][x1];
+            int val2=map_data.tile[y2][x2];
+
+            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
+            {
+                map_data.tile[y2][x1]=0;
+                map_data.tile[y2][x2]=0;
+                IncreaseMoney();
+            }
+            else
+            {
+            if(val1!=BLANK_TILE||val2!=BLANK_TILE)
             {
                 y_pos_=y2*TILE_SIZE;
                 y_pos_-=(height_frame_+1);
                 y_val_=0;
                 on_ground_=true;
             }
+            }
         }
         else if (y_val_<0)
         {
-            if (map_data.tile[y1][x1] !=BLANK_TILE || map_data.tile[y1][x2]!=BLANK_TILE)
+            int val1=map_data.tile[y1][x1];
+            int val2=map_data.tile[y1][x2];
+
+            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
+            {
+                map_data.tile[y1][x1]=0;
+                map_data.tile[y1][x2]=0;
+                IncreaseMoney();
+            }
+            else
+            {
+                if (map_data.tile[y1][x1] !=BLANK_TILE || map_data.tile[y1][x2]!=BLANK_TILE)
             {
                 y_pos_=(y1+1)*TILE_SIZE;
                 y_val_=0;
+            }
             }
         }
     }
@@ -391,3 +429,9 @@ void MainObject::CheckToMap(Map& map_data)
         come_back_time_=60;
     }
 }
+
+    void MainObject:: IncreaseMoney()
+{
+    money_count ++;
+}
+

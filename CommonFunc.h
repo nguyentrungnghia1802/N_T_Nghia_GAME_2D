@@ -30,6 +30,10 @@ const int RENDER_DRAW_COLOR=0xff;
 #define BLANK_TILE 0
 #define TILE_SIZE 80
 
+//Item map:
+#define POINT_ITEM_1 4   // O so 4 la o an diem
+
+
 #define MAX_MAP_X 400
 #define MAX_MAP_Y 10
 

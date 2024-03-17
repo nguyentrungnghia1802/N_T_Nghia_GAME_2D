@@ -14,6 +14,7 @@
 #define PLAYER_JUMP_VAL 20
 #define MAX_FRAME_PLAYER 6
 
+
 class MainObject : public BaseObject
 {
 public:
@@ -42,8 +43,11 @@ public:
         }
         std::vector<BulletObject*>get_bullet_list() const {return p_bullet_list_;}
         void HanleBullet(SDL_Renderer* rec);
+        void IncreaseMoney();
 
 private:
+        int money_count;
+
         std::vector<BulletObject*> p_bullet_list_;
         float x_val_;
         float y_val_;
