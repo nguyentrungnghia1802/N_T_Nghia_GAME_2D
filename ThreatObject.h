@@ -5,6 +5,9 @@
 #include "BaseObject.h"
 
 #define THREAT_FRAME_NUM 8
+#define THREAT_GRAVITY_SPEED 1
+#define MAX_FALL_SPEED 10
+
 
 class ThreatsObject: public BaseObject
 {
@@ -34,7 +37,7 @@ class ThreatsObject: public BaseObject
 
 
     private:
-        bool on_ground;
+        bool on_ground_;
         float x_pos_;
         float y_pos_;
         float x_val_;
@@ -48,6 +51,7 @@ class ThreatsObject: public BaseObject
         int width_frame_;
         int height_frame_;
         int frame_;
+        int come_back_time_;
         
      
 };

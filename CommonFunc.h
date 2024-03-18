@@ -38,6 +38,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define MAX_MAP_Y 10
 
 
+
 typedef struct Input
 {
     int left_;
