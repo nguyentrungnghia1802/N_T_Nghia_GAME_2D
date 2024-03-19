@@ -14,9 +14,10 @@ ThreatsObject::ThreatsObject()
     on_ground_=0;
     come_back_time_=0;
     frame_=0;
+
     animation_a_=0;
     animation_b_=0;
-    input_type_.left_=1;
+    input_type_.left_=0;
     type_move_=STATIC_THREAT;
 
 
@@ -110,7 +111,7 @@ void ThreatsObject::DoPlayer(Map& gMap)
         {
             x_val_ -= THREAT_SPEED;
         }
-        else if(input_type_.right_==10)
+        else if(input_type_.right_==1)
         {
             x_val_ += THREAT_SPEED;
         }

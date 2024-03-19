@@ -81,18 +81,20 @@ std::vector <ThreatsObject* >MakeThreats()
 
     for(int i=0; i<NUM_THREATS_LIST;i++)
     {
-        ThreatsObject* p_threat = (dynamic_threats + 1);
+        ThreatsObject* p_threat = (dynamic_threats + i);
 
         if(p_threat!=NULL)
         {
-            p_threat->LoadImg(" img/threat_2_left.png",g_screen);
+            p_threat->LoadImg("img/threat_2_left.png",g_screen);
             p_threat-> set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(500+i*1000);
-            p_threat->set_y_pos(230);
+            p_threat->set_y_pos(200);
 
             int pos1=p_threat-> get_x_pos() - 60;
             int pos2=p_threat->get_x_pos() + 60;
+            p_threat->SetAnimationPos(pos1, pos2);
+            p_threat->set_input_left(1);
 
             list_threats.push_back(p_threat);
         }
@@ -110,6 +112,7 @@ std::vector <ThreatsObject* >MakeThreats()
             p_threat->set_clips();
             p_threat->set_x_pos(2000+i*2000);
             p_threat->set_y_pos(250);
+            p_threat->set_type_move(ThreatsObject::STATIC_THREAT);
 
             list_threats.push_back(p_threat);
         }
