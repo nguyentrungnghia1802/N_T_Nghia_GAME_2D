@@ -4,11 +4,12 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
-#define THREAT_FRAME_NUM 8
+#define THREAT_FRAME_NUM 5
 #define THREAT_GRAVITY_SPEED 1
 #define MAX_FALL_SPEED 10
 
 #define NUM_THREATS_LIST 20
+#define THREAT_SPEED 3
 
 
 class ThreatsObject: public BaseObject
@@ -16,6 +17,14 @@ class ThreatsObject: public BaseObject
     public: 
         ThreatsObject();
         ~ThreatsObject();
+
+        enum TypeMove
+        {
+            STATIC_THREAT=0,
+            MOVE_INSPACE_THREAT=1,
+
+
+        };
 
         void set_x_val(const float& xVal) {x_val_ =xVal;}
         void set_y_val(const float& yVal) {y_val_ = yVal;}
@@ -34,6 +43,12 @@ class ThreatsObject: public BaseObject
         int get_height_frame() const{return height_frame_;}
         void DoPlayer (Map& gMap);
         void CheckToMap(Map& gMap);
+        void InitThreats();
+
+        void set_type_move(const int& typeMove) {type_move_ = typeMove;}
+        void SetAnimationPos(const int& pos_a, const int& pos_b) { animation_a_=pos_a,animation_b_=pos_b;}
+        void set_input_left(const int& ipLeft) {input_type_.left_=ipLeft;};
+        void ImpMoveType (SDL_Renderer* screen);
 
 
 
@@ -55,6 +70,11 @@ class ThreatsObject: public BaseObject
         int frame_;
         int come_back_time_;
         
+        int type_move_;
+        int animation_a_;
+        int animation_b_;
+        Input input_type_;
+
      
 };
 

@@ -14,6 +14,10 @@ ThreatsObject::ThreatsObject()
     on_ground_=0;
     come_back_time_=0;
     frame_=0;
+    animation_a_=0;
+    animation_b_=0;
+    input_type_.left_=1;
+    type_move_=STATIC_THREAT;
 
 
 
@@ -65,10 +69,6 @@ void ThreatsObject::set_clips()
         frame_clip_[4].w=width_frame_;
         frame_clip_[4].h=height_frame_;
 
-        frame_clip_[5].x=5*width_frame_;
-        frame_clip_[5].y=0;
-        frame_clip_[5].w=width_frame_;
-        frame_clip_[5].h=height_frame_;
     }
 }
 
@@ -79,7 +79,7 @@ void ThreatsObject::Show(SDL_Renderer* des)
         rect_.x=x_pos_ - map_x_;
         rect_.y=y_pos_ - map_y_;
         frame_++;
-        if(frame_>=8)
+        if(frame_>=5)
         {
             frame_ = 0;
         }
@@ -98,10 +98,24 @@ void ThreatsObject::DoPlayer(Map& gMap)
     {
         x_val_=0;
         y_val_+= THREAT_GRAVITY_SPEED;
+
+
         if(y_val_ >= MAX_FALL_SPEED)
         {
             y_val_ = MAX_FALL_SPEED;
+
         } 
+
+        if(input_type_.left_==1)
+        {
+            x_val_ -= THREAT_SPEED;
+        }
+        else if(input_type_.right_==10)
+        {
+            x_val_ += THREAT_SPEED;
+        }
+
+
         CheckToMap(gMap);
     }
     else if(come_back_time_ > 0)
@@ -109,20 +123,29 @@ void ThreatsObject::DoPlayer(Map& gMap)
         come_back_time_ --;
         if(come_back_time_==0)
         {
-            x_val_=0;
-            y_val_=0;
-            if(x_pos_ > 1500)
-            {
-                x_pos_ -= 500;
-            }
-            else
-            {
-                x_pos_=0;
-            }
-            y_pos_=0;
-            come_back_time_ = 0;
+            InitThreats();
         }
     }
+}
+
+void ThreatsObject::InitThreats()
+{
+    x_val_=0;
+    y_val_=0;
+    if(x_pos_ > 1500)
+        {
+            x_pos_ -= 500;
+            animation_a_ -=500;
+            animation_b_ -=500;
+
+        }
+    else
+        {
+            x_pos_=0;
+        }
+        y_pos_=0;
+        come_back_time_ = 0;
+        input_type_.left_=1;
 }
 
 void ThreatsObject::CheckToMap(Map& map_data)
@@ -226,5 +249,42 @@ void ThreatsObject::CheckToMap(Map& map_data)
         come_back_time_=60;
     }
 }
+
+void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
+{
+    if(type_move_==STATIC_THREAT)
+    {
+        ;
+    }
+    else
+    {
+        if(on_ground_==true)
+        {
+            if(x_pos_ > animation_b_)
+            {
+                input_type_.left_=1;
+                input_type_.right_=0;
+                LoadImg("img/threat_2_left.png",screen);
+
+            }
+            else if(x_pos_<animation_a_)
+            {
+                input_type_.left_=0;
+                input_type_.right_=1;
+                LoadImg("img/threat_2_right.png",screen);
+            }
+        }
+        else
+        {
+            if(input_type_.left_==1)
+            {
+                LoadImg("img/threat_2_left.png",screen);
+            }
+
+
+        }
+    }
+}
+
 
 

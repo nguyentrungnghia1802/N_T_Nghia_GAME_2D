@@ -76,16 +76,39 @@ std::vector <ThreatsObject* >MakeThreats()
 {
     std::vector <ThreatsObject*> list_threats;
 
+
+    ThreatsObject* dynamic_threats=new ThreatsObject[20];
+
+    for(int i=0; i<NUM_THREATS_LIST;i++)
+    {
+        ThreatsObject* p_threat = (dynamic_threats + 1);
+
+        if(p_threat!=NULL)
+        {
+            p_threat->LoadImg(" img/threat_2_left.png",g_screen);
+            p_threat-> set_clips();
+            p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
+            p_threat->set_x_pos(500+i*1000);
+            p_threat->set_y_pos(230);
+
+            int pos1=p_threat-> get_x_pos() - 60;
+            int pos2=p_threat->get_x_pos() + 60;
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+
     ThreatsObject* threatsobj = new ThreatsObject[NUM_THREATS_LIST];
 
     for(int i=0; i<NUM_THREATS_LIST;i++)
     {
-        ThreatsObject* p_threat=(threatsobj+1);
-        if(p_threat=NULL)
+        ThreatsObject* p_threat=(threatsobj+i);
+        if(p_threat!=NULL)
         {
             p_threat->LoadImg("img/threat_1.png",g_screen);        // loading threats
             p_threat->set_clips();
-            p_threat->set_x_pos(500+i*3000);
+            p_threat->set_x_pos(2000+i*2000);
             p_threat->set_y_pos(250);
 
             list_threats.push_back(p_threat);
@@ -157,12 +180,10 @@ int main(int argc, char* argv[])
             if(p_threat!=NULL)
             
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
+                p_threat->ImpMoveType(g_screen);
                 p_threat->DoPlayer(map_data);
                 p_threat->Show(g_screen);
         }
-
-
-
 
 
         SDL_RenderPresent(g_screen);
