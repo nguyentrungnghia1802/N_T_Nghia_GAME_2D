@@ -8,6 +8,8 @@
 #define THREAT_GRAVITY_SPEED 1
 #define MAX_FALL_SPEED 10
 
+#define NUM_THREATS_LIST 20
+
 
 class ThreatsObject: public BaseObject
 {
@@ -19,7 +21,7 @@ class ThreatsObject: public BaseObject
         void set_y_val(const float& yVal) {y_val_ = yVal;}
 
         void set_x_pos(const float& xp) {x_pos_ = xp;}
-        void set_x_pos(const float& yp) {y_pos_=yp;}
+        void set_y_pos(const float& yp) {y_pos_=yp;}
 
         float get_x_pos() const {return x_pos_;}
         float get_y_pos() const {return y_pos_;}

@@ -32,6 +32,7 @@ bool ThreatsObject::LoadImg(std::string path,SDL_Renderer* screen)
         width_frame_ = rect_.w/THREAT_FRAME_NUM;
         height_frame_=rect_.h;
     }
+    return ret;
 }
 
 void ThreatsObject::set_clips()
@@ -144,43 +145,28 @@ void ThreatsObject::CheckToMap(Map& map_data)
 
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
     {
-         if( x_val_>0)  //nhan vat di chuyen sang phai
-         {
+        if( x_val_>0)  //nhan vat di chuyen sang phai
+        {
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
 
-            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
-            {
-                map_data.tile[y1][x2]=0;
-                map_data.tile[y2][x2]=0;
-            }
-            else
-            {
-            if(val1 !=BLANK_TILE || val2 !=BLANK_TILE)
+            if((val1 !=BLANK_TILE&&val1 != POINT_ITEM_1) || (val2 !=BLANK_TILE&&val2 != POINT_ITEM_1))
             {
                   x_pos_=x2*TILE_SIZE;
                   x_pos_-=width_frame_+1;
                   x_val_=0;
             }
-            }
-         }
-         else if (x_val_<0)
-         {
+        }
+        else if (x_val_<0)
+        {
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
 
-            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
-            {
-                map_data.tile[y1][x2]=0;
-                map_data.tile[y2][x2]=0;
-            }
-            else
-            {
-            if(val1!=BLANK_TILE|| val2!=BLANK_TILE)
+           
+            if((val1!=BLANK_TILE&&val1!=POINT_ITEM_1)||( val2!=BLANK_TILE&&val2!=POINT_ITEM_1))
             {
                 x_pos_=(x1+1)*TILE_SIZE;
                 x_val_ = 0;
-            }
             }
         }
     }
@@ -202,7 +188,7 @@ void ThreatsObject::CheckToMap(Map& map_data)
             int val1=map_data.tile[y2][x1];
             int val2=map_data.tile[y2][x2];
 
-            if(val1!=BLANK_TILE||val2!=BLANK_TILE)
+            if((val1!=BLANK_TILE&&val1!=POINT_ITEM_1)||(val2!=BLANK_TILE&&val2!=POINT_ITEM_1))
             {
                 y_pos_=y2*TILE_SIZE;
                 y_pos_-=(height_frame_+1);
@@ -215,18 +201,10 @@ void ThreatsObject::CheckToMap(Map& map_data)
             int val1=map_data.tile[y1][x1];
             int val2=map_data.tile[y1][x2];
 
-            if(val1==POINT_ITEM_1||val2==POINT_ITEM_1)
-            {
-                map_data.tile[y1][x1]=0;
-                map_data.tile[y1][x2]=0;
-            }
-            else
-            {
-                if (map_data.tile[y1][x1] !=BLANK_TILE || map_data.tile[y1][x2]!=BLANK_TILE)
+                if ((val1 !=BLANK_TILE&&val1!=POINT_ITEM_1) || (val2!=BLANK_TILE!=POINT_ITEM_1))
             {
                 y_pos_=(y1+1)*TILE_SIZE;
                 y_val_=0;
-            }
             }
         }
     }
@@ -250,4 +228,3 @@ void ThreatsObject::CheckToMap(Map& map_data)
 }
 
 
-//Note:  loading 24:30

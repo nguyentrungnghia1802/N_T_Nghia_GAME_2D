@@ -4,6 +4,8 @@
 
 #include <windows.h>
 #include <string>
+#include <vector>
+
 #include "src/include/SDL2/SDL.h"
 #include "src/include/SDL2/SDL_image.h"
 #include <fstream>
