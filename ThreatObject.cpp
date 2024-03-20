@@ -152,6 +152,11 @@ void ThreatsObject::InitThreats()
 
 void ThreatsObject::CheckToMap(Map& map_data)
 {
+
+    if(type_move_!=THREATS_FLY_STATIC)
+    {
+        
+
     int x1=0;
     int x2=0;
 
@@ -178,7 +183,8 @@ void ThreatsObject::CheckToMap(Map& map_data)
             {
                   x_pos_=x2*TILE_SIZE;
                   x_pos_-=width_frame_+1;
-                  x_val_=0;
+                  input_type_.left_=0;
+                  input_type_.right_=1;
             }
         }
         else if (x_val_<0)
@@ -190,7 +196,8 @@ void ThreatsObject::CheckToMap(Map& map_data)
             if((val1!=BLANK_TILE&&val1!=POINT_ITEM_1)||( val2!=BLANK_TILE&&val2!=POINT_ITEM_1))
             {
                 x_pos_=(x1+1)*TILE_SIZE;
-                x_val_ = 0;
+                input_type_.right_=0;
+                input_type_.left_=1;
             }
         }
     }
@@ -245,8 +252,11 @@ void ThreatsObject::CheckToMap(Map& map_data)
     
     if (y_pos_>map_data.max_y_)
     {
-        come_back_time_=60;
+        Free();
     }
+
+    }
+
 }
 
 void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
@@ -255,7 +265,7 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
     {
         ;
     }
-    else
+    else if(type_move_==MOVE_INSPACE_THREAT)
     {
         if(on_ground_==true)
         {
@@ -279,11 +289,19 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
             {
                 LoadImg("img/threat_2_left.png",screen);
             }
-
-
         }
     }
+
+
+    else if(type_move_==THREATS_FLY_STATIC)
+    {
+        ;
+    }
+
+
+
 }
+
 
 
 

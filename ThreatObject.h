@@ -23,6 +23,8 @@ class ThreatsObject: public BaseObject
             STATIC_THREAT=0,
             MOVE_INSPACE_THREAT=1,
 
+            THREATS_FLY_STATIC=2,
+
 
         };
 

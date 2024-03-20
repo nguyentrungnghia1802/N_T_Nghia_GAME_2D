@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <iostream>
 #include "CommonFunc.h"
@@ -117,6 +115,33 @@ std::vector <ThreatsObject* >MakeThreats()
             list_threats.push_back(p_threat);
         }
     }
+
+
+    ThreatsObject* ThreatFly = new ThreatsObject[NUM_THREATS_LIST];
+
+    for(int i=0; i<NUM_THREATS_LIST;i++)
+    {
+        ThreatsObject* p_threat=(ThreatFly+i);
+        if(p_threat!=NULL)
+        {
+            p_threat->LoadImg("img/threat_3_left.png",g_screen);        // loading threats
+            p_threat->set_clips();
+            p_threat->set_x_pos(290+i*5000);
+            p_threat->set_y_pos(250);
+            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+
+
+
+
+
+
+
+
     return list_threats;
 }
 
@@ -201,10 +226,9 @@ int main(int argc, char* argv[])
         }
 
     }
+close();
+return 0;
 
-
-    close();
-	return 0;
 }
 
 
