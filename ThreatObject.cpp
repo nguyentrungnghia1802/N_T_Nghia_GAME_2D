@@ -302,6 +302,16 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
 
 }
 
+SDL_Rect ThreatsObject::GetRectFrame()
+{
+    SDL_Rect rect;
+    rect.x=rect_.x;
+    rect.y=rect_.y;
+    rect.w=rect_.w/width_frame_;
+    rect.h=height_frame_;
+    return rect;
+}
+
 
 
 

@@ -62,4 +62,9 @@ typedef struct Map
     std::string file_name_;
 }Map;
 
+namespace SDLCommonFunc
+{
+    bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
+}
+
 #endif

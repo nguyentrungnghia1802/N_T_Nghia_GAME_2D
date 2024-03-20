@@ -52,7 +52,7 @@ class ThreatsObject: public BaseObject
         void set_input_left(const int& ipLeft) {input_type_.left_=ipLeft;};
         void ImpMoveType (SDL_Renderer* screen);
 
-
+       SDL_Rect GetRectFrame(); 
 
     private:
         bool on_ground_;
