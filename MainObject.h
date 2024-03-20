@@ -46,6 +46,7 @@ public:
         void HanleBullet(SDL_Renderer* rec);
         void RemoveBullet(const int& idx);
         void IncreaseMoney();
+        void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
 
 private:
         int money_count;

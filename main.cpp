@@ -99,24 +99,6 @@ std::vector <ThreatsObject* >MakeThreats()
     }
 
 
-    ThreatsObject* threatsobj = new ThreatsObject[NUM_THREATS_LIST];
-
-    for(int i=0; i<NUM_THREATS_LIST;i++)
-    {
-        ThreatsObject* p_threat=(threatsobj+i);
-        if(p_threat!=NULL)
-        {
-            p_threat->LoadImg("img/threat_1.png",g_screen);        // loading threats
-            p_threat->set_clips();
-            p_threat->set_x_pos(2000+i*2000);
-            p_threat->set_y_pos(250);
-            p_threat->set_type_move(ThreatsObject::STATIC_THREAT);
-
-            list_threats.push_back(p_threat);
-        }
-    }
-
-
     ThreatsObject* ThreatFly = new ThreatsObject[NUM_THREATS_LIST];
 
     for(int i=0; i<NUM_THREATS_LIST;i++)
@@ -163,6 +145,9 @@ int main(int argc, char* argv[])
     std::vector <ThreatsObject*> threats_list = MakeThreats();
 
 
+    int num_die=0;
+
+
     bool is_quit = false;
     while (!is_quit)
     {
@@ -207,14 +192,27 @@ int main(int argc, char* argv[])
                 SDL_Rect rect_player=p_player.GetRectFrame();
                 SDL_Rect rect_threat=p_threat->GetRectFrame();
                 bool bCol2 = SDLCommonFunc::CheckCollision(rect_player,rect_threat);
+
+
                 if(bCol2)
                 {
-                    if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
+                    num_die++;
+                    if(num_die<=3)
                     {
-                        p_threat->Free();
-                        close();
-                        SDL_Quit();
-                        return 0;
+                        p_player.SetRect(0,0);
+                        p_player.set_comeback_time(3);
+                        SDL_Delay(1000);
+                        continue;
+                    }
+                    else
+                    {
+                        if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
+                        {
+                            p_threat->Free();
+                            close();
+                            SDL_Quit();
+                            return 0;
+                        }
                     }
                 }
             }
@@ -257,11 +255,6 @@ int main(int argc, char* argv[])
                 }
             }
         }
-
-
-
-
-
 
         SDL_RenderPresent(g_screen);
         

@@ -269,7 +269,7 @@ void MainObject::DoPlayer(Map& map_data)
         {
         y_val_= - PLAYER_JUMP_VAL;
         }
-        
+        on_ground_=false;   // bo dong nay de nhay vo tan
         input_type_.jump_ =0;
     }
     
@@ -285,7 +285,7 @@ void MainObject::DoPlayer(Map& map_data)
         {
         if(x_pos_>1500)
         {
-            x_pos_-=800;
+            x_pos_+=1000;
         }
         else
         {
