@@ -3,6 +3,7 @@
 #include "ThreatObject.h"
 #include "BaseObject.h"
 
+
 ThreatsObject::ThreatsObject()
 {
     width_frame_=0;
@@ -80,7 +81,7 @@ void ThreatsObject::Show(SDL_Renderer* des)
         rect_.x=x_pos_ - map_x_;
         rect_.y=y_pos_ - map_y_;
         frame_++;
-        if(frame_>=5)
+        if(frame_>=THREAT_FRAME_NUM)
         {
             frame_ = 0;
         }
@@ -157,7 +158,6 @@ void ThreatsObject::CheckToMap(Map& map_data)
     int y1=0;
     int y2=0;
 
-    //Check chieu ngang
     int height_min=height_frame_ <TILE_SIZE ? height_frame_ : TILE_SIZE;
 
     x1=(x_pos_+x_val_)/TILE_SIZE;
@@ -169,7 +169,7 @@ void ThreatsObject::CheckToMap(Map& map_data)
 
     if(x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
     {
-        if( x_val_>0)  //nhan vat di chuyen sang phai
+        if( x_val_>0) 
         {
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
@@ -195,8 +195,6 @@ void ThreatsObject::CheckToMap(Map& map_data)
         }
     }
 
-
-    //Check vertical
 
     int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
     x1 = (x_pos_)/TILE_SIZE;

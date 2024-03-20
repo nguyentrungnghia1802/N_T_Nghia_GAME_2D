@@ -77,7 +77,7 @@ std::vector <ThreatsObject* >MakeThreats()
     std::vector <ThreatsObject*> list_threats;
 
 
-    ThreatsObject* dynamic_threats=new ThreatsObject[20];
+    ThreatsObject* dynamic_threats=new ThreatsObject[NUM_THREATS_LIST];
 
     for(int i=0; i<NUM_THREATS_LIST;i++)
     {
@@ -91,8 +91,8 @@ std::vector <ThreatsObject* >MakeThreats()
             p_threat->set_x_pos(500+i*1000);
             p_threat->set_y_pos(200);
 
-            int pos1=p_threat-> get_x_pos() - 60;
-            int pos2=p_threat->get_x_pos() + 60;
+            int pos1=p_threat-> get_x_pos() - 200;
+            int pos2=p_threat->get_x_pos() + 200;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
 
@@ -170,11 +170,10 @@ int main(int argc, char* argv[])
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_,map_data.start_y_);
         p_player.DoPlayer(map_data);
-        p_player.Show(g_screen);
-        
+        p_player.Show(g_screen);        
 
         game_map.SetMap(map_data);
-        game_map.DrawMap(g_screen);
+        game_map.DrawMap(g_screen);        
 
 
         for (int i=0; i<threats_list.size(); i++)
@@ -202,6 +201,7 @@ int main(int argc, char* argv[])
         }
 
     }
+
 
     close();
 	return 0;

@@ -81,6 +81,8 @@ void MainObject::set_clips()
     }
 }
 
+int delay_frame = 1;
+
 void MainObject::Show(SDL_Renderer* des)
 {
     if(status_==WALK_LEFT)
@@ -95,13 +97,16 @@ void MainObject::Show(SDL_Renderer* des)
     if (input_type_.left_==1||
         input_type_.right_==1)
         {
-            frame_++;
+            delay_frame++;
+            if(delay_frame%3==0)
+            {
+                frame_++;
+            }
         }
         else
         {
             frame_=0;
         }
-
         if(frame_ >= MAX_FRAME_PLAYER)
         {
             frame_ =0;
@@ -113,7 +118,6 @@ void MainObject::Show(SDL_Renderer* des)
         rect_.y=y_pos_ - map_y_;
 
         SDL_Rect* current_clip=&frame_clip_[frame_];
-
         SDL_Rect renderQuad={rect_.x,rect_.y,width_frame_,height_frame_};
 
         SDL_RenderCopy(des,p_object_,current_clip,&renderQuad);

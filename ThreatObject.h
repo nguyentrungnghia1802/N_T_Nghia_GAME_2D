@@ -9,7 +9,7 @@
 #define MAX_FALL_SPEED 10
 
 #define NUM_THREATS_LIST 20
-#define THREAT_SPEED 3
+#define THREAT_SPEED 8
 
 
 class ThreatsObject: public BaseObject
@@ -52,7 +52,6 @@ class ThreatsObject: public BaseObject
 
 
 
-
     private:
         bool on_ground_;
         float x_pos_;
@@ -74,6 +73,8 @@ class ThreatsObject: public BaseObject
         int animation_a_;
         int animation_b_;
         Input input_type_;
+
+
 
      
 };
