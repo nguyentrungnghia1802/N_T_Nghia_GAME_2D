@@ -6,7 +6,7 @@
 #include "MainObject.h"
 #include "ImpTimer.h"
 #include "ThreatObject.h"
-#include "PlayText.h"
+#include "PlayHealth.h"
 
 
 BaseObject g_background;

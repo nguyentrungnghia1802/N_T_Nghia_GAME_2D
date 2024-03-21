@@ -187,12 +187,22 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
         if(events.button.button==SDL_BUTTON_LEFT)
         {
             BulletObject* p_bullet =new BulletObject();
-            p_bullet->LoadImg("img/fire2.png",screen);
+            p_bullet->LoadImg("img/fire.png",screen);
+
+            if(status_==WALK_LEFT)
+            {
+                p_bullet->set_bullet_dir(BulletObject::DIR_LEFT);
+                p_bullet->SetRect(this->rect_.x-20,rect_.y);
+            }
+            else if(status_==WALK_RIGHT)
+            {
+                p_bullet->set_bullet_dir(BulletObject::DIR_RIGHT);
+                p_bullet->SetRect(this->rect_.x+width_frame_-20,rect_.y);
+            }
 
             rect_.x=x_pos_ - map_x_;
             rect_.y=y_pos_ - map_y_;
 
-            p_bullet->SetRect(this->rect_.x+width_frame_-20, rect_.y+height_frame_*0.1);
             p_bullet->set_x_val(20);
             p_bullet->set_is_move(true);
 
