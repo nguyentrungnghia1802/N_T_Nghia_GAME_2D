@@ -47,6 +47,7 @@ public:
         void RemoveBullet(const int& idx);
         void IncreaseMoney();
         void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
+        bool FallToHole(Map& map_data);
 
 private:
         int money_count;

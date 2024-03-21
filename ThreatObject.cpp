@@ -274,7 +274,6 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
                 input_type_.left_=1;
                 input_type_.right_=0;
                 LoadImg("img/threat_2_left.png",screen);
-
             }
             else if(x_pos_<animation_a_)
             {
@@ -297,8 +296,6 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen)
     {
         ;
     }
-
-
 
 }
 

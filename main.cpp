@@ -181,12 +181,15 @@ int main(int argc, char* argv[])
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_,map_data.start_y_);
         p_player.DoPlayer(map_data);
-        p_player.Show(g_screen);        
+        p_player.Show(g_screen);
+             
 
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);       
 
         player_power.Show(g_screen); 
+        bool die = p_player.FallToHole(map_data);
+
 
 
         for (int i=0; i<threats_list.size(); i++)
@@ -203,13 +206,15 @@ int main(int argc, char* argv[])
                 SDL_Rect rect_player=p_player.GetRectFrame();
                 SDL_Rect rect_threat=p_threat->GetRectFrame();
                 bool bCol2 = SDLCommonFunc::CheckCollision(rect_player,rect_threat);
+                
 
 
-                if(bCol2)
+                if(bCol2||die)
                 {
                     num_die++;
                     if(num_die<=3)
                     {
+                        die=false;
                         p_player.SetRect(0,0);
                         p_player.set_comeback_time(3);
                         SDL_Delay(1000);
@@ -286,6 +291,7 @@ close();
 return 0;
 
 }
+
 
 
 

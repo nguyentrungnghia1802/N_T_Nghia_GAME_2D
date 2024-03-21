@@ -454,15 +454,29 @@ void MainObject::CheckToMap(Map& map_data)
     {
         x_pos_=map_data.max_x_ - width_frame_ - 1;
     }
-    
-    if (y_pos_>map_data.max_y_)
+    if(y_pos_>map_data.max_y_)
     {
-        come_back_time_=60;
+        come_back_time_=3;
     }
+    
 }
 
     void MainObject:: IncreaseMoney()
 {
     money_count ++;
 }
+
+    bool MainObject:: FallToHole(Map& map_data)
+{
+    if(y_pos_>map_data.max_y_)
+    {
+        return true;
+    }
+    else
+    return false;
+}
+
+
+
+
 
