@@ -192,12 +192,10 @@ int main(int argc, char* argv[])
         player_power.Show(g_screen); 
         player_money.Show(g_screen);
 
+        bool is_minusLinve = p_player.GetIsMinusLive();
 
 
-        bool die = p_player.FallToHole(map_data);
-
-
-
+        bool bCol2 = false;
         for (int i=0; i<threats_list.size(); i++)
         {
             ThreatsObject* p_threat = threats_list.at(i);
@@ -211,37 +209,41 @@ int main(int argc, char* argv[])
 
                 SDL_Rect rect_player=p_player.GetRectFrame();
                 SDL_Rect rect_threat=p_threat->GetRectFrame();
-                bool bCol2 = SDLCommonFunc::CheckCollision(rect_player,rect_threat);
-                
-
-
-                if(bCol2||die)
+                bCol2 = SDLCommonFunc::CheckCollision(rect_player,rect_threat);
+                if (bCol2 == true)
                 {
-                    num_die++;
-                    if(num_die<=3)
-                    {
-                        die=false;
-                        p_player.SetRect(0,0);
-                        p_player.set_comeback_time(3);
-                        SDL_Delay(1000);
-                        player_power.Decrease();
-                        player_power.Render(g_screen);
-                        continue;
-                    }
-                    else
-                    {
-                        if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
-                        {
-                            p_threat->Free();
-                            close();
-                            SDL_Quit();
-                            return 0;
-                        }
-                    }
-                }
+                    p_threat->Free();
+                    break;
+                }                          
             }
         }
 
+        if(bCol2|| is_minusLinve == true)
+        {
+             num_die++;
+            if (is_minusLinve == true)
+            {
+                p_player.RetsetMinusLive();
+            }
+
+            if(num_die<=3)
+            {
+                p_player.SetRect(0,0);
+                p_player.set_comeback_time(3);
+                SDL_Delay(1000);
+                player_power.Decrease();
+                player_power.Render(g_screen);
+                continue;
+            }
+            else
+            {
+                if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
+                {
+                    is_quit = true;
+                    continue;
+                }
+            }           
+        }
 
         std::vector<BulletObject*> bullet_arr = p_player.get_bullet_list();
         for (int r = 0; r< bullet_arr.size();r++)
@@ -271,9 +273,6 @@ int main(int argc, char* argv[])
                                 obj_threat->Free();
                                 threats_list.erase(threats_list.begin()+t);
                             }
-
-
-
                         }
                     }
                 }
@@ -293,8 +292,9 @@ int main(int argc, char* argv[])
         }
 
     }
-close();
-return 0;
+    
+    close();
+    return 0;
 
 }
 

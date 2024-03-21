@@ -48,7 +48,8 @@ public:
         void IncreaseMoney();
         void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
         bool FallToHole(Map& map_data);
-
+        bool GetIsMinusLive() {return is_minus_live;}
+        void RetsetMinusLive() {is_minus_live = false;}
 private:
         int money_count;
 
@@ -72,6 +73,7 @@ private:
         int map_y_;
 
         int come_back_time_;
+        bool is_minus_live;
 };
 
 

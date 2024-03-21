@@ -22,6 +22,7 @@ MainObject::MainObject()
     map_y_ =0;
     come_back_time_=0;
     money_count=0;
+    is_minus_live = false;
 
 }
 
@@ -187,6 +188,10 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
         {
             BulletObject* p_bullet =new BulletObject();
             p_bullet->LoadImg("img/fire2.png",screen);
+
+            rect_.x=x_pos_ - map_x_;
+            rect_.y=y_pos_ - map_y_;
+
             p_bullet->SetRect(this->rect_.x+width_frame_-20, rect_.y+height_frame_*0.1);
             p_bullet->set_x_val(20);
             p_bullet->set_is_move(true);
@@ -281,20 +286,21 @@ void MainObject::DoPlayer(Map& map_data)
     if(come_back_time_>0)
     {
         come_back_time_--;
-        if(come_back_time_==0)
+        if(come_back_time_<=0)
         {
-        if(x_pos_>1500)
-        {
-            x_pos_+=1000;
-        }
-        else
-        {
-            x_pos_=0;
+            if(x_pos_>1500)
+            {
+                x_pos_+=1000;
+            }
+            else
+            {
+                x_pos_=0;
 
-        }
-            y_pos_=0;
-            x_val_=0;
-            y_val_=0;
+            }
+                y_pos_=0;
+                x_val_=0;
+                y_val_=0;
+            come_back_time_ = 0;
         }
     }
 
@@ -383,7 +389,7 @@ void MainObject::CheckToMap(Map& map_data)
                 x_pos_=(x1+1)*TILE_SIZE;
                 x_val_ = 0;
             }
-            }
+            }  // a can nhap lai ma lenh moi dung dc main a
         }
     }
 
@@ -457,6 +463,7 @@ void MainObject::CheckToMap(Map& map_data)
     if(y_pos_>map_data.max_y_)
     {
         come_back_time_=3;
+        is_minus_live = true;
     }
     
 }
@@ -466,6 +473,7 @@ void MainObject::CheckToMap(Map& map_data)
     money_count ++;
 }
 
+// dont using
     bool MainObject:: FallToHole(Map& map_data)
 {
     if(y_pos_>map_data.max_y_)
