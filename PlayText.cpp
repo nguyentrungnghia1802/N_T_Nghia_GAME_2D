@@ -55,7 +55,27 @@ void PlayerPower::InitCrease()
     int last_pos=pos_list_.back();
     last_pos+=40;
     pos_list_.push_back(last_pos);
+}
 
+PlayerMoney::PlayerMoney()
+{
+    x_pos_=0;
+    y_pos_=0;
+}
 
+PlayerMoney::~PlayerMoney()
+{
 
+}
+
+void PlayerMoney::Init(SDL_Renderer* screen)
+{
+    bool ret=LoadImg("img/player_money.png",screen);
+}
+
+void PlayerMoney::Show(SDL_Renderer* screen)
+{
+    rect_.x=x_pos_;
+    rect_.y=y_pos_;
+    Render(screen);
 }

@@ -146,9 +146,11 @@ int main(int argc, char* argv[])
     PlayerPower player_power;
     player_power.Init(g_screen);
 
+    PlayerMoney player_money;
+    player_money.Init(g_screen);
+    player_money.SetPos(SCREEN_WIDTH*0.5 - 300, 8);
 
-
-
+    
 
 
     std::vector <ThreatsObject*> threats_list = MakeThreats();
@@ -188,6 +190,10 @@ int main(int argc, char* argv[])
         game_map.DrawMap(g_screen);       
 
         player_power.Show(g_screen); 
+        player_money.Show(g_screen);
+
+
+
         bool die = p_player.FallToHole(map_data);
 
 
