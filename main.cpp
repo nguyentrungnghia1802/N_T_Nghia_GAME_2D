@@ -6,6 +6,7 @@
 #include "MainObject.h"
 #include "ImpTimer.h"
 #include "ThreatObject.h"
+#include "PlayText.h"
 
 
 BaseObject g_background;
@@ -142,6 +143,14 @@ int main(int argc, char* argv[])
     p_player.set_clips();
 
 
+    PlayerPower player_power;
+    player_power.Init(g_screen);
+
+
+
+
+
+
     std::vector <ThreatsObject*> threats_list = MakeThreats();
 
 
@@ -175,7 +184,9 @@ int main(int argc, char* argv[])
         p_player.Show(g_screen);        
 
         game_map.SetMap(map_data);
-        game_map.DrawMap(g_screen);        
+        game_map.DrawMap(g_screen);       
+
+        player_power.Show(g_screen); 
 
 
         for (int i=0; i<threats_list.size(); i++)
@@ -202,6 +213,8 @@ int main(int argc, char* argv[])
                         p_player.SetRect(0,0);
                         p_player.set_comeback_time(3);
                         SDL_Delay(1000);
+                        player_power.Decrease();
+                        player_power.Render(g_screen);
                         continue;
                     }
                     else
