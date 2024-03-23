@@ -5,10 +5,14 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <fstream>
+
 
 #include "src/include/SDL2/SDL.h"
 #include "src/include/SDL2/SDL_image.h"
-#include <fstream>
+#include "src/include/SDL2/SDL_ttf.h"
+#include "src/include/SDL2/SDL_mixer.h"
+
 
 
 static SDL_Window* g_window = NULL;

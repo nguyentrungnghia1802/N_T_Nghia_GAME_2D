@@ -7,9 +7,11 @@
 #include "ImpTimer.h"
 #include "ThreatObject.h"
 #include "PlayHealth.h"
+#include "TextObject.h"
 
 
 BaseObject g_background;
+TTF_Font* font_time=NULL;
 
 bool InitData()
 {
@@ -41,6 +43,20 @@ bool InitData()
             int imgFlags=IMG_INIT_PNG;
             if(!(IMG_Init(imgFlags) && imgFlags))
             success=false;
+        }
+
+        if(TTF_Init()==-1)
+        {
+            success=false;
+            std::cout<<"khong the mo tep";
+        }
+
+        font_time=TTF_OpenFont("font/1.ttf",15);
+        if(font_time!=NULL)
+        {
+            success=false;
+            std::cout<<"khong the mo tep";
+
         }
     }
 
@@ -157,6 +173,10 @@ int main(int argc, char* argv[])
 
 
     int num_die=0;
+
+    //Time Text
+    TextObject time_game;
+    time_game.SetColor (TextObject::WHITE_TEXT);
 
 
     bool is_quit = false;
@@ -278,6 +298,35 @@ int main(int argc, char* argv[])
                 }
             }
         }
+
+
+        //Show game time
+        std::string str_time="Time: ";
+        Uint32 time_val=SDL_GetTicks()/1000;
+        Uint32 val_time=300-time_val;
+        if(val_time<=0)
+        {
+            if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
+                {
+                    is_quit = true;
+                    break;
+                    
+                }
+            else
+            {
+                std::string str_val=std::to_string(val_time);
+                str_time +=str_val;
+
+                time_game.SetText(str_time);
+                time_game.LoadFromRenderText(font_time, g_screen);
+                time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15 );
+            }
+        }
+
+
+
+
+
 
         SDL_RenderPresent(g_screen);
         
