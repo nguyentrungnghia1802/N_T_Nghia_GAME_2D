@@ -51,11 +51,11 @@ bool InitData()
             std::cout<<"khong the mo tep";
         }
 
-        font_time=TTF_OpenFont("font/1.ttf",15);
-        if(font_time!=NULL)
+        font_time=TTF_OpenFont("font/1.ttf", 35);
+        if(font_time==NULL) 
         {
             success=false;
-            std::cout<<"khong the mo tep";
+            std::cout<<"khong the mo tep ";
 
         }
     }
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
         fps_timer.start();
         while (SDL_PollEvent(&g_event)!=0)
         {
-            if (g_event.type==SDL_QUIT)
+            if (g_event.type == SDL_QUIT)
             {
                 is_quit=true;
             }
@@ -301,27 +301,28 @@ int main(int argc, char* argv[])
 
 
         //Show game time
-        std::string str_time="Time: ";
+        std::string str_time="Days: ";
         Uint32 time_val=SDL_GetTicks()/1000;
-        Uint32 val_time=300-time_val;
-        if(val_time<=0)
+        Uint32 val_time=0+time_val;
+        if(val_time>=5000)
         {
-            if(MessageBoxW(NULL,L"Game Over",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
+            if(MessageBoxW(NULL,L"T-kun lost her!",L"Info",MB_OK | MB_ICONSTOP)==IDOK)
                 {
                     is_quit = true;
                     break;
                     
                 }
-            else
-            {
-                std::string str_val=std::to_string(val_time);
-                str_time +=str_val;
-
-                time_game.SetText(str_time);
-                time_game.LoadFromRenderText(font_time, g_screen);
-                time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15 );
-            }
         }
+        else
+        {
+            std::string str_val=std::to_string(val_time);
+            str_time +=str_val;
+
+            time_game.SetText(str_time);
+            time_game.LoadFromRenderText(font_time, g_screen);
+            time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15 );
+        }
+        
 
 
 
