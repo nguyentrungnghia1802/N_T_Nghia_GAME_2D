@@ -92,7 +92,7 @@ void MainObject::set_clips()
     }
 }
 
-int delay_frame = 1;
+int delay_frame1 = 1;
 
 void MainObject::Show(SDL_Renderer* des)
 {
@@ -108,10 +108,11 @@ void MainObject::Show(SDL_Renderer* des)
     if (input_type_.left_==1||
         input_type_.right_==1)
         {
-            delay_frame++;
-            if(delay_frame%3==0)
+            delay_frame1++;
+            if(delay_frame1%3==0)
             {
                 frame_++;
+                delay_frame1=0;
             }
         }
         else

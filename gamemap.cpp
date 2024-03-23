@@ -53,7 +53,7 @@ void GameMap::LoadTiles(SDL_Renderer* screen)
     tile_mat[0].LoadImg(map_path[0], screen);
     tile_mat[2].LoadImg(map_path[1],screen);
     tile_mat[3].LoadImg(map_path[2],screen);
-    tile_mat[4].LoadImg(map_path[3],screen);
+    tile_mat[4].LoadImg(map_path[3],screen);    // heart
     tile_mat[5].LoadImg(map_path[4],screen);
 }
 

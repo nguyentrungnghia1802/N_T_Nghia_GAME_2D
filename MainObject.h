@@ -50,6 +50,7 @@ public:
         bool FallToHole(Map& map_data);
         bool GetIsMinusLive() {return is_minus_live;}
         void RetsetMinusLive() {is_minus_live = false;}
+        int GetMoneyCount() const {return money_count;}
 private:
         int money_count;
 

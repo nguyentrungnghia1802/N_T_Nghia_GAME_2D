@@ -70,7 +70,7 @@ PlayerMoney::~PlayerMoney()
 
 void PlayerMoney::Init(SDL_Renderer* screen)
 {
-    bool ret=LoadImg("img/player_money.png",screen);
+    bool ret=LoadImg("img/heart_.png",screen);    // increase point to win
 }
 
 void PlayerMoney::Show(SDL_Renderer* screen)

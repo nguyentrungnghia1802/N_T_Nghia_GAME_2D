@@ -3,6 +3,9 @@
 
 #include "CommonFunc.h"
 
+
+#define SIZE_FONT_HEART 40
+
 class TextObject
 {
 public:
@@ -12,8 +15,8 @@ public:
     enum TextColor
     {
         RED_TEXT=0,
-        WHITE_TEXT=0,
-        BLACK_TEXT=0,
+        WHITE_TEXT=1,
+        BLACK_TEXT=2,
     };
 
     bool LoadFromFile(std::string path);
