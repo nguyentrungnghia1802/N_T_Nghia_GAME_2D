@@ -5,7 +5,7 @@
 MainObject::MainObject()
 {
     frame_=0;
-    x_pos_=0;
+    x_pos_=500;
     y_pos_=0;
     x_val_=0;
     y_val_=0;
@@ -290,7 +290,7 @@ void MainObject::DoPlayer(Map& map_data)
     }
     
     CheckToMap(map_data);
-    CenterEntityOnMap(map_data);
+    MapRun(map_data);
 
     }
 
@@ -301,12 +301,11 @@ void MainObject::DoPlayer(Map& map_data)
         {
             if(x_pos_>1500)
             {
-                x_pos_+=1000;
+                x_pos_+=500;
             }
             else
             {
-                x_pos_=0;
-
+                x_pos_=500;
             }
                 y_pos_=0;
                 x_val_=0;
@@ -318,27 +317,9 @@ void MainObject::DoPlayer(Map& map_data)
     
 }
 
-void MainObject::CenterEntityOnMap (Map& map_data)
+void MainObject::MapRun (Map& map_data)
 {
-    map_data.start_x_=x_pos_-(SCREEN_WIDTH/2);
-    if(map_data.start_x_<0)
-    {
-        map_data.start_x_=0;
-    }
-    else if(map_data.start_x_ + SCREEN_WIDTH >= map_data.max_x_)
-    {
-        map_data.start_x_=map_data.max_x_-SCREEN_WIDTH;
-    }
-
-    map_data.start_y_=y_pos_-(SCREEN_HEIGHT/2);
-    if(map_data.start_y_<0)
-    {
-        map_data.start_y_ = 0;
-    }
-    else if(map_data.start_y_+SCREEN_HEIGHT>=map_data.max_y_)
-    {
-        map_data.start_y_=map_data.max_y_-SCREEN_HEIGHT;
-    }
+    map_data.start_x_+=6;
 }
 
 void MainObject::CheckToMap(Map& map_data)
@@ -463,15 +444,11 @@ void MainObject::CheckToMap(Map& map_data)
     x_pos_+=x_val_;
     y_pos_+=y_val_;
 
-    if (x_pos_<0)
-    {
-        x_pos_=0;
-    }
-    else if(x_pos_ + width_frame_ > map_data.max_x_)
+    if(x_pos_ + width_frame_ > map_data.max_x_)
     {
         x_pos_=map_data.max_x_ - width_frame_ - 1;
     }
-    if(y_pos_>map_data.max_y_)
+    if(y_pos_>map_data.max_y_||x_pos_<map_data.start_x_)
     {
         come_back_time_=3;
         is_minus_live = true;
@@ -482,17 +459,6 @@ void MainObject::CheckToMap(Map& map_data)
     void MainObject:: IncreaseMoney()
 {
     money_count ++;
-}
-
-// dont using
-    bool MainObject:: FallToHole(Map& map_data)
-{
-    if(y_pos_>map_data.max_y_)
-    {
-        return true;
-    }
-    else
-    return false;
 }
 
 
