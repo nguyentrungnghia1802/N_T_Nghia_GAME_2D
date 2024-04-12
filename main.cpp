@@ -212,8 +212,8 @@ int main(int argc, char *argv[])
     while (start == false)
     {
         SDL_Surface *g_img_menu;
-        gFont1 = TTF_OpenFont("font/2.ttf", 100);
-        gFont2 = TTF_OpenFont("font/1.ttf",30);
+        gFont1 = TTF_OpenFont("font/2.ttf", 30);
+        gFont2 = TTF_OpenFont("font/2.ttf",30);
         g_img_menu = IMG_Load("menu/menu.png");
 
         SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
@@ -221,8 +221,8 @@ int main(int argc, char *argv[])
 
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
-        renderText("SPACE TO START!", SCREEN_WIDTH/2 - 400 , 310, gFont1);
-        renderText("ESC TO EXIT!", 30, 750, gFont2);
+        renderText("SPACE TO START!", SCREEN_WIDTH-300 , 420, gFont1);
+        renderText("ESC TO EXIT!", 30, 420, gFont2);
 
         SDL_RenderPresent(g_screen);
         SDL_FreeSurface(g_img_menu);
