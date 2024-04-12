@@ -12,12 +12,14 @@
 #include "src/include/SDL2/SDL_image.h"
 #include "src/include/SDL2/SDL_ttf.h"
 #include "src/include/SDL2/SDL_mixer.h"
+#include "TextObject.h"
 
 
 
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
+static SDL_Surface* g_img_menu = NULL;
 
 // Screen
 const int FRAME_PER_SECOND=60;
@@ -69,6 +71,12 @@ typedef struct Map
 namespace SDLCommonFunc
 {
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
+    void ShowMenu(SDL_Surface* des);
+
+
 }
+
+
+
 
 #endif

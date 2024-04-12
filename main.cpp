@@ -12,6 +12,8 @@
 BaseObject g_background;
 TTF_Font *font_time = NULL;
 TTF_Font *font_money = NULL;
+TTF_Font *gFont = NULL;
+
 
 bool InitData()
 {
@@ -134,6 +136,38 @@ std::vector<ThreatsObject *> MakeThreats()
     return list_threats;
 }
 
+
+/////
+
+
+void renderText(const std::string& text, int x, int y) {
+    SDL_Color textColor = { 255, 255, 255 }; // White color
+    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, text.c_str(), textColor);
+    if (textSurface == nullptr) {
+        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
+    if (texture == nullptr) {
+        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(textSurface);
+        return;
+    }
+
+    SDL_Rect dstRect = { x, y, textSurface->w, textSurface->h };
+    SDL_RenderCopy(g_screen, texture, nullptr, &dstRect);
+
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(texture);
+}
+
+
+
+///
+
+
+
 int main(int argc, char *argv[])
 {
     ImpTimer fps_timer;
@@ -172,6 +206,33 @@ int main(int argc, char *argv[])
 
     bool is_quit = false;
 
+
+
+
+
+    gFont=TTF_OpenFont("font/1.ttf",25);
+
+
+        SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255); // Black color
+        SDL_RenderClear(g_screen);
+
+        // Render menu items
+        renderText("Menu Item 1", 50, 50);
+        renderText("Menu Item 2", 50, 100);
+        renderText("Menu Item 3", 50, 150);
+
+        // Update screen
+        SDL_RenderPresent(g_screen);
+
+
+
+
+
+
+
+
+
+
     while (!is_quit)
     {
         fps_timer.start();
@@ -202,6 +263,10 @@ int main(int argc, char *argv[])
 
         player_power.Show(g_screen);
         player_money.Show(g_screen);
+
+
+
+
 
         bool is_minusLinve = p_player.GetIsMinusLive();
 
@@ -246,7 +311,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                if (MessageBoxW(NULL, L"Game Over", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
+                if (MessageBoxW(NULL, L"T-Kun lost Her", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
                 {
                     is_quit = true;
                     continue;

@@ -42,7 +42,6 @@ void GameMap::LoadMap(const char path[])
     game_map_.start_x_=0;
     game_map_.start_y_=0;
 
-    game_map_.file_name_ = path;
     file.close();
 
 }
