@@ -1,6 +1,6 @@
 #include "CommonFunc.h"
 
-#include <iostream> //thu vien "iostream" thay the cho thu vien "stdafx" cua chu video
+#include <iostream>
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
@@ -48,16 +48,4 @@ bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &obje
   return false;
 }
 
-void SDLCommonFunc::ShowMenu(SDL_Surface *des)
-{
-  g_img_menu = IMG_Load("menu/menu.png");
-  if (g_img_menu == NULL)
-  {
-    std::cout<<"Ko mo dc tep";
-  }
-  SDL_BlitSurface(g_img_menu,NULL,des,NULL);
-  SDL_FreeSurface(g_img_menu);
-
-
-}
 

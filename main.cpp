@@ -12,8 +12,8 @@
 BaseObject g_background;
 TTF_Font *font_time = NULL;
 TTF_Font *font_money = NULL;
-TTF_Font *gFont = NULL;
-
+TTF_Font *gFont1 = NULL;
+TTF_Font *gFont2 = NULL;
 
 bool InitData()
 {
@@ -136,37 +136,34 @@ std::vector<ThreatsObject *> MakeThreats()
     return list_threats;
 }
 
-
 /////
 
-
-void renderText(const std::string& text, int x, int y) {
-    SDL_Color textColor = { 255, 255, 255 }; // White color
-    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, text.c_str(), textColor);
-    if (textSurface == nullptr) {
+void renderText(const std::string &text, int x, int y, TTF_Font *font)
+{
+    SDL_Color textColor = {255, 255, 255}; // White color
+    SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+    if (textSurface == nullptr)
+    {
         std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
         return;
     }
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
-    if (texture == nullptr) {
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
+    if (texture == nullptr)
+    {
         std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
         SDL_FreeSurface(textSurface);
         return;
     }
 
-    SDL_Rect dstRect = { x, y, textSurface->w, textSurface->h };
+    SDL_Rect dstRect = {x, y, textSurface->w, textSurface->h};
     SDL_RenderCopy(g_screen, texture, nullptr, &dstRect);
 
     SDL_FreeSurface(textSurface);
     SDL_DestroyTexture(texture);
 }
 
-
-
 ///
-
-
 
 int main(int argc, char *argv[])
 {
@@ -206,28 +203,56 @@ int main(int argc, char *argv[])
 
     bool is_quit = false;
 
+    ////////
 
 
 
 
-    gFont=TTF_OpenFont("font/1.ttf",25);
+    bool start = false;
+    while (start == false)
+    {
+        SDL_Surface *g_img_menu;
+        gFont1 = TTF_OpenFont("font/2.ttf", 100);
+        gFont2 = TTF_OpenFont("font/1.ttf",30);
+        g_img_menu = IMG_Load("menu/menu.png");
 
+        SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
+        SDL_Rect menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
 
-        SDL_SetRenderDrawColor(g_screen, 0, 0, 0, 255); // Black color
-        SDL_RenderClear(g_screen);
+        SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
-        // Render menu items
-        renderText("Menu Item 1", 50, 50);
-        renderText("Menu Item 2", 50, 100);
-        renderText("Menu Item 3", 50, 150);
+        renderText("SPACE TO START!", SCREEN_WIDTH/2 - 400 , 310, gFont1);
+        renderText("ESC TO EXIT!", 30, 750, gFont2);
 
-        // Update screen
         SDL_RenderPresent(g_screen);
+        SDL_FreeSurface(g_img_menu);
+        SDL_DestroyTexture(menu);
+
+
+
+        SDL_Event eve;
+
+        while (SDL_PollEvent(&eve))
+        {
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
+            {
+                start = true;
+                break;
+            }
+            if(eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+            {
+                close();
+                return 0;
+            }
+        }
+
+        SDL_DestroyTexture(menu);
+    }
 
 
 
 
-
+    /////////
 
 
 
@@ -263,10 +288,6 @@ int main(int argc, char *argv[])
 
         player_power.Show(g_screen);
         player_money.Show(g_screen);
-
-
-
-
 
         bool is_minusLinve = p_player.GetIsMinusLive();
 

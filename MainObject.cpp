@@ -134,8 +134,6 @@ void MainObject::Show(SDL_Renderer* des)
 
         SDL_RenderCopy(des,p_object_,current_clip,&renderQuad);
         }
-
-        
 }
 
 void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)

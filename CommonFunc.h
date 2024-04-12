@@ -19,7 +19,6 @@
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
-static SDL_Surface* g_img_menu = NULL;
 
 // Screen
 const int FRAME_PER_SECOND=60;
@@ -39,7 +38,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define TILE_SIZE 80
 
 //Item map:
-#define POINT_ITEM_1 4   // O so 4 la o an diem
+#define POINT_ITEM_1 4   // o so 4 la o an diem
 
 
 #define MAX_MAP_X 400
@@ -71,7 +70,6 @@ typedef struct Map
 namespace SDLCommonFunc
 {
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
-    void ShowMenu(SDL_Surface* des);
 
 
 }
