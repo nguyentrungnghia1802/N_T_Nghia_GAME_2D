@@ -14,6 +14,8 @@ TTF_Font *font_time = NULL;
 TTF_Font *font_money = NULL;
 TTF_Font *gFont1 = NULL;
 TTF_Font *gFont2 = NULL;
+TTF_Font *gFont3 = NULL;
+TTF_Font *gFont4 = NULL;
 
 bool InitData()
 {
@@ -246,7 +248,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        SDL_DestroyTexture(menu);
     }
 
 
@@ -332,12 +333,36 @@ int main(int argc, char *argv[])
             }
             else
             {
+
+            gFont3 = TTF_OpenFont("font/1.ttf", 120);
+            renderText("GAME OVER!", SCREEN_WIDTH/2-300 , 220, gFont3);
+            SDL_RenderPresent(g_screen);
+
+            SDL_Delay(2000);
+
+            gFont4 = TTF_OpenFont("font/2.ttf", 100);
+            renderText("SPACE TO REPLAY!", SCREEN_WIDTH/2-420 , 380, gFont3);
+            SDL_RenderPresent(g_screen);
+
+
+
+
                 if (MessageBoxW(NULL, L"T-Kun lost Her", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
                 {
                     is_quit = true;
                     continue;
                 }
+
+
+
+
             }
+            for(int i=0;i<8000;i++)
+            {
+                bCol2=false;
+            }
+
+ 
         }
 
         std::vector<BulletObject *> bullet_arr = p_player.get_bullet_list();
