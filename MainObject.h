@@ -32,7 +32,7 @@ public:
         void HandelInputAction(SDL_Event events, SDL_Renderer* screen);
         void set_clips();
 
-        void DoPlayer(Map& map_data, bool replay);
+        void DoPlayer(Map& map_data);
         void CheckToMap(Map& map_data);
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
         SDL_Rect GetRectFrame();

@@ -19,7 +19,7 @@ TTF_Font *gFont4 = NULL;
 bool replay=false;
 
 
-void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player);
+void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player, PlayerPower& player_power);
 
 
 bool InitData()
@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
 
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
-        p_player.DoPlayer(map_data, replay);
+        p_player.DoPlayer(map_data);
         p_player.Show(g_screen);
 
         game_map.SetMap(map_data);
@@ -321,6 +321,7 @@ int main(int argc, char *argv[])
 
         if (bCol2 || is_minusLinve == true)
         {
+            std::cout<<num_die;
             num_die++;
             if (is_minusLinve == true)
             {
@@ -357,7 +358,7 @@ int main(int argc, char *argv[])
                         {
 /////////////////
                             replay=true;
-                            Restart(map_data, num_die, heart_count, p_player);
+                            Restart(map_data, num_die, heart_count, p_player, player_power);
                             std::cout << "Restart";
 
 
@@ -454,20 +455,18 @@ int main(int argc, char *argv[])
                 SDL_Delay(delay_time);
         }
     }
-
-    close();
     return 0;
 }
 
 
-void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player)
+void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player, PlayerPower& player_power)
 {
     // Thiết lập lại vị trí ban đầu của bản đồ
     p_player.SetXPos(200);
     p_player.HeartCount(0);
+    player_power.Init(g_screen);
 
 
-    
     // Thiết lập lại số lần chết và điểm
     num_die = 0;
     heart_count = 0;

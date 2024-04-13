@@ -254,7 +254,7 @@ void MainObject::RemoveBullet(const int& idx)
 
 
 
-void MainObject::DoPlayer(Map& map_data, bool replay)
+void MainObject::DoPlayer(Map& map_data)
 {
    
     if(come_back_time_==0)
