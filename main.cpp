@@ -200,8 +200,8 @@ int main(int argc, char *argv[])
     TextObject time_game;
     time_game.SetColor(TextObject::WHITE_TEXT);
 
-    TextObject money_game;
-    money_game.SetColor(TextObject::RED_TEXT);
+    TextObject heart_game;
+    heart_game.SetColor(TextObject::RED_TEXT);
 
     bool is_quit = false;
 
@@ -261,6 +261,9 @@ int main(int argc, char *argv[])
 
     while (!is_quit)
     {
+        int heart_count = p_player.GetMoneyCount();
+
+
         fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
         {
@@ -335,12 +338,15 @@ int main(int argc, char *argv[])
             {
 ////////////////
 
-                bool quit=false;
+                bool quit_game_over=false;
 
-                while (quit == false)
+                while (quit_game_over == false)
                 {
                     gFont3 = TTF_OpenFont("font/1.ttf", 120);
-                    renderText("GAME OVER!", SCREEN_WIDTH / 2 - 300, 220, gFont3);
+                    renderText("POINT: ", SCREEN_WIDTH / 2 - 300, 220, gFont3);
+                    renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 20, 220, gFont3);
+
+
                     SDL_Delay(2000);
                     gFont4 = TTF_OpenFont("font/2.ttf", 100);
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
@@ -352,14 +358,14 @@ int main(int argc, char *argv[])
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
                         {
                             std::cout << "Restart";
-                            quit==true;
+                            quit_game_over=true;
                             break;
                         }
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_ESCAPE)
                         {
-                            quit==true;
-                            close();
-                            return 0;
+                            quit_game_over=true;
+                            is_quit=true;
+  
                         }
                     }
                 }
@@ -432,12 +438,11 @@ int main(int argc, char *argv[])
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
 
-        int money_count = p_player.GetMoneyCount();
-        std::string money_str = std::to_string(money_count);
+        std::string heart_str = std::to_string(heart_count);
 
-        money_game.SetText(money_str);
-        money_game.LoadFromRenderText(font_money, g_screen);
-        money_game.RenderText(g_screen, SCREEN_WIDTH * 0.5, 5);
+        heart_game.SetText(heart_str);
+        heart_game.LoadFromRenderText(font_money, g_screen);
+        heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5, 5);
 
         SDL_RenderPresent(g_screen);
 
