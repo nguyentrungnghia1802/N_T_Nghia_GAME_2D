@@ -26,6 +26,8 @@ public:
     void DrawMap(SDL_Renderer* screen);
     Map getMap() const {return game_map_;};
     void SetMap(Map& map_data) {game_map_=map_data;}
+    void MapRun(Map& map_data) {map_data.start_x_ +=6;}
+    void ResetMap(Map& map_data) {map_data.start_x_ = 0;}
 private: 
     Map game_map_;
     TileMat tile_mat[MAX_TILES];

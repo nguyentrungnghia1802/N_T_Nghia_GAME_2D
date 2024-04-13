@@ -250,7 +250,6 @@ int main(int argc, char *argv[])
 
     }
 
-
     while (!is_quit)
     {
         int heart_count = p_player.GetMoneyCount();
@@ -272,6 +271,18 @@ int main(int argc, char *argv[])
         g_background.Render(g_screen, NULL);
 
         Map map_data = game_map.getMap();
+        if(replay==false)
+        {
+            game_map.MapRun(map_data);
+        }
+
+        if(replay==true)
+        {
+            game_map.ResetMap(map_data);
+            replay=false;
+        }
+
+
 
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
@@ -335,8 +346,6 @@ int main(int argc, char *argv[])
                     renderText("POINT: ", SCREEN_WIDTH / 2 - 300, 220, gFont3);
                     renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 20, 220, gFont3);
 
-
-                    SDL_Delay(2000);
                     gFont4 = TTF_OpenFont("font/2.ttf", 100);
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
                     SDL_RenderPresent(g_screen);
@@ -347,10 +356,9 @@ int main(int argc, char *argv[])
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
                         {
 /////////////////
-
-
-                            std::cout << "Restart";
+                            replay=true;
                             Restart(map_data, num_die, heart_count, p_player);
+                            std::cout << "Restart";
 
 
 ///////////////////
@@ -365,8 +373,6 @@ int main(int argc, char *argv[])
                     }
                 }
                 quit_game_over=false;
-                replay=false;
-                continue;
             }
             for(int i=0;i<8000;i++)
             {
@@ -457,9 +463,7 @@ int main(int argc, char *argv[])
 void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player)
 {
     // Thiết lập lại vị trí ban đầu của bản đồ
-    map_data.start_x_ = 0;
-    replay=true;
-    p_player.SetXPos(28000);
+    p_player.SetXPos(200);
 
 
     

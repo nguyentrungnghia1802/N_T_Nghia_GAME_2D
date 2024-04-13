@@ -288,7 +288,6 @@ void MainObject::DoPlayer(Map& map_data, bool replay)
     }
     
     CheckToMap(map_data);
-    MapRun(map_data, replay);
 
     }
 
@@ -315,14 +314,6 @@ void MainObject::DoPlayer(Map& map_data, bool replay)
     
 } 
 
-void MainObject::MapRun (Map& map_data,bool replay)
-{
-    map_data.start_x_+=6;
-    if(replay==true)
-    {
-        map_data.start_x_=0;
-    }
-}
 
 void MainObject::CheckToMap(Map& map_data)
 {
