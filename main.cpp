@@ -333,27 +333,38 @@ int main(int argc, char *argv[])
             }
             else
             {
+////////////////
 
-            gFont3 = TTF_OpenFont("font/1.ttf", 120);
-            renderText("GAME OVER!", SCREEN_WIDTH/2-300 , 220, gFont3);
-            SDL_RenderPresent(g_screen);
+                bool quit=false;
 
-            SDL_Delay(2000);
-
-            gFont4 = TTF_OpenFont("font/2.ttf", 100);
-            renderText("SPACE TO REPLAY!", SCREEN_WIDTH/2-420 , 380, gFont3);
-            SDL_RenderPresent(g_screen);
-
-
-
-
-                if (MessageBoxW(NULL, L"T-Kun lost Her", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
+                while (quit == false)
                 {
-                    is_quit = true;
-                    continue;
+                    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+                    renderText("GAME OVER!", SCREEN_WIDTH / 2 - 300, 220, gFont3);
+                    SDL_Delay(2000);
+                    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+                    renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
+                    SDL_RenderPresent(g_screen);
+                    SDL_Event even;
+
+                    while (SDL_PollEvent(&even))
+                    {
+                        if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
+                        {
+                            std::cout << "Restart";
+                            quit==true;
+                            break;
+                        }
+                        if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_ESCAPE)
+                        {
+                            quit==true;
+                            close();
+                            return 0;
+                        }
+                    }
                 }
 
-
+/////////////
 
 
             }
