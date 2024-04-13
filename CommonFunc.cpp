@@ -49,3 +49,6 @@ bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &obje
 }
 
 
+
+
+

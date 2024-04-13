@@ -48,10 +48,11 @@ public:
         void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
         bool GetIsMinusLive() {return is_minus_live;}
         void RetsetMinusLive() {is_minus_live = false;}
-        int GetMoneyCount() const {return money_count;}
+        int GetMoneyCount() const {return heart_count;}
         void SetXPos(float x) {x_pos_ = x;}
+        void HeartCount(int x) {heart_count=x;}
 private:
-        int money_count;
+        int heart_count;
 
         std::vector<BulletObject*> p_bullet_list_;
         float x_val_;

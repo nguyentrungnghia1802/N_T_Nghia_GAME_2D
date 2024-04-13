@@ -464,6 +464,7 @@ void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player
 {
     // Thiết lập lại vị trí ban đầu của bản đồ
     p_player.SetXPos(200);
+    p_player.HeartCount(0);
 
 
     

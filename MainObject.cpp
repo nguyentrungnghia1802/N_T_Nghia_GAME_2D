@@ -21,7 +21,7 @@ MainObject::MainObject()
     map_x_ =0;
     map_y_ =0;
     come_back_time_=0;
-    money_count=0;
+    heart_count=0;
     is_minus_live = false;
 
 }
@@ -451,7 +451,7 @@ void MainObject::CheckToMap(Map& map_data)
 
     void MainObject:: IncreaseMoney()
 {
-    money_count ++;
+    heart_count ++;
 }
 
 
