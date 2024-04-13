@@ -18,6 +18,7 @@ TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 bool replay = false;
 bool isRestarting = false;
+bool is_restartTileMap=false;
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
 
@@ -251,6 +252,7 @@ int main(int argc, char *argv[])
     {
         if (isRestarting)
         {
+            // Reset threads
             for (int i = 0; i < threats_list.size(); i++)
             {
                 ThreatsObject *p_threat = threats_list.at(i);
@@ -263,6 +265,11 @@ int main(int argc, char *argv[])
             }
             threats_list.clear();
             threats_list = MakeThreats();
+
+            // Reset map
+            game_map.LoadMap("map/map01.txt");
+            game_map.LoadTiles(g_screen);
+
             isRestarting = !isRestarting;
         }
 
@@ -476,6 +483,7 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
     player_power.Init(g_screen);
 
     isRestarting = true;
+    is_restartTileMap=true;
 
     // Thiết lập lại số lần chết và điểm
     num_die = 0;
