@@ -17,6 +17,10 @@ TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 
+
+void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player);
+
+
 bool InitData()
 {
     bool success = true;
@@ -188,9 +192,9 @@ int main(int argc, char *argv[])
     PlayerPower player_power;
     player_power.Init(g_screen);
 
-    PlayerMoney player_money;
-    player_money.Init(g_screen);
-    player_money.SetPos(SCREEN_WIDTH * 0.5 - 12, 42);
+    PlayerMoney player_heart;
+    player_heart.Init(g_screen);
+    player_heart.SetPos(SCREEN_WIDTH * 0.5 - 12, 42);
 
     std::vector<ThreatsObject *> threats_list = MakeThreats();
 
@@ -204,11 +208,6 @@ int main(int argc, char *argv[])
     heart_game.SetColor(TextObject::RED_TEXT);
 
     bool is_quit = false;
-
-    ////////
-
-
-
 
     bool start = false;
     while (start == false)
@@ -251,14 +250,6 @@ int main(int argc, char *argv[])
     }
 
 
-
-
-    /////////
-
-
-
-
-
     while (!is_quit)
     {
         int heart_count = p_player.GetMoneyCount();
@@ -291,7 +282,7 @@ int main(int argc, char *argv[])
         game_map.DrawMap(g_screen);
 
         player_power.Show(g_screen);
-        player_money.Show(g_screen);
+        player_heart.Show(g_screen);
 
         bool is_minusLinve = p_player.GetIsMinusLive();
 
@@ -336,8 +327,6 @@ int main(int argc, char *argv[])
             }
             else
             {
-////////////////
-
                 bool quit_game_over=false;
 
                 while (quit_game_over == false)
@@ -357,7 +346,14 @@ int main(int argc, char *argv[])
                     {
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
                         {
+//////
+
+
                             std::cout << "Restart";
+                            Restart(map_data, num_die, heart_count, p_player);
+
+
+///////////////////
                             quit_game_over=true;
                             break;
                         }
@@ -365,7 +361,6 @@ int main(int argc, char *argv[])
                         {
                             quit_game_over=true;
                             is_quit=true;
-  
                         }
                     }
                 }
@@ -459,4 +454,21 @@ int main(int argc, char *argv[])
 
     close();
     return 0;
+}
+
+
+void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player)
+{
+    // Thiết lập lại vị trí ban đầu của bản đồ
+    map_data.start_x_ = 0;
+    map_data.start_y_ = 0;
+    
+    // Thiết lập lại số lần chết và điểm
+    num_die = 0;
+    heart_count = 0;
+
+    // Thiết lập lại vị trí và trạng thái của người chơi
+
+    p_player.SetRect(0, 0); // Thiết lập lại vị trí
+    p_player.set_comeback_time(3); // Thiết lập thời gian quay lại mặc định (nếu có)
 }
