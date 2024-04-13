@@ -32,10 +32,10 @@ public:
         void HandelInputAction(SDL_Event events, SDL_Renderer* screen);
         void set_clips();
 
-        void DoPlayer(Map& map_data);
+        void DoPlayer(Map& map_data, bool replay);
         void CheckToMap(Map& map_data);
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
-        void MapRun(Map& map_data);
+        void MapRun(Map& map_data, bool replay);
         SDL_Rect GetRectFrame();
 
         void set_bullet_list(std::vector<BulletObject*>bullet_list)
@@ -50,6 +50,7 @@ public:
         bool GetIsMinusLive() {return is_minus_live;}
         void RetsetMinusLive() {is_minus_live = false;}
         int GetMoneyCount() const {return money_count;}
+        void SetXPos(float x) {x_pos_ = x;}
 private:
         int money_count;
 

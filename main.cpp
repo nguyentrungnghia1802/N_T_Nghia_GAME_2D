@@ -11,11 +11,12 @@
 
 BaseObject g_background;
 TTF_Font *font_time = NULL;
-TTF_Font *font_money = NULL;
+TTF_Font *font_heart = NULL;
 TTF_Font *gFont1 = NULL;
 TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
+bool replay=false;
 
 
 void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player);
@@ -60,7 +61,7 @@ bool InitData()
         }
 
         font_time = TTF_OpenFont("font/1.ttf", 35);
-        font_money = TTF_OpenFont("font/1.ttf", SIZE_FONT_HEART);
+        font_heart = TTF_OpenFont("font/1.ttf", SIZE_FONT_HEART);
 
         if (font_time == NULL)
         {
@@ -254,7 +255,6 @@ int main(int argc, char *argv[])
     {
         int heart_count = p_player.GetMoneyCount();
 
-
         fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
         {
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
 
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
-        p_player.DoPlayer(map_data);
+        p_player.DoPlayer(map_data, replay);
         p_player.Show(g_screen);
 
         game_map.SetMap(map_data);
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
                     {
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
                         {
-//////
+/////////////////
 
 
                             std::cout << "Restart";
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
 
 ///////////////////
                             quit_game_over=true;
-                            break;
+
                         }
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_ESCAPE)
                         {
@@ -364,17 +364,14 @@ int main(int argc, char *argv[])
                         }
                     }
                 }
-
-/////////////
-
-
+                quit_game_over=false;
+                replay=false;
+                continue;
             }
             for(int i=0;i<8000;i++)
             {
                 bCol2=false;
             }
-
- 
         }
 
         std::vector<BulletObject *> bullet_arr = p_player.get_bullet_list();
@@ -436,7 +433,7 @@ int main(int argc, char *argv[])
         std::string heart_str = std::to_string(heart_count);
 
         heart_game.SetText(heart_str);
-        heart_game.LoadFromRenderText(font_money, g_screen);
+        heart_game.LoadFromRenderText(font_heart, g_screen);
         heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5, 5);
 
         SDL_RenderPresent(g_screen);
@@ -461,7 +458,10 @@ void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player
 {
     // Thiết lập lại vị trí ban đầu của bản đồ
     map_data.start_x_ = 0;
-    map_data.start_y_ = 0;
+    replay=true;
+    p_player.SetXPos(28000);
+
+
     
     // Thiết lập lại số lần chết và điểm
     num_die = 0;
@@ -471,4 +471,5 @@ void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player
 
     p_player.SetRect(0, 0); // Thiết lập lại vị trí
     p_player.set_comeback_time(3); // Thiết lập thời gian quay lại mặc định (nếu có)
+    
 }

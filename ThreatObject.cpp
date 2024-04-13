@@ -131,7 +131,7 @@ void ThreatsObject::InitThreats()
     }
     else
     {
-        x_pos_ = 0;
+        x_pos_ = rand()%700 + 555;
     }
     y_pos_ = 0;
     come_back_time_ = 0;

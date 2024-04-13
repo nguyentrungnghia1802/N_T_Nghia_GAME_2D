@@ -254,7 +254,7 @@ void MainObject::RemoveBullet(const int& idx)
 
 
 
-void MainObject::DoPlayer(Map& map_data)
+void MainObject::DoPlayer(Map& map_data, bool replay)
 {
    
     if(come_back_time_==0)
@@ -288,7 +288,7 @@ void MainObject::DoPlayer(Map& map_data)
     }
     
     CheckToMap(map_data);
-    MapRun(map_data);
+    MapRun(map_data, replay);
 
     }
 
@@ -303,7 +303,7 @@ void MainObject::DoPlayer(Map& map_data)
             }
             else
             {
-                x_pos_=500;
+                x_pos_+=400;
             }
                 y_pos_=0;
                 x_val_=0;
@@ -313,11 +313,15 @@ void MainObject::DoPlayer(Map& map_data)
     }
 
     
-}
+} 
 
-void MainObject::MapRun (Map& map_data)
+void MainObject::MapRun (Map& map_data,bool replay)
 {
     map_data.start_x_+=6;
+    if(replay==true)
+    {
+        map_data.start_x_=0;
+    }
 }
 
 void MainObject::CheckToMap(Map& map_data)
@@ -379,7 +383,7 @@ void MainObject::CheckToMap(Map& map_data)
                 x_pos_=(x1+1)*TILE_SIZE;
                 x_val_ = 0;
             }
-            }  // a can nhap lai ma lenh moi dung dc main a
+            }  
         }
     }
 
