@@ -16,11 +16,10 @@ TTF_Font *gFont1 = NULL;
 TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
-bool replay=false;
+bool replay = false;
+bool isRestarting = false;
 
-
-void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player, PlayerPower& player_power);
-
+void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
 
 bool InitData()
 {
@@ -98,6 +97,7 @@ void close()
 
 std::vector<ThreatsObject *> MakeThreats()
 {
+    std::cout << "make threat";
     std::vector<ThreatsObject *> list_threats;
 
     ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
@@ -197,8 +197,6 @@ int main(int argc, char *argv[])
     player_heart.Init(g_screen);
     player_heart.SetPos(SCREEN_WIDTH * 0.5 - 12, 42);
 
-    std::vector<ThreatsObject *> threats_list = MakeThreats();
-
     int num_die = 0;
 
     // Time Text
@@ -215,7 +213,7 @@ int main(int argc, char *argv[])
     {
         SDL_Surface *g_img_menu;
         gFont1 = TTF_OpenFont("font/2.ttf", 30);
-        gFont2 = TTF_OpenFont("font/2.ttf",30);
+        gFont2 = TTF_OpenFont("font/2.ttf", 30);
         g_img_menu = IMG_Load("menu/menu.png");
 
         SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
@@ -223,14 +221,12 @@ int main(int argc, char *argv[])
 
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
-        renderText("SPACE TO START!", SCREEN_WIDTH-300 , 420, gFont1);
+        renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
         renderText("ESC TO EXIT!", 30, 420, gFont2);
 
         SDL_RenderPresent(g_screen);
         SDL_FreeSurface(g_img_menu);
         SDL_DestroyTexture(menu);
-
-
 
         SDL_Event eve;
 
@@ -241,17 +237,35 @@ int main(int argc, char *argv[])
                 start = true;
                 break;
             }
-            if(eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
             {
                 close();
                 return 0;
             }
         }
-
     }
+
+    std::vector<ThreatsObject *> threats_list = MakeThreats();
 
     while (!is_quit)
     {
+        if (isRestarting)
+        {
+            for (int i = 0; i < threats_list.size(); i++)
+            {
+                ThreatsObject *p_threat = threats_list.at(i);
+                if (p_threat != NULL)
+                {
+
+                    p_threat->Free();
+                    break;
+                }
+            }
+            threats_list.clear();
+            threats_list = MakeThreats();
+            isRestarting = !isRestarting;
+        }
+
         int heart_count = p_player.GetMoneyCount();
 
         fps_timer.start();
@@ -271,18 +285,16 @@ int main(int argc, char *argv[])
         g_background.Render(g_screen, NULL);
 
         Map map_data = game_map.getMap();
-        if(replay==false)
+        if (replay == false)
         {
             game_map.MapRun(map_data);
         }
 
-        if(replay==true)
+        if (replay == true)
         {
             game_map.ResetMap(map_data);
-            replay=false;
+            replay = false;
         }
-
-
 
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
@@ -314,6 +326,7 @@ int main(int argc, char *argv[])
                 if (bCol2 == true)
                 {
                     p_threat->Free();
+                    threats_list.erase(threats_list.begin() + i);
                     break;
                 }
             }
@@ -321,7 +334,6 @@ int main(int argc, char *argv[])
 
         if (bCol2 || is_minusLinve == true)
         {
-            std::cout<<num_die;
             num_die++;
             if (is_minusLinve == true)
             {
@@ -339,13 +351,13 @@ int main(int argc, char *argv[])
             }
             else
             {
-                bool quit_game_over=false;
+                bool quit_game_over = false;
 
                 while (quit_game_over == false)
                 {
                     gFont3 = TTF_OpenFont("font/1.ttf", 120);
-                    renderText("POINT: ", SCREEN_WIDTH / 2 - 300, 220, gFont3);
-                    renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 20, 220, gFont3);
+                    renderText("POINT: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
+                    renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
 
                     gFont4 = TTF_OpenFont("font/2.ttf", 100);
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
@@ -356,28 +368,26 @@ int main(int argc, char *argv[])
                     {
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
                         {
-/////////////////
-                            replay=true;
-                            Restart(map_data, num_die, heart_count, p_player, player_power);
+                            /////////////////
+                            replay = true;
+                            Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
                             std::cout << "Restart";
 
-
-///////////////////
-                            quit_game_over=true;
-
+                            ///////////////////
+                            quit_game_over = true;
                         }
                         if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_ESCAPE)
                         {
-                            quit_game_over=true;
-                            is_quit=true;
+                            quit_game_over = true;
+                            is_quit = true;
                         }
                     }
                 }
-                quit_game_over=false;
+                quit_game_over = false;
             }
-            for(int i=0;i<8000;i++)
+            for (int i = 0; i < 8000; i++)
             {
-                bCol2=false;
+                bCol2 = false;
             }
         }
 
@@ -458,14 +468,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
-void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player, PlayerPower& player_power)
+void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
 {
     // Thiết lập lại vị trí ban đầu của bản đồ
     p_player.SetXPos(200);
     p_player.HeartCount(0);
     player_power.Init(g_screen);
 
+    isRestarting = true;
 
     // Thiết lập lại số lần chết và điểm
     num_die = 0;
@@ -473,7 +483,6 @@ void Restart(Map& map_data, int& num_die, int& heart_count, MainObject& p_player
 
     // Thiết lập lại vị trí và trạng thái của người chơi
 
-    p_player.SetRect(0, 0); // Thiết lập lại vị trí
+    p_player.SetRect(0, 0);        // Thiết lập lại vị trí
     p_player.set_comeback_time(3); // Thiết lập thời gian quay lại mặc định (nếu có)
-    
 }

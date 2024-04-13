@@ -8,7 +8,7 @@
 #define THREAT_GRAVITY_SPEED 1
 #define MAX_FALL_SPEED 10
 
-#define NUM_THREATS_LIST 20
+#define NUM_THREATS_LIST 2
 #define THREAT_SPEED 8
 
 
