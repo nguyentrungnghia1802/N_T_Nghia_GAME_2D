@@ -75,6 +75,8 @@ private:
 
         int come_back_time_;
         bool is_minus_live;
+
+        bool check_x=false;
 };
 
 

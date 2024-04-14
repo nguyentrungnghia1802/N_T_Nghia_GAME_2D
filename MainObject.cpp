@@ -296,24 +296,31 @@ void MainObject::DoPlayer(Map& map_data)
         come_back_time_--;
         if(come_back_time_<=0)
         {
-            if(x_pos_>1500)
+            if (check_x == true)
             {
-                x_pos_+=500;
+                x_pos_ += 500;
+                check_x = false;
             }
             else
             {
-                x_pos_+=400;
+                if (x_pos_ > 1500)
+                {
+                    x_pos_ += 100;
+                }
+                else
+                {
+                    x_pos_ += 100;
+                }
             }
-                y_pos_=0;
-                x_val_=0;
-                y_val_=0;
+            y_pos_ = 0;
+            x_val_ = 0;
+            y_val_ = 0;
             come_back_time_ = 0;
         }
     }
 
     
 } 
-
 
 void MainObject::CheckToMap(Map& map_data)
 {
@@ -443,6 +450,10 @@ void MainObject::CheckToMap(Map& map_data)
     }
     if(y_pos_>map_data.max_y_||x_pos_<map_data.start_x_)
     {
+        if(x_pos_<map_data.start_x_)
+        {
+            check_x=true;
+        }
         come_back_time_=3;
         is_minus_live = true;
     }
