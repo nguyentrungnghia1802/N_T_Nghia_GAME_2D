@@ -12,6 +12,7 @@ void GameMap::LoadMap(const char path[])
         std::cout<<"Uable to load "<<path<<"\n";
         return;
     }
+
     game_map_.max_x_=0;
     game_map_.max_y_=0;
 
@@ -48,12 +49,11 @@ void GameMap::LoadMap(const char path[])
 
 void GameMap::LoadTiles(SDL_Renderer* screen)
 {
-    std::vector<std::string> map_path = { "map/0.png", "map/2.png", "map/3.png", "map/4.png", "map/5.png" };
-    tile_mat[0].LoadImg(map_path[0], screen);
-    tile_mat[2].LoadImg(map_path[1],screen);
-    tile_mat[3].LoadImg(map_path[2],screen);
-    tile_mat[4].LoadImg(map_path[3],screen);    // heart
-    tile_mat[5].LoadImg(map_path[4],screen);
+    std::vector<std::string> map_path = { "map/0.png", "map/1.png", "map/2.png", "map/3.png"};
+    tile_mat[0].LoadImg(map_path[0],screen);
+    tile_mat[1].LoadImg(map_path[1],screen);
+    tile_mat[2].LoadImg(map_path[2],screen);   // heart
+    tile_mat[3].LoadImg(map_path[3],screen);    
 }
 
 void GameMap::DrawMap(SDL_Renderer* screen)
