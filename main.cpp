@@ -16,9 +16,12 @@ TTF_Font *gFont1 = NULL;
 TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
+
+SDL_Event eve;
+
 bool replay = false;
 bool isRestarting = false;
-bool is_restartTileMap=false;
+bool is_restartTileMap = false;
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
 
@@ -210,15 +213,22 @@ int main(int argc, char *argv[])
     bool is_quit = false;
 
     bool start = false;
+
+    // Menu
+    SDL_Surface *g_img_menu;
+    gFont1 = TTF_OpenFont("font/2.ttf", 30);
+    gFont2 = TTF_OpenFont("font/2.ttf", 30);
+    g_img_menu = IMG_Load("menu/menu.png");
+
+    SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
+    SDL_Rect menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
+
+    // Game
+    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+
     while (start == false)
     {
-        SDL_Surface *g_img_menu;
-        gFont1 = TTF_OpenFont("font/2.ttf", 30);
-        gFont2 = TTF_OpenFont("font/2.ttf", 30);
-        g_img_menu = IMG_Load("menu/menu.png");
-
-        SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
-        SDL_Rect menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
 
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
@@ -226,10 +236,6 @@ int main(int argc, char *argv[])
         renderText("ESC TO EXIT!", 30, 420, gFont2);
 
         SDL_RenderPresent(g_screen);
-        SDL_FreeSurface(g_img_menu);
-        SDL_DestroyTexture(menu);
-
-        SDL_Event eve;
 
         while (SDL_PollEvent(&eve))
         {
@@ -362,18 +368,16 @@ int main(int argc, char *argv[])
 
                 while (quit_game_over == false)
                 {
-                    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+
                     renderText("POINT: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
                     renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
 
-                    gFont4 = TTF_OpenFont("font/2.ttf", 100);
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
                     SDL_RenderPresent(g_screen);
-                    SDL_Event even;
 
-                    while (SDL_PollEvent(&even))
+                    while (SDL_PollEvent(&eve))
                     {
-                        if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_SPACE)
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
                         {
                             /////////////////
                             replay = true;
@@ -383,7 +387,7 @@ int main(int argc, char *argv[])
                             ///////////////////
                             quit_game_over = true;
                         }
-                        if (even.type == SDL_KEYDOWN && even.key.keysym.sym == SDLK_ESCAPE)
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
                         {
                             quit_game_over = true;
                             is_quit = true;
@@ -483,7 +487,7 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
     player_power.Init(g_screen);
 
     isRestarting = true;
-    is_restartTileMap=true;
+    is_restartTileMap = true;
 
     // Thiết lập lại số lần chết và điểm
     num_die = 0;
