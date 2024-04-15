@@ -17,11 +17,29 @@ TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 
-SDL_Event eve;
-
-bool replay = false;
 bool isRestarting = false;
 bool is_restartTileMap = false;
+bool is_quit = false;
+bool start_Game = false; // After that, we can Play Game
+
+int num_die = 0;
+int heart_count = 0;
+
+SDL_Event eve;
+ImpTimer fps_timer;
+GameMap game_map;
+MainObject p_player;
+PlayerPower player_power; // survial
+PlayerMoney player_heart; // point
+TextObject time_game;
+TextObject heart_game;
+SDL_Surface *g_img_menu;
+Map map_data;
+SDL_Texture *menu;
+SDL_Rect menuRect;
+
+std::vector<ThreatsObject *> threats_list;
+std::vector<BulletObject *> bullet_arr; // bullet
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
 
@@ -176,9 +194,65 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font)
 
 ///
 
+void LoadFromFile()
+{
+    gFont1 = TTF_OpenFont("font/2.ttf", 30);
+    gFont2 = TTF_OpenFont("font/2.ttf", 30);
+    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+
+    g_img_menu = IMG_Load("menu/menu.png");
+    game_map.LoadMap("map/map01.txt");
+    p_player.LoadImg("img/player_right1.png", g_screen);
+}
+
+void Render_Menu()
+{
+    SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
+    renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
+    renderText("ESC TO EXIT!", 30, 420, gFont2);
+    SDL_RenderPresent(g_screen);
+}
+
+void destroy_Menu()
+{
+    SDL_FreeSurface(g_img_menu);
+    SDL_DestroyTexture(menu);
+}
+void load_Menu()
+{
+    std::cout << "Loaded";
+    menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load anh nen menu
+    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           // set vi tri menu
+}
+
+void Call_Menu()
+{
+    load_Menu(); // load_Menu_backgound
+
+    while (start_Game == false)
+    {
+        Render_Menu(); // Render_Menu_Texture
+
+        while (SDL_PollEvent(&eve))
+        {
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
+            {
+                start_Game = true; // Ready to Play Game
+                destroy_Menu();
+                break;
+            }
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+            {
+                destroy_Menu();
+                close(); // Exit Game
+            }
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
-    ImpTimer fps_timer;
 
     if (InitData() == false)
         return -1;
@@ -186,100 +260,35 @@ int main(int argc, char *argv[])
     if (LoadBackground() == false)
         return -1;
 
-    GameMap game_map;
-    game_map.LoadMap("map/map01.txt");
-    game_map.LoadTiles(g_screen);
+    LoadFromFile();
 
-    MainObject p_player;
-    p_player.LoadImg("img/player_right1.png", g_screen);
-    p_player.set_clips();
+    game_map.LoadTiles(g_screen); // Load Map
 
-    PlayerPower player_power;
+    p_player.set_clips(); // Load Main Player
+
+    // Load and set position HP_player  and   Heart_point
     player_power.Init(g_screen);
-
-    PlayerMoney player_heart;
     player_heart.Init(g_screen);
     player_heart.SetPos(SCREEN_WIDTH * 0.5 - 12, 42);
 
-    int num_die = 0;
-
-    // Time Text
-    TextObject time_game;
+    // Text
     time_game.SetColor(TextObject::WHITE_TEXT);
-
-    TextObject heart_game;
     heart_game.SetColor(TextObject::RED_TEXT);
 
-    bool is_quit = false;
+    // MENU
+    Call_Menu();
 
-    bool start = false;
-
-    // Menu
-    SDL_Surface *g_img_menu;
-    gFont1 = TTF_OpenFont("font/2.ttf", 30);
-    gFont2 = TTF_OpenFont("font/2.ttf", 30);
-    g_img_menu = IMG_Load("menu/menu.png");
-
-    SDL_Texture *menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu);
-    SDL_Rect menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
-
-    // Game
-    gFont3 = TTF_OpenFont("font/1.ttf", 120);
-    gFont4 = TTF_OpenFont("font/2.ttf", 100);
-
-    while (start == false)
-    {
-
-        SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
-
-        renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
-        renderText("ESC TO EXIT!", 30, 420, gFont2);
-
-        SDL_RenderPresent(g_screen);
-
-        while (SDL_PollEvent(&eve))
-        {
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
-            {
-                start = true;
-                break;
-            }
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
-            {
-                close();
-                return 0;
-            }
-        }
-    }
-
-    std::vector<ThreatsObject *> threats_list = MakeThreats();
+    threats_list = MakeThreats();
 
     while (!is_quit)
     {
         if (isRestarting)
         {
-            // Reset threads
-            for (int i = 0; i < threats_list.size(); i++)
-            {
-                ThreatsObject *p_threat = threats_list.at(i);
-                if (p_threat != NULL)
-                {
-
-                    p_threat->Free();
-                    break;
-                }
-            }
-            threats_list.clear();
-            threats_list = MakeThreats();
-
-            // Reset map
-            game_map.LoadMap("map/map01.txt");
-            game_map.LoadTiles(g_screen);
-
+            Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
             isRestarting = !isRestarting;
         }
 
-        int heart_count = p_player.GetMoneyCount();
+        heart_count = p_player.GetMoneyCount();
 
         fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
@@ -297,17 +306,9 @@ int main(int argc, char *argv[])
 
         g_background.Render(g_screen, NULL);
 
-        Map map_data = game_map.getMap();
-        if (replay == false)
-        {
-            game_map.MapRun(map_data);
-        }
-
-        if (replay == true)
-        {
-            game_map.ResetMap(map_data);
-            replay = false;
-        }
+        //             MAP
+        map_data = game_map.getMap();
+        game_map.MapRun(map_data);
 
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
@@ -374,17 +375,12 @@ int main(int argc, char *argv[])
 
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
                     SDL_RenderPresent(g_screen);
-
                     while (SDL_PollEvent(&eve))
                     {
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
                         {
-                            /////////////////
-                            replay = true;
-                            Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
+                            isRestarting = true;
                             std::cout << "Restart";
-
-                            ///////////////////
                             quit_game_over = true;
                         }
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
@@ -402,7 +398,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        std::vector<BulletObject *> bullet_arr = p_player.get_bullet_list();
+        //      Dan ban
+        bullet_arr = p_player.get_bullet_list();
         for (int r = 0; r < bullet_arr.size(); r++)
         {
             BulletObject *p_bullet = bullet_arr.at(r);
@@ -481,7 +478,27 @@ int main(int argc, char *argv[])
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
 {
+
+    // Reset threads
+    for (int i = 0; i < threats_list.size(); i++)
+    {
+        ThreatsObject *p_threat = threats_list.at(i);
+        if (p_threat != NULL)
+        {
+
+            p_threat->Free();
+            break;
+        }
+    }
+    threats_list.clear();
+    threats_list = MakeThreats();
+
+    // Reset map
+    game_map.LoadMap("map/map01.txt");
+    game_map.LoadTiles(g_screen);
     // Thiết lập lại vị trí ban đầu của bản đồ
+    game_map.ResetMap(map_data);
+
     p_player.SetXPos(200);
     p_player.HeartCount(0);
     player_power.Init(g_screen);
