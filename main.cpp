@@ -9,8 +9,6 @@
 #include "PlayHealth.h"
 #include "TextObject.h"
 
-
-
 BaseObject g_background;
 ImpTimer fps_timer;
 GameMap game_map;
@@ -27,6 +25,13 @@ TTF_Font *gFont1 = NULL;
 TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
+
+Mix_Music *gMusic = NULL;
+Mix_Chunk *gMainMusic = NULL;
+Mix_Chunk *gEarn_Heart = NULL;
+
+Mix_Chunk *gMedium = NULL;
+Mix_Chunk *gLow = NULL;
 
 SDL_Surface *g_img_menu;
 SDL_Event eve;
@@ -132,6 +137,13 @@ int main(int argc, char *argv[])
 
         //            PLAYER
         p_player.HanleBullet(g_screen);
+        if (eve.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if (eve.button.button == SDL_BUTTON_LEFT)
+            {
+                Mix_PlayChannel(-1, gEarn_Heart, 0);
+            }
+        }
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
         p_player.DoPlayer(map_data);
         p_player.Show(g_screen);
@@ -257,6 +269,7 @@ int main(int argc, char *argv[])
         std::string str_time = "Days: ";
         Uint32 time_val = SDL_GetTicks() / 1000;
         Uint32 val_time = 0 + time_val;
+
         if (val_time >= 5000)
         {
             if (MessageBoxW(NULL, L"T-kun lost her!", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
@@ -265,6 +278,7 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+
         else
         {
             std::string str_val = std::to_string(val_time);
@@ -308,8 +322,8 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
     num_die = 0;
     heart_count = 0;
 
-    p_player.SetRect(0, 0);        // Thiết lập lại vị trí
-    p_player.set_comeback_time(3); // Thiết lập thời gian quay lại mặc định (nếu có)
+    p_player.SetRect(0, 0);
+    p_player.set_comeback_time(3);
 }
 
 bool InitData()
@@ -358,6 +372,18 @@ bool InitData()
             success = false;
             std::cout << "khong the mo tep ";
         }
+
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+        {
+            printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
+            success = false;
+        }
+
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        {
+            printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+            success = false;
+        }
     }
 
     return success;
@@ -382,6 +408,20 @@ void close()
     SDL_DestroyWindow(g_window);
     g_window = NULL;
 
+    Mix_FreeChunk(gEarn_Heart);
+    Mix_FreeChunk(gMainMusic);
+    Mix_FreeChunk(gMedium);
+    Mix_FreeChunk(gLow);
+
+    gEarn_Heart = NULL;
+    gMainMusic = NULL;
+    gMedium = NULL;
+    gLow = NULL;
+
+    Mix_FreeMusic(gMusic);
+    gMusic = NULL;
+
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
 }
@@ -421,6 +461,9 @@ void LoadFromFile()
     g_img_menu = IMG_Load("menu/menu.png");
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
+
+    gMainMusic = Mix_LoadWAV("sic/through_Map_music.wav"); ///////////////////////////////////////////////
+    gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
 }
 
 void Render_Menu()
@@ -456,6 +499,7 @@ void Call_Menu()
             if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
             {
                 start_Game = true; // Ready to Play Game
+                Mix_PlayChannel(-1, gMainMusic, -1);
                 destroy_Menu();
                 break;
             }
@@ -484,7 +528,7 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->LoadImg("img/threat_2_left.png", g_screen);
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(3500 + i * (650+100*(rand()%50)));        //  Set Threats_position
+            p_threat->set_x_pos(3500 + i * (650 + 100 * (rand() % 50))); //  Set Threats_position
             p_threat->set_y_pos(200);
 
             int pos1 = p_threat->get_x_pos() - 200;
@@ -503,10 +547,10 @@ std::vector<ThreatsObject *> MakeThreats()
         ThreatsObject *p_threat = (ThreatFly + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_3_left.png", g_screen); 
+            p_threat->LoadImg("img/threat_3_left.png", g_screen);
             p_threat->set_clips();
-            p_threat->set_x_pos(7000 + i * (800+100*(rand()%5)));       //  Set Threats_position
-            p_threat->set_y_pos(200+rand()%50);
+            p_threat->set_x_pos(7000 + i * (800 + 100 * (rand() % 5))); //  Set Threats_position
+            p_threat->set_y_pos(200 + 10 * (rand() % 5));
             p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
 
             list_threats.push_back(p_threat);

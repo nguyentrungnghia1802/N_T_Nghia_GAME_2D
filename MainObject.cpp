@@ -92,8 +92,6 @@ void MainObject::set_clips()
     }
 }
 
-int delay_frame1 = 1;
-
 void MainObject::Show(SDL_Renderer* des)
 {
     if(status_==WALK_LEFT)
@@ -105,35 +103,30 @@ void MainObject::Show(SDL_Renderer* des)
         LoadImg("img/player_right1.png",des);
     }
 
-    if (input_type_.left_==1||
-        input_type_.right_==1)
-        {
-            delay_frame1++;
-            if(delay_frame1%3==0)
-            {
-                frame_++;
-                delay_frame1=0;
-            }
-        }
-        else
-        {
-            frame_=0;
-        }
-        if(frame_ >= MAX_FRAME_PLAYER)
-        {
-            frame_ =0;
-        }
+    if (input_type_.left_ == 1 ||
+        input_type_.right_ == 1)
+    {
+        frame_++;
+    }
+    else
+    {
+        frame_ = 0;
+    }
+    if (frame_ >= MAX_FRAME_PLAYER)
+    {
+        frame_ = 0;
+    }
 
-        if(come_back_time_==0)
-        {
-        rect_.x=x_pos_ - map_x_;
-        rect_.y=y_pos_ - map_y_;
+    if (come_back_time_ == 0)
+    {
+        rect_.x = x_pos_ - map_x_;
+        rect_.y = y_pos_ - map_y_;
 
-        SDL_Rect* current_clip=&frame_clip_[frame_];
-        SDL_Rect renderQuad={rect_.x,rect_.y,width_frame_,height_frame_};
+        SDL_Rect *current_clip = &frame_clip_[frame_];
+        SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
 
-        SDL_RenderCopy(des,p_object_,current_clip,&renderQuad);
-        }
+        SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
+    }
 }
 
 void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
@@ -372,6 +365,8 @@ void MainObject::CheckToMap(Map& map_data)
             {
                 map_data.tile[y1][x2]=0;
                 map_data.tile[y2][x2]=0;
+                Mix_PlayChannel( -1, gEarn_Heart, 0 );
+
                 IncreaseMoney();
             }
             else
