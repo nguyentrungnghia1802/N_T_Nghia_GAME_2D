@@ -365,8 +365,6 @@ void MainObject::CheckToMap(Map& map_data)
             {
                 map_data.tile[y1][x2]=0;
                 map_data.tile[y2][x2]=0;
-                Mix_PlayChannel( -1, gEarn_Heart, 0 );
-
                 IncreaseMoney();
             }
             else
