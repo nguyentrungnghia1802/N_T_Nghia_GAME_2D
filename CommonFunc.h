@@ -20,9 +20,6 @@ static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
-extern Mix_Chunk *gEarn_Heart;
-
-
 // Screen
 const int FRAME_PER_SECOND=80;
 const int SCREEN_WIDTH=1422;

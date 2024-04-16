@@ -29,7 +29,6 @@ TTF_Font *gFont4 = NULL;
 Mix_Music *gMusic = NULL;
 Mix_Chunk *gMainMusic = NULL;
 Mix_Chunk *gEarn_Heart = NULL;
-
 Mix_Chunk *gMedium = NULL;
 Mix_Chunk *gLow = NULL;
 
@@ -137,13 +136,6 @@ int main(int argc, char *argv[])
 
         //            PLAYER
         p_player.HanleBullet(g_screen);
-        if (eve.type == SDL_MOUSEBUTTONDOWN)
-        {
-            if (eve.button.button == SDL_BUTTON_LEFT)
-            {
-                Mix_PlayChannel(-1, gEarn_Heart, 0);
-            }
-        }
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
         p_player.DoPlayer(map_data);
         p_player.Show(g_screen);
@@ -462,7 +454,7 @@ void LoadFromFile()
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
 
-    gMainMusic = Mix_LoadWAV("sic/through_Map_music.wav"); ///////////////////////////////////////////////
+    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav"); ///////////////////////////////////////////////
     gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
 }
 
