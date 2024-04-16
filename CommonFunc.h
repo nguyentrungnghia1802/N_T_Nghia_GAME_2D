@@ -21,7 +21,7 @@ static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
 // Screen
-const int FRAME_PER_SECOND=60;
+const int FRAME_PER_SECOND=80;
 const int SCREEN_WIDTH=1422;
 const int SCREEN_HEIGHT=800;
 const int SCREEN_BPP = 44;
@@ -38,10 +38,10 @@ const int RENDER_DRAW_COLOR=0xff;
 #define TILE_SIZE 80
 
 //Item map:
-#define POINT_ITEM_1 2   // o so 4 la o an diem
+#define POINT_ITEM_1 1   // o so 4 la o an diem
 
 
-#define MAX_MAP_X 300
+#define MAX_MAP_X 1010
 #define MAX_MAP_Y 10
 
 

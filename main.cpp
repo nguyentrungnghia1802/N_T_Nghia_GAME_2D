@@ -9,7 +9,18 @@
 #include "PlayHealth.h"
 #include "TextObject.h"
 
+
+
 BaseObject g_background;
+ImpTimer fps_timer;
+GameMap game_map;
+MainObject p_player;
+PlayerPower player_power; // HP survival
+PlayerMoney player_heart; // point
+TextObject time_game;
+TextObject heart_game;
+Map map_data;
+
 TTF_Font *font_time = NULL;
 TTF_Font *font_heart = NULL;
 TTF_Font *gFont1 = NULL;
@@ -17,243 +28,39 @@ TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 
-bool isRestarting = false;
-bool is_restartTileMap = false;
-bool is_quit = false;
-bool start_Game = false; // After that, we can Play Game
-
-int num_die = 0;
-int heart_count = 0;
-
-SDL_Event eve;
-ImpTimer fps_timer;
-GameMap game_map;
-MainObject p_player;
-PlayerPower player_power; // survial
-PlayerMoney player_heart; // point
-TextObject time_game;
-TextObject heart_game;
 SDL_Surface *g_img_menu;
-Map map_data;
+SDL_Event eve;
 SDL_Texture *menu;
 SDL_Rect menuRect;
 
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
+std::string heart_str;
+
+bool isRestarting = false; // Replay game if game over
+bool is_quit = false;      // Turn off game
+bool start_Game = false;   // After that, we can Play Game
+bool bCol2 = false;        // Collide:   Player and  Threats
+
+int num_die = 0;
+int heart_count = 0;
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
+bool InitData();
+bool LoadBackground();
+void close();
 
-bool InitData()
-{
-    bool success = true;
-    int ret = SDL_Init(SDL_INIT_VIDEO);
-    if (ret < 0)
-        return false;
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-
-    g_window = SDL_CreateWindow("Game 2d",
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SCREEN_WIDTH, SCREEN_HEIGHT,
-                                SDL_WINDOW_SHOWN);
-    if (g_window == NULL)
-    {
-        success = false;
-    }
-
-    else
-    {
-        g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
-        if (g_screen == NULL)
-            success = false;
-        else
-        {
-            SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
-            int imgFlags = IMG_INIT_PNG;
-            if (!(IMG_Init(imgFlags) && imgFlags))
-                success = false;
-        }
-
-        if (TTF_Init() == -1)
-        {
-            success = false;
-            std::cout << "khong the mo tep";
-        }
-
-        font_time = TTF_OpenFont("font/1.ttf", 35);
-        font_heart = TTF_OpenFont("font/1.ttf", SIZE_FONT_HEART);
-
-        if (font_time == NULL)
-        {
-            success = false;
-            std::cout << "khong the mo tep ";
-        }
-    }
-
-    return success;
-}
-
-bool LoadBackground()
-{
-    bool ret = g_background.LoadImg("img/background.jpg", g_screen);
-    if (ret == false)
-        return false;
-
-    return true;
-}
-
-void close()
-{
-    g_background.Free();
-
-    SDL_DestroyRenderer(g_screen);
-    g_screen = NULL;
-
-    SDL_DestroyWindow(g_window);
-    g_window = NULL;
-
-    IMG_Quit();
-    SDL_Quit();
-}
-
-std::vector<ThreatsObject *> MakeThreats()
-{
-    std::cout << "make threat";
-    std::vector<ThreatsObject *> list_threats;
-
-    ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
-
-    for (int i = 0; i < NUM_THREATS_LIST; i++)
-    {
-        ThreatsObject *p_threat = (dynamic_threats + i);
-
-        if (p_threat != NULL)
-        {
-            p_threat->LoadImg("img/threat_2_left.png", g_screen);
-            p_threat->set_clips();
-            p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(500 + i * 1000);
-            p_threat->set_y_pos(200);
-
-            int pos1 = p_threat->get_x_pos() - 200;
-            int pos2 = p_threat->get_x_pos() + 200;
-            p_threat->SetAnimationPos(pos1, pos2);
-            p_threat->set_input_left(1);
-
-            list_threats.push_back(p_threat);
-        }
-    }
-
-    ThreatsObject *ThreatFly = new ThreatsObject[NUM_THREATS_LIST];
-
-    for (int i = 0; i < NUM_THREATS_LIST; i++)
-    {
-        ThreatsObject *p_threat = (ThreatFly + i);
-        if (p_threat != NULL)
-        {
-            p_threat->LoadImg("img/threat_3_left.png", g_screen); // loading threats
-            p_threat->set_clips();
-            p_threat->set_x_pos(290 + i * 1000);
-            p_threat->set_y_pos(250);
-            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
-
-            list_threats.push_back(p_threat);
-        }
-    }
-
-    return list_threats;
-}
-
-/////
-
-void renderText(const std::string &text, int x, int y, TTF_Font *font)
-{
-    SDL_Color textColor = {255, 255, 255}; // White color
-    SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
-    if (textSurface == nullptr)
-    {
-        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
-        return;
-    }
-
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
-    if (texture == nullptr)
-    {
-        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
-        SDL_FreeSurface(textSurface);
-        return;
-    }
-
-    SDL_Rect dstRect = {x, y, textSurface->w, textSurface->h};
-    SDL_RenderCopy(g_screen, texture, nullptr, &dstRect);
-
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(texture);
-}
-
-///
-
-void LoadFromFile()
-{
-    gFont1 = TTF_OpenFont("font/2.ttf", 30);
-    gFont2 = TTF_OpenFont("font/2.ttf", 30);
-    gFont3 = TTF_OpenFont("font/1.ttf", 120);
-    gFont4 = TTF_OpenFont("font/2.ttf", 100);
-
-    g_img_menu = IMG_Load("menu/menu.png");
-    game_map.LoadMap("map/map01.txt");
-    p_player.LoadImg("img/player_right1.png", g_screen);
-}
-
-void Render_Menu()
-{
-    SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
-    renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
-    renderText("ESC TO EXIT!", 30, 420, gFont2);
-    SDL_RenderPresent(g_screen);
-}
-
-void destroy_Menu()
-{
-    SDL_FreeSurface(g_img_menu);
-    SDL_DestroyTexture(menu);
-}
-void load_Menu()
-{
-    std::cout << "Loaded";
-    menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load anh nen menu
-    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           // set vi tri menu
-}
-
-void Call_Menu()
-{
-    load_Menu(); // load_Menu_backgound
-
-    while (start_Game == false)
-    {
-        Render_Menu(); // Render_Menu_Texture
-
-        while (SDL_PollEvent(&eve))
-        {
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
-            {
-                start_Game = true; // Ready to Play Game
-                destroy_Menu();
-                break;
-            }
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
-            {
-                destroy_Menu();
-                close(); // Exit Game
-            }
-        }
-    }
-}
+std::vector<ThreatsObject *> MakeThreats();
+void renderText(const std::string &text, int x, int y, TTF_Font *font);
+void LoadFromFile();
+void load_Menu();
+void Render_Menu();
+void destroy_Menu();
+void Call_Menu();
 
 int main(int argc, char *argv[])
 {
-
+    std::srand(time(NULL));
     if (InitData() == false)
         return -1;
 
@@ -284,12 +91,25 @@ int main(int argc, char *argv[])
     {
         if (isRestarting)
         {
+            for (int i = 0; i < threats_list.size(); i++)
+            {
+                ThreatsObject *p_threat = threats_list.at(i);
+                if (p_threat != NULL)
+                {
+
+                    p_threat->Free();
+                    break;
+                }
+            }
+            threats_list.clear();
+            threats_list = MakeThreats();
             Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
             isRestarting = !isRestarting;
         }
 
         heart_count = p_player.GetMoneyCount();
 
+        //            FPS
         fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
         {
@@ -310,6 +130,7 @@ int main(int argc, char *argv[])
         map_data = game_map.getMap();
         game_map.MapRun(map_data);
 
+        //            PLAYER
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
         p_player.DoPlayer(map_data);
@@ -323,7 +144,6 @@ int main(int argc, char *argv[])
 
         bool is_minusLinve = p_player.GetIsMinusLive();
 
-        bool bCol2 = false;
         for (int i = 0; i < threats_list.size(); i++)
         {
             ThreatsObject *p_threat = threats_list.at(i);
@@ -455,8 +275,7 @@ int main(int argc, char *argv[])
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
 
-        std::string heart_str = std::to_string(heart_count);
-
+        heart_str = std::to_string(heart_count);
         heart_game.SetText(heart_str);
         heart_game.LoadFromRenderText(font_heart, g_screen);
         heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5, 5);
@@ -478,40 +297,221 @@ int main(int argc, char *argv[])
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
 {
-
-    // Reset threads
-    for (int i = 0; i < threats_list.size(); i++)
-    {
-        ThreatsObject *p_threat = threats_list.at(i);
-        if (p_threat != NULL)
-        {
-
-            p_threat->Free();
-            break;
-        }
-    }
-    threats_list.clear();
-    threats_list = MakeThreats();
-
-    // Reset map
     game_map.LoadMap("map/map01.txt");
     game_map.LoadTiles(g_screen);
-    // Thiết lập lại vị trí ban đầu của bản đồ
     game_map.ResetMap(map_data);
 
     p_player.SetXPos(200);
     p_player.HeartCount(0);
     player_power.Init(g_screen);
 
-    isRestarting = true;
-    is_restartTileMap = true;
-
-    // Thiết lập lại số lần chết và điểm
     num_die = 0;
     heart_count = 0;
 
-    // Thiết lập lại vị trí và trạng thái của người chơi
-
     p_player.SetRect(0, 0);        // Thiết lập lại vị trí
     p_player.set_comeback_time(3); // Thiết lập thời gian quay lại mặc định (nếu có)
+}
+
+bool InitData()
+{
+    bool success = true;
+    int ret = SDL_Init(SDL_INIT_VIDEO);
+    if (ret < 0)
+        return false;
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
+    g_window = SDL_CreateWindow("Game 2d",
+                                SDL_WINDOWPOS_UNDEFINED,
+                                SDL_WINDOWPOS_UNDEFINED,
+                                SCREEN_WIDTH, SCREEN_HEIGHT,
+                                SDL_WINDOW_SHOWN);
+    if (g_window == NULL)
+    {
+        success = false;
+    }
+
+    else
+    {
+        g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+        if (g_screen == NULL)
+            success = false;
+        else
+        {
+            SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+            int imgFlags = IMG_INIT_PNG;
+            if (!(IMG_Init(imgFlags) && imgFlags))
+                success = false;
+        }
+
+        if (TTF_Init() == -1)
+        {
+            success = false;
+            std::cout << "khong the mo tep";
+        }
+
+        font_time = TTF_OpenFont("font/1.ttf", 35);
+        font_heart = TTF_OpenFont("font/1.ttf", SIZE_FONT_HEART);
+
+        if (font_time == NULL)
+        {
+            success = false;
+            std::cout << "khong the mo tep ";
+        }
+    }
+
+    return success;
+}
+
+bool LoadBackground()
+{
+    bool ret = g_background.LoadImg("img/background.jpg", g_screen);
+    if (ret == false)
+        return false;
+
+    return true;
+}
+
+void close()
+{
+    g_background.Free();
+
+    SDL_DestroyRenderer(g_screen);
+    g_screen = NULL;
+
+    SDL_DestroyWindow(g_window);
+    g_window = NULL;
+
+    IMG_Quit();
+    SDL_Quit();
+}
+
+void renderText(const std::string &text, int x, int y, TTF_Font *font)
+{
+    SDL_Color textColor = {255, 255, 255}; // White color
+    SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+    if (textSurface == nullptr)
+    {
+        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
+    if (texture == nullptr)
+    {
+        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(textSurface);
+        return;
+    }
+
+    SDL_Rect dstRect = {x, y, textSurface->w, textSurface->h};
+    SDL_RenderCopy(g_screen, texture, nullptr, &dstRect);
+
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(texture);
+}
+
+void LoadFromFile()
+{
+    gFont1 = TTF_OpenFont("font/2.ttf", 30);
+    gFont2 = TTF_OpenFont("font/2.ttf", 30);
+    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+
+    g_img_menu = IMG_Load("menu/menu.png");
+    game_map.LoadMap("map/map01.txt");
+    p_player.LoadImg("img/player_right1.png", g_screen);
+}
+
+void Render_Menu()
+{
+    SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
+    renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
+    renderText("ESC TO EXIT!", 30, 420, gFont2);
+    SDL_RenderPresent(g_screen);
+}
+
+void destroy_Menu()
+{
+    SDL_FreeSurface(g_img_menu);
+    SDL_DestroyTexture(menu);
+}
+void load_Menu()
+{
+    std::cout << "Loaded";
+    menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
+    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           // set menu_position
+}
+
+void Call_Menu()
+{
+    load_Menu(); // load_Menu_backgound
+
+    while (start_Game == false)
+    {
+        Render_Menu(); // Render_Menu_Texture
+
+        while (SDL_PollEvent(&eve))
+        {
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
+            {
+                start_Game = true; // Ready to Play Game
+                destroy_Menu();
+                break;
+            }
+            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+            {
+                destroy_Menu();
+                close(); // Exit Game
+            }
+        }
+    }
+}
+
+std::vector<ThreatsObject *> MakeThreats()
+{
+    std::cout << "make threat";
+    std::vector<ThreatsObject *> list_threats;
+
+    ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
+
+    for (int i = 0; i < NUM_THREATS_LIST; i++)
+    {
+        ThreatsObject *p_threat = (dynamic_threats + i);
+
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("img/threat_2_left.png", g_screen);
+            p_threat->set_clips();
+            p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
+            p_threat->set_x_pos(3500 + i * (650+100*(rand()%50)));        //  Set Threats_position
+            p_threat->set_y_pos(200);
+
+            int pos1 = p_threat->get_x_pos() - 200;
+            int pos2 = p_threat->get_x_pos() + 200;
+            p_threat->SetAnimationPos(pos1, pos2);
+            p_threat->set_input_left(1);
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+    ThreatsObject *ThreatFly = new ThreatsObject[NUM_THREATS_LIST];
+
+    for (int i = 0; i < NUM_THREATS_LIST; i++)
+    {
+        ThreatsObject *p_threat = (ThreatFly + i);
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("img/threat_3_left.png", g_screen); 
+            p_threat->set_clips();
+            p_threat->set_x_pos(7000 + i * (800+100*(rand()%5)));       //  Set Threats_position
+            p_threat->set_y_pos(200+rand()%50);
+            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+    return list_threats;
 }
