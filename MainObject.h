@@ -28,7 +28,7 @@ public:
 
         bool LoadImg(std::string path, SDL_Renderer* screen);
         void Show(SDL_Renderer* des);
-        void HandelInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk* gFire_ball);
+        void HandelInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk* gF);
         void set_clips();
 
         void DoPlayer(Map& map_data, Mix_Chunk *gEarn_Heart);

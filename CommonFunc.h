@@ -47,7 +47,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define MAX_MAP_X 1010
 #define MAX_MAP_Y 10
 
-
+ extern bool winner;
 
 typedef struct Input
 {
@@ -73,6 +73,8 @@ typedef struct Map
 namespace SDLCommonFunc
 {
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2);
+
+
 
 
 }

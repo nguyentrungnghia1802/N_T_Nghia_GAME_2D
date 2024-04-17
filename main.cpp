@@ -29,11 +29,16 @@ TTF_Font *gFont4 = NULL;
 Mix_Music *gMusic = NULL;
 Mix_Chunk *gMainMusic = NULL;
 Mix_Chunk *gGame_Start = NULL;
+Mix_Chunk *gThreats_Die = NULL;
 
 SDL_Surface *g_img_menu;
 SDL_Event eve;
+SDL_Event eve_win;
 SDL_Texture *menu;
 SDL_Rect menuRect;
+SDL_Surface *gWin_game;
+SDL_Texture *WinGame;
+SDL_Rect WinGameRect;
 
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
@@ -59,6 +64,33 @@ void load_Menu();
 void Render_Menu();
 void destroy_Menu();
 void Call_Menu();
+
+void Win_Game()
+{          
+    bool replay_game = false;
+    while (replay_game == false)
+    {
+        SDL_RenderCopy(g_screen, WinGame, NULL, &WinGameRect);
+        renderText("POINT: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
+        renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
+        SDL_RenderPresent(g_screen);
+        while (SDL_PollEvent(&eve_win))
+        {
+            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
+            {
+                Mix_PlayChannel(-1, gGame_Start, 0);
+                isRestarting = true;
+                replay_game=true;
+            }
+            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
+            {
+                replay_game=true;
+                is_quit = true;
+            }
+        }
+    }
+    replay_game=false;
+}
 
 int main(int argc, char *argv[])
 {
@@ -89,6 +121,9 @@ int main(int argc, char *argv[])
 
     threats_list = MakeThreats();
 
+    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
+    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};  
+
     while (!is_quit)
     {
         if (isRestarting)
@@ -98,7 +133,6 @@ int main(int argc, char *argv[])
                 ThreatsObject *p_threat = threats_list.at(i);
                 if (p_threat != NULL)
                 {
-
                     p_threat->Free();
                     break;
                 }
@@ -223,6 +257,19 @@ int main(int argc, char *argv[])
             }
         }
 
+
+
+
+        if(winner==true)                                                       /////////////////////////////////////////////////////////////
+        {
+            std::cout<<"yes";
+            Win_Game();
+            winner=false;
+        }
+
+
+
+
         //      Dan ban
         bullet_arr = p_player.get_bullet_list();
         for (int r = 0; r < bullet_arr.size(); r++)
@@ -248,6 +295,7 @@ int main(int argc, char *argv[])
 
                             if (bCol)
                             {
+                                Mix_PlayChannel(-1, gThreats_Die, 0);
                                 p_player.RemoveBullet(r);
                                 obj_threat->Free();
                                 threats_list.erase(threats_list.begin() + t);
@@ -257,6 +305,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
+
 
         // Show game time
         std::string str_time = "Days: ";
@@ -406,12 +455,14 @@ void close()
     Mix_FreeChunk(gFire_ball);
     Mix_FreeChunk(gPlayer_Die);
     Mix_FreeChunk(gGame_Start);
+    Mix_FreeChunk(gThreats_Die);
 
     gEarn_Heart = NULL;
     gMainMusic = NULL;
     gFire_ball = NULL;
     gPlayer_Die = NULL;
     gGame_Start = NULL;
+    gThreats_Die = NULL;
 
     Mix_FreeMusic(gMusic);
     gMusic = NULL;
@@ -462,6 +513,8 @@ void LoadFromFile()
     gFire_ball = Mix_LoadWAV("Music/Fire_Ball.wav");
     gPlayer_Die = Mix_LoadWAV("Music/Player_Die.wav");
     gGame_Start = Mix_LoadWAV("Music/Start.wav");
+    gThreats_Die = Mix_LoadWAV("Music/Threats_Die.wav");
+    gWin_game = IMG_Load("map/WIN_GAME.png");
 }
 
 void Render_Menu()
@@ -480,7 +533,7 @@ void destroy_Menu()
 void load_Menu()
 {
     menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
-    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           // set menu_position
+    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           //    set menu_position
 }
 
 void Call_Menu()

@@ -19,7 +19,6 @@ public:
         BLACK_TEXT = 2,
     };
 
-    bool LoadFromFile(std::string path);
     bool LoadFromRenderText(TTF_Font *font, SDL_Renderer *screen);
     void Free();
 

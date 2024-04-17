@@ -365,6 +365,11 @@ void MainObject::CheckToMap(Map& map_data,  Mix_Chunk *gEarn_Heart)
                   x_val_=0;
             }
             }
+            if(x_pos_>2000)
+            {        
+                winner=true;
+                x_pos_=0;
+            }
          }
          else if (x_val_<0)
          {
