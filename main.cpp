@@ -28,8 +28,7 @@ TTF_Font *gFont4 = NULL;
 
 Mix_Music *gMusic = NULL;
 Mix_Chunk *gMainMusic = NULL;
-Mix_Chunk *gMedium = NULL;
-Mix_Chunk *gLow = NULL;
+Mix_Chunk *gGame_Start = NULL;
 
 SDL_Surface *g_img_menu;
 SDL_Event eve;
@@ -121,7 +120,7 @@ int main(int argc, char *argv[])
                 is_quit = true;
             }
 
-            p_player.HandelInputAction(g_event, g_screen);
+            p_player.HandelInputAction(g_event, g_screen, gFire_ball);
         }
 
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
@@ -171,6 +170,7 @@ int main(int argc, char *argv[])
 
         if (bCol2 || is_minusLinve == true)
         {
+            Mix_PlayChannel(-1, gPlayer_Die, 0);
             num_die++;
             if (is_minusLinve == true)
             {
@@ -202,8 +202,10 @@ int main(int argc, char *argv[])
                     {
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
                         {
+                            Mix_PlayChannel(-1, gGame_Start, 0);
+                            SDL_Delay(4000);
+
                             isRestarting = true;
-                            std::cout << "Restart";
                             quit_game_over = true;
                         }
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
@@ -401,13 +403,15 @@ void close()
 
     Mix_FreeChunk(gEarn_Heart);
     Mix_FreeChunk(gMainMusic);
-    Mix_FreeChunk(gMedium);
-    Mix_FreeChunk(gLow);
+    Mix_FreeChunk(gFire_ball);
+    Mix_FreeChunk(gPlayer_Die);
+    Mix_FreeChunk(gGame_Start);
 
     gEarn_Heart = NULL;
     gMainMusic = NULL;
-    gMedium = NULL;
-    gLow = NULL;
+    gFire_ball = NULL;
+    gPlayer_Die = NULL;
+    gGame_Start = NULL;
 
     Mix_FreeMusic(gMusic);
     gMusic = NULL;
@@ -453,8 +457,11 @@ void LoadFromFile()
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
 
-    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav"); // sua lai duong dan ten file              ///////////////////////////////////////////////
+    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
     gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
+    gFire_ball = Mix_LoadWAV("Music/Fire_Ball.wav");
+    gPlayer_Die = Mix_LoadWAV("Music/Player_Die.wav");
+    gGame_Start = Mix_LoadWAV("Music/Start.wav");
 }
 
 void Render_Menu()
@@ -472,7 +479,6 @@ void destroy_Menu()
 }
 void load_Menu()
 {
-    std::cout << "Loaded";
     menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
     menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           // set menu_position
 }
@@ -490,6 +496,8 @@ void Call_Menu()
             if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
             {
                 start_Game = true; // Ready to Play Game
+                Mix_PlayChannel(-1, gGame_Start, 0);
+                SDL_Delay(4000);
                 Mix_PlayChannel(-1, gMainMusic, -1);
                 destroy_Menu();
                 break;
@@ -505,7 +513,6 @@ void Call_Menu()
 
 std::vector<ThreatsObject *> MakeThreats()
 {
-    std::cout << "make threat";
     std::vector<ThreatsObject *> list_threats;
 
     ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
@@ -519,7 +526,7 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->LoadImg("img/threat_2_left.png", g_screen);
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3)+7))); //  Set Threats_position
+            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3) + 7))); //  Set Threats_position
             p_threat->set_y_pos(200);
 
             int pos1 = p_threat->get_x_pos() - 100;

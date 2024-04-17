@@ -16,6 +16,8 @@
 
 
 static Mix_Chunk *gEarn_Heart = NULL;
+static Mix_Chunk *gFire_ball = NULL;
+static Mix_Chunk *gPlayer_Die = NULL;
 
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
@@ -28,7 +30,6 @@ const int SCREEN_WIDTH=1422;
 const int SCREEN_HEIGHT=800;
 const int SCREEN_BPP = 44;
 
-
 const int COLOR_KEY_R=167;
 const int COLOR_KEY_G=175;
 const int COLOR_KEY_B=120;
@@ -40,7 +41,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define TILE_SIZE 80
 
 //Item map:
-#define POINT_ITEM_1 1   // o so 4 la o an diem
+#define POINT_ITEM_1 1   // o so 1 la o trai tim
 
 
 #define MAX_MAP_X 1010

@@ -169,8 +169,8 @@ void ThreatsObject::CheckToMap(Map &map_data)
                 {
                     x_pos_ = x2 * TILE_SIZE;
                     x_pos_ -= width_frame_ + 1;
-                    input_type_.left_ = 0;
-                    input_type_.right_ = 1;
+                    input_type_.left_ = 1;
+                    input_type_.right_ = 0;
                 }
             }
             else if (x_val_ < 0)
@@ -181,8 +181,8 @@ void ThreatsObject::CheckToMap(Map &map_data)
                 if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE && val2 != POINT_ITEM_1))
                 {
                     x_pos_ = (x1 + 1) * TILE_SIZE;
-                    input_type_.right_ = 0;
-                    input_type_.left_ = 1;
+                    input_type_.right_ = 1;
+                    input_type_.left_ = 0;
                 }
             }
         }

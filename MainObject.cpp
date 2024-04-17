@@ -137,7 +137,7 @@ void MainObject::Show(SDL_Renderer* des)
     }
 }
 
-void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
+void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen, Mix_Chunk* gFire_ball)
 {
     if(events.type==SDL_KEYDOWN)
     {
@@ -186,6 +186,7 @@ void MainObject::HandelInputAction(SDL_Event events,SDL_Renderer* screen)
     {
         if(events.button.button==SDL_BUTTON_LEFT)
         {
+            Mix_PlayChannel(-1, gFire_ball, 0);                                          
             BulletObject* p_bullet =new BulletObject();
             p_bullet->LoadImg("img/fire.png",screen);
 

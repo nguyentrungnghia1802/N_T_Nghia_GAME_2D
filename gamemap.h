@@ -6,7 +6,7 @@
 #include "BaseObject.h"
 
 #define MAX_TILES 20
-#define MAP_RUN 6
+#define MAP_RUN 7
 
 class TileMat : public BaseObject
 {
