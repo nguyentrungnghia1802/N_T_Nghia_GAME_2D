@@ -276,7 +276,7 @@ void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)
             {
                 y_val_ = -PLAYER_JUMP_VAL;
             }
-            on_ground_ = false; // bo dong nay de nhay vo tan
+            on_ground_ = false;           // DELETE this current to JUMP unlimited
             input_type_.jump_ = 0;
         }
 
@@ -320,7 +320,7 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
     int y1 = 0;
     int y2 = 0;
 
-    // Check chieu ngang
+    // Check horizontal
     int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
 
     x1 = (x_pos_ + x_val_) / TILE_SIZE;
@@ -331,7 +331,7 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
 
     if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
     {
-        if (x_val_ > 0) // nhan vat di chuyen sang phai
+        if (x_val_ > 0) // Main Player move to right
         {
             int val1 = map_data.tile[y1][x2];
             int val2 = map_data.tile[y2][x2];
@@ -352,7 +352,11 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
                     x_val_ = 0;
                 }
             }
-            if (x_pos_ >= POS_REACH_TO_WIN)
+            if(map_data.start_x_>=MAX_MAP_X*TILE_SIZE-1500)
+            {
+                map_data.start_x_=MAX_MAP_X*TILE_SIZE-1500;
+            }
+            if (x_pos_>=MAX_MAP_X*TILE_SIZE-16*TILE_SIZE)       ///////////////////////////// NEED TO CHANGE IF MAP CHANGE //////////////////////////
             {
                 winner = true;
                 x_pos_ = 0;
@@ -367,7 +371,7 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
             {
                 map_data.tile[y1][x2] = 0;
                 map_data.tile[y2][x2] = 0;
-                Mix_PlayChannel(-1, gEarn_Heart, 0); //////////////
+                Mix_PlayChannel(-1, gEarn_Heart, 0); 
                 IncreaseMoney();
             }
             else

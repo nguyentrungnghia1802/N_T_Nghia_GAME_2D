@@ -44,7 +44,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define POINT_ITEM_1 1   // TILE 1 IS HEART
 
 
-#define MAX_MAP_X 1010
+#define MAX_MAP_X 1011
 #define MAX_MAP_Y 10
 
  extern bool winner;

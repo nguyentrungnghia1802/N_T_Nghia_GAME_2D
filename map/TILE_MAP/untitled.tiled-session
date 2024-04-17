@@ -1,0 +1,89 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "untitled - Copy.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "2.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "3.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "4.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "5.tsx": {
+            "scaleInDock": 1
+        },
+        "6.tsx": {
+            "scaleInDock": 1
+        },
+        "7.tsx": {
+            "scaleInDock": 1
+        },
+        "Isha.tsx": {
+            "scaleInDock": 1
+        },
+        "untitled - Copy.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 40396,
+                "y": 400
+            }
+        },
+        "untitled.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 40396.969696969696,
+                "y": 398.4848484848485
+            }
+        }
+    },
+    "last.externalTilesetPath": "C:/Users/assas/OneDrive/Máy tính/TILE",
+    "last.imagePath": "D:/#VSCode/SDL_Demo_Project/map",
+    "last.worldFilePath": "C:/Users/assas/OneDrive/Máy tính/TILE",
+    "loadedWorlds": [
+        "C:/Users/assas/OneDrive/Máy tính/TILE/map.world"
+    ],
+    "map.height": 10,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 80,
+    "map.tileWidth": 80,
+    "openFiles": [
+        "untitled.tmx",
+        "untitled - Copy.tmx"
+    ],
+    "project": "untitled.tiled-project",
+    "recentFiles": [
+        "untitled.tmx",
+        "untitled - Copy.tmx",
+        "3.tsx",
+        "4.tsx",
+        "2.tsx"
+    ],
+    "resizeMap.removeObjects": true,
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 80,
+        "width": 80
+    }
+}

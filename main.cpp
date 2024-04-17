@@ -138,7 +138,10 @@ int main(int argc, char *argv[])
 
         //             MAP
         map_data = game_map.getMap();
-        game_map.MapRun(map_data);
+        if(map_data.start_x_<MAX_MAP_X*TILE_SIZE-1500)
+        {
+            game_map.MapRun(map_data);
+        }
 
         //            PLAYER
         heart_count = p_player.GetMoneyCount();
