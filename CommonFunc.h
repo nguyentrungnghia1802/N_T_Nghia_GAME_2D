@@ -41,7 +41,7 @@ const int RENDER_DRAW_COLOR=0xff;
 #define TILE_SIZE 80
 
 //Item map:
-#define POINT_ITEM_1 1   // o so 1 la o trai tim
+#define POINT_ITEM_1 1   // TILE 1 IS HEART
 
 
 #define MAX_MAP_X 1010

@@ -4,25 +4,23 @@
 
 PlayerPower::PlayerPower()
 {
-    number_=0;
+    number_ = 0;
 }
 
 PlayerPower::~PlayerPower()
 {
-
 }
 
-void PlayerPower::AddPos(const int& xp)
+void PlayerPower::AddPos(const int &xp)
 {
     pos_list_.push_back(xp);
-
 }
 
-void PlayerPower::Init(SDL_Renderer* screen)
+void PlayerPower::Init(SDL_Renderer *screen)
 {
-    LoadImg("img/player_pw.png",screen);
-    number_=3;
-    if(pos_list_.size()>0)
+    LoadImg("img/player_pw.png", screen);
+    number_ = 3;
+    if (pos_list_.size() > 0)
     {
         pos_list_.clear();
     }
@@ -32,14 +30,13 @@ void PlayerPower::Init(SDL_Renderer* screen)
     AddPos(100);
 }
 
-void PlayerPower::Show(SDL_Renderer* screen)
+void PlayerPower::Show(SDL_Renderer *screen)
 {
-    for(int i=0; i<pos_list_.size();i++)
+    for (int i = 0; i < pos_list_.size(); i++)
     {
-        rect_.x=pos_list_.at(i);
-        rect_.y=0;
+        rect_.x = pos_list_.at(i);
+        rect_.y = 0;
         Render(screen);
-
     }
 }
 
@@ -52,30 +49,29 @@ void PlayerPower::Decrease()
 void PlayerPower::InitCrease()
 {
     number_++;
-    int last_pos=pos_list_.back();
-    last_pos+=40;
+    int last_pos = pos_list_.back();
+    last_pos += 40;
     pos_list_.push_back(last_pos);
 }
 
 PlayerMoney::PlayerMoney()
 {
-    x_pos_=0;
-    y_pos_=0;
+    x_pos_ = 0;
+    y_pos_ = 0;
 }
 
 PlayerMoney::~PlayerMoney()
 {
-
 }
 
-void PlayerMoney::Init(SDL_Renderer* screen)
+void PlayerMoney::Init(SDL_Renderer *screen)
 {
-    bool ret=LoadImg("img/heart_.png",screen);    
+    bool ret = LoadImg("img/heart_.png", screen);
 }
 
-void PlayerMoney::Show(SDL_Renderer* screen)
+void PlayerMoney::Show(SDL_Renderer *screen)
 {
-    rect_.x=x_pos_;
-    rect_.y=y_pos_;
+    rect_.x = x_pos_;
+    rect_.y = y_pos_;
     Render(screen);
 }

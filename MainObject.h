@@ -13,6 +13,7 @@
 #define PLAYER_SPEED 8
 #define PLAYER_JUMP_VAL 20
 #define MAX_FRAME_PLAYER 6
+#define POS_REACH_TO_WIN 79800            //79800
 
 
 class MainObject : public BaseObject

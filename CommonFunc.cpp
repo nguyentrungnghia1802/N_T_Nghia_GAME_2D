@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-bool winner=false;
+bool winner = false;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
@@ -49,8 +49,3 @@ bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &obje
   }
   return false;
 }
-
-
-
-
-

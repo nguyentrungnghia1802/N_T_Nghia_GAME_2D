@@ -17,6 +17,7 @@ PlayerPower player_power; // HP survival
 PlayerMoney player_heart; // point
 TextObject time_game;
 TextObject heart_game;
+TextObject point_win;
 Map map_data;
 
 TTF_Font *font_time = NULL;
@@ -26,10 +27,11 @@ TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 
-Mix_Music *gMusic = NULL;
+Mix_Music *gMusic = NULL; // Don't use now
 Mix_Chunk *gMainMusic = NULL;
 Mix_Chunk *gGame_Start = NULL;
 Mix_Chunk *gThreats_Die = NULL;
+Mix_Chunk *gCongrat = NULL;
 
 SDL_Surface *g_img_menu;
 SDL_Event eve;
@@ -43,6 +45,7 @@ SDL_Rect WinGameRect;
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
+std::string str_val;
 
 bool isRestarting = false; // Replay game if game over
 bool is_quit = false;      // Turn off game
@@ -56,41 +59,12 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
 bool InitData();
 bool LoadBackground();
 void close();
-
-std::vector<ThreatsObject *> MakeThreats();
 void renderText(const std::string &text, int x, int y, TTF_Font *font);
 void LoadFromFile();
-void load_Menu();
-void Render_Menu();
-void destroy_Menu();
 void Call_Menu();
+void Win_Game(); // Win_Game when Main Player reach the goal
 
-void Win_Game()
-{          
-    bool replay_game = false;
-    while (replay_game == false)
-    {
-        SDL_RenderCopy(g_screen, WinGame, NULL, &WinGameRect);
-        renderText("POINT: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
-        renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
-        SDL_RenderPresent(g_screen);
-        while (SDL_PollEvent(&eve_win))
-        {
-            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
-            {
-                Mix_PlayChannel(-1, gGame_Start, 0);
-                isRestarting = true;
-                replay_game=true;
-            }
-            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
-            {
-                replay_game=true;
-                is_quit = true;
-            }
-        }
-    }
-    replay_game=false;
-}
+std::vector<ThreatsObject *> MakeThreats();
 
 int main(int argc, char *argv[])
 {
@@ -101,7 +75,7 @@ int main(int argc, char *argv[])
     if (LoadBackground() == false)
         return -1;
 
-    LoadFromFile();
+    LoadFromFile(); // Load Files
 
     game_map.LoadTiles(g_screen); // Load Map
 
@@ -115,6 +89,7 @@ int main(int argc, char *argv[])
     // Text
     time_game.SetColor(TextObject::WHITE_TEXT);
     heart_game.SetColor(TextObject::RED_TEXT);
+    point_win.SetColor(TextObject::RED_TEXT);
 
     // MENU
     Call_Menu();
@@ -122,10 +97,12 @@ int main(int argc, char *argv[])
     threats_list = MakeThreats();
 
     WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
-    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};  
+    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
 
+    //      _START_GAME_
     while (!is_quit)
     {
+        //      CHECK RESTART
         if (isRestarting)
         {
             for (int i = 0; i < threats_list.size(); i++)
@@ -143,9 +120,6 @@ int main(int argc, char *argv[])
             isRestarting = !isRestarting;
         }
 
-        heart_count = p_player.GetMoneyCount();
-
-        //            FPS
         fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
         {
@@ -167,14 +141,17 @@ int main(int argc, char *argv[])
         game_map.MapRun(map_data);
 
         //            PLAYER
+        heart_count = p_player.GetMoneyCount();
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
         p_player.DoPlayer(map_data, gEarn_Heart);
         p_player.Show(g_screen);
 
+        //            SET MAP
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
 
+        //      SHOW_GAME_INFORMATION
         player_power.Show(g_screen);
         player_heart.Show(g_screen);
 
@@ -201,7 +178,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-
+        //   Collision
         if (bCol2 || is_minusLinve == true)
         {
             Mix_PlayChannel(-1, gPlayer_Die, 0);
@@ -251,26 +228,16 @@ int main(int argc, char *argv[])
                 }
                 quit_game_over = false;
             }
-            for (int i = 0; i < 8000; i++)
-            {
-                bCol2 = false;
-            }
         }
-
-
-
-
-        if(winner==true)                                                       /////////////////////////////////////////////////////////////
+        //           Win_Game
+        if (winner == true)
         {
-            std::cout<<"yes";
+            Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
-            winner=false;
+            winner = false;
         }
 
-
-
-
-        //      Dan ban
+        //            Bullet
         bullet_arr = p_player.get_bullet_list();
         for (int r = 0; r < bullet_arr.size(); r++)
         {
@@ -306,13 +273,13 @@ int main(int argc, char *argv[])
             }
         }
 
-
-        // Show game time
+        //    Show game time
         std::string str_time = "Days: ";
         Uint32 time_val = SDL_GetTicks() / 1000;
         Uint32 val_time = 0 + time_val;
 
-        if (val_time >= 5000)
+        //    LIMITED TIME
+        if (val_time >= 9999)
         {
             if (MessageBoxW(NULL, L"T-kun lost her!", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
             {
@@ -320,10 +287,9 @@ int main(int argc, char *argv[])
                 break;
             }
         }
-
         else
         {
-            std::string str_val = std::to_string(val_time);
+            str_val = std::to_string(val_time);
             str_time += str_val;
 
             time_game.SetText(str_time);
@@ -331,6 +297,7 @@ int main(int argc, char *argv[])
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
 
+        //      HEART_ITEM
         heart_str = std::to_string(heart_count);
         heart_game.SetText(heart_str);
         heart_game.LoadFromRenderText(font_heart, g_screen);
@@ -338,6 +305,7 @@ int main(int argc, char *argv[])
 
         SDL_RenderPresent(g_screen);
 
+        //        FPS
         int real_imp_time = fps_timer.get_ticks();
         int time_one_frame = 1000 / FRAME_PER_SECOND;
 
@@ -351,21 +319,59 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
+void LoadFromFile()
 {
+    gFont1 = TTF_OpenFont("font/2.ttf", 30);
+    gFont2 = TTF_OpenFont("font/2.ttf", 30);
+    gFont3 = TTF_OpenFont("font/1.ttf", 120);
+    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+
+    g_img_menu = IMG_Load("menu/menu.png");
+    gWin_game = IMG_Load("map/WIN_GAME.png");
     game_map.LoadMap("map/map01.txt");
-    game_map.LoadTiles(g_screen);
-    game_map.ResetMap(map_data);
+    p_player.LoadImg("img/player_right1.png", g_screen);
 
-    p_player.SetXPos(200);
-    p_player.HeartCount(0);
-    player_power.Init(g_screen);
+    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
+    gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
+    gFire_ball = Mix_LoadWAV("Music/Fire_Ball.wav");
+    gPlayer_Die = Mix_LoadWAV("Music/Player_Die.wav");
+    gGame_Start = Mix_LoadWAV("Music/Start.wav");
+    gThreats_Die = Mix_LoadWAV("Music/Threats_Die.wav");
+    gCongrat = Mix_LoadWAV("Music/Congrats.wav");
+}
 
-    num_die = 0;
-    heart_count = 0;
+void close()
+{
+    g_background.Free();
 
-    p_player.SetRect(0, 0);
-    p_player.set_comeback_time(3);
+    SDL_DestroyRenderer(g_screen);
+    g_screen = NULL;
+
+    SDL_DestroyWindow(g_window);
+    g_window = NULL;
+
+    Mix_FreeChunk(gEarn_Heart);
+    Mix_FreeChunk(gMainMusic);
+    Mix_FreeChunk(gFire_ball);
+    Mix_FreeChunk(gPlayer_Die);
+    Mix_FreeChunk(gGame_Start);
+    Mix_FreeChunk(gThreats_Die);
+    Mix_FreeChunk(gCongrat);
+
+    gEarn_Heart = NULL;
+    gMainMusic = NULL;
+    gFire_ball = NULL;
+    gPlayer_Die = NULL;
+    gGame_Start = NULL;
+    gThreats_Die = NULL;
+    gCongrat = NULL;
+
+    Mix_FreeMusic(gMusic);
+    gMusic = NULL;
+
+    Mix_Quit();
+    IMG_Quit();
+    SDL_Quit();
 }
 
 bool InitData()
@@ -403,7 +409,7 @@ bool InitData()
         if (TTF_Init() == -1)
         {
             success = false;
-            std::cout << "khong the mo tep";
+            std::cout << "Cannot open folder!";
         }
 
         font_time = TTF_OpenFont("font/1.ttf", 35);
@@ -412,7 +418,7 @@ bool InitData()
         if (font_time == NULL)
         {
             success = false;
-            std::cout << "khong the mo tep ";
+            std::cout << "Cannot open folder! ";
         }
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -440,38 +446,6 @@ bool LoadBackground()
     return true;
 }
 
-void close()
-{
-    g_background.Free();
-
-    SDL_DestroyRenderer(g_screen);
-    g_screen = NULL;
-
-    SDL_DestroyWindow(g_window);
-    g_window = NULL;
-
-    Mix_FreeChunk(gEarn_Heart);
-    Mix_FreeChunk(gMainMusic);
-    Mix_FreeChunk(gFire_ball);
-    Mix_FreeChunk(gPlayer_Die);
-    Mix_FreeChunk(gGame_Start);
-    Mix_FreeChunk(gThreats_Die);
-
-    gEarn_Heart = NULL;
-    gMainMusic = NULL;
-    gFire_ball = NULL;
-    gPlayer_Die = NULL;
-    gGame_Start = NULL;
-    gThreats_Die = NULL;
-
-    Mix_FreeMusic(gMusic);
-    gMusic = NULL;
-
-    Mix_Quit();
-    IMG_Quit();
-    SDL_Quit();
-}
-
 void renderText(const std::string &text, int x, int y, TTF_Font *font)
 {
     SDL_Color textColor = {255, 255, 255}; // White color
@@ -497,53 +471,16 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font)
     SDL_DestroyTexture(texture);
 }
 
-void LoadFromFile()
-{
-    gFont1 = TTF_OpenFont("font/2.ttf", 30);
-    gFont2 = TTF_OpenFont("font/2.ttf", 30);
-    gFont3 = TTF_OpenFont("font/1.ttf", 120);
-    gFont4 = TTF_OpenFont("font/2.ttf", 100);
-
-    g_img_menu = IMG_Load("menu/menu.png");
-    game_map.LoadMap("map/map01.txt");
-    p_player.LoadImg("img/player_right1.png", g_screen);
-
-    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
-    gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
-    gFire_ball = Mix_LoadWAV("Music/Fire_Ball.wav");
-    gPlayer_Die = Mix_LoadWAV("Music/Player_Die.wav");
-    gGame_Start = Mix_LoadWAV("Music/Start.wav");
-    gThreats_Die = Mix_LoadWAV("Music/Threats_Die.wav");
-    gWin_game = IMG_Load("map/WIN_GAME.png");
-}
-
-void Render_Menu()
-{
-    SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
-    renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
-    renderText("ESC TO EXIT!", 30, 420, gFont2);
-    SDL_RenderPresent(g_screen);
-}
-
-void destroy_Menu()
-{
-    SDL_FreeSurface(g_img_menu);
-    SDL_DestroyTexture(menu);
-}
-void load_Menu()
+void Call_Menu()
 {
     menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
     menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           //    set menu_position
-}
-
-void Call_Menu()
-{
-    load_Menu(); // load_Menu_backgound
-
     while (start_Game == false)
     {
-        Render_Menu(); // Render_Menu_Texture
-
+        SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
+        renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
+        renderText("ESC TO EXIT!", 30, 420, gFont2);
+        SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve))
         {
             if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
@@ -552,16 +489,68 @@ void Call_Menu()
                 Mix_PlayChannel(-1, gGame_Start, 0);
                 SDL_Delay(4000);
                 Mix_PlayChannel(-1, gMainMusic, -1);
-                destroy_Menu();
+                SDL_FreeSurface(g_img_menu);
+                SDL_DestroyTexture(menu);
                 break;
             }
             if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
             {
-                destroy_Menu();
+                SDL_FreeSurface(g_img_menu);
+                SDL_DestroyTexture(menu);
                 close(); // Exit Game
             }
         }
     }
+}
+
+void Win_Game()
+{
+    bool replay_game = false;
+    while (replay_game == false)
+    {
+        SDL_RenderCopy(g_screen, WinGame, NULL, &WinGameRect);
+        renderText("T-Kun finds Isha after: ", SCREEN_WIDTH / 2 - 676, 180, gFont4);
+        renderText(str_val, SCREEN_WIDTH / 2 + 290, 180, gFont4);
+        renderText("DAYS ", SCREEN_WIDTH / 2 + 455, 180, gFont4);
+
+        heart_game.SetText("POINTS: " + heart_str);
+        heart_game.LoadFromRenderText(gFont3, g_screen);
+        heart_game.RenderText(g_screen, SCREEN_WIDTH / 2 - 232, 30);
+
+        SDL_RenderPresent(g_screen);
+        while (SDL_PollEvent(&eve_win))
+        {
+            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
+            {
+                Mix_PlayChannel(-1, gGame_Start, 0);
+                isRestarting = true;
+                replay_game = true;
+            }
+            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
+            {
+                replay_game = true;
+                is_quit = true;
+            }
+        }
+    }
+    replay_game = false;
+}
+
+void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
+{
+    game_map.LoadMap("map/map01.txt");
+    game_map.LoadTiles(g_screen);
+    game_map.ResetMap(map_data);
+
+    p_player.SetXPos(200);
+    p_player.HeartCount(0);
+    player_power.Init(g_screen);
+
+    num_die = 0;
+    heart_count = 0;
+
+    p_player.SetRect(0, 0);
+    p_player.set_comeback_time(3);
 }
 
 std::vector<ThreatsObject *> MakeThreats()

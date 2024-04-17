@@ -5,49 +5,38 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
-
-class PlayerPower:public BaseObject
+class PlayerPower : public BaseObject
 {
-    public:
-        PlayerPower();
-        ~PlayerPower();
+public:
+    PlayerPower();
+    ~PlayerPower();
 
-        void SetNum(const int& num) {number_=num;}
-        void AddPos(const int& xPos);
-        void Show(SDL_Renderer* screen);
-        void Init(SDL_Renderer* screen);
+    void SetNum(const int &num) { number_ = num; }
+    void AddPos(const int &xPos);
+    void Show(SDL_Renderer *screen);
+    void Init(SDL_Renderer *screen);
 
-        void InitCrease();
-        void Decrease();
+    void InitCrease();
+    void Decrease();
 
-    private:
-        int number_;
-        std::vector<int> pos_list_;
-
-
+private:
+    int number_;
+    std::vector<int> pos_list_;
 };
 
-class PlayerMoney:public BaseObject
+class PlayerMoney : public BaseObject
 {
-    public:
-        PlayerMoney();
-        ~PlayerMoney();
+public:
+    PlayerMoney();
+    ~PlayerMoney();
 
-        void Init(SDL_Renderer* screen);
-        void Show(SDL_Renderer* screen);
-        void SetPos(const int& x, const int& y){x_pos_=x,y_pos_=y;}
+    void Init(SDL_Renderer *screen);
+    void Show(SDL_Renderer *screen);
+    void SetPos(const int &x, const int &y) { x_pos_ = x, y_pos_ = y; }
 
-
-        
-    private:
-        int x_pos_;
-        int y_pos_;
-
-
-        
+private:
+    int x_pos_;
+    int y_pos_;
 };
-
-
-
 
 #endif
