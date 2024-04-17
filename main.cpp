@@ -519,7 +519,7 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->LoadImg("img/threat_2_left.png", g_screen);
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(3500 + i * (650 + 100 * (rand() % 50))); //  Set Threats_position
+            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3)+7))); //  Set Threats_position
             p_threat->set_y_pos(200);
 
             int pos1 = p_threat->get_x_pos() - 100;
@@ -540,7 +540,7 @@ std::vector<ThreatsObject *> MakeThreats()
         {
             p_threat->LoadImg("img/threat_3_left.png", g_screen);
             p_threat->set_clips();
-            p_threat->set_x_pos(7000 + i * (800 + 100 * (rand() % 5))); //  Set Threats_position
+            p_threat->set_x_pos(5000 + i * (1380 + 100 * ((rand() % 3) + 3))); //  Set Threats_position
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
             p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
 
