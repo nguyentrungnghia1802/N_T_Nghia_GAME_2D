@@ -238,6 +238,36 @@ void ThreatsObject::CheckToMap(Map &map_data)
         {
             Free();
         }
+        if(y_pos_ < 200)
+        {
+            y_pos_ = 560;
+        }
+    }
+    else
+    {
+        int x1 = 0;
+        int x2 = 0;
+
+        int y1 = 0;
+        int y2 = 0;
+
+        int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
+
+        x1 = (x_pos_ + x_val_) / TILE_SIZE;
+        x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE;
+
+        y1 = (y_pos_) / TILE_SIZE;
+        y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
+
+        int val1 = map_data.tile[y1][x1];
+        int val2 = map_data.tile[y1][x2];
+        int val3 = map_data.tile[y2][x1];
+        int val4 = map_data.tile[y2][x2];
+
+        if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE && val2 != POINT_ITEM_1))
+        {
+            y_pos_=(y1+1)*TILE_SIZE;
+        }
     }
 }
 

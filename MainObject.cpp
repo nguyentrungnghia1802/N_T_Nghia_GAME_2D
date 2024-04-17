@@ -31,6 +31,7 @@ MainObject::~MainObject()
       
 }
 
+
 bool MainObject::LoadImg (std::string path, SDL_Renderer* screen)
 {
     bool ret = BaseObject::LoadImg(path, screen);
@@ -92,6 +93,8 @@ void MainObject::set_clips()
     }
 }
 
+int delay_frame = 0;
+
 void MainObject::Show(SDL_Renderer* des)
 {
     if(status_==WALK_LEFT)
@@ -106,7 +109,12 @@ void MainObject::Show(SDL_Renderer* des)
     if (input_type_.left_ == 1 ||
         input_type_.right_ == 1)
     {
-        frame_++;
+        delay_frame++;
+        if(delay_frame==2)
+        {
+            frame_++;
+            delay_frame=0;
+        }
     }
     else
     {
@@ -247,7 +255,7 @@ void MainObject::RemoveBullet(const int& idx)
 
 
 
-void MainObject::DoPlayer(Map& map_data)
+void MainObject::DoPlayer(Map& map_data,  Mix_Chunk *gEarn_Heart)
 {
    
     if(come_back_time_==0)
@@ -280,7 +288,7 @@ void MainObject::DoPlayer(Map& map_data)
         input_type_.jump_ =0;
     }
     
-    CheckToMap(map_data);
+    CheckToMap(map_data, gEarn_Heart);
 
     }
 
@@ -315,7 +323,7 @@ void MainObject::DoPlayer(Map& map_data)
     
 } 
 
-void MainObject::CheckToMap(Map& map_data)
+void MainObject::CheckToMap(Map& map_data,  Mix_Chunk *gEarn_Heart)
 {
     int x1=0;
     int x2=0;
@@ -344,6 +352,7 @@ void MainObject::CheckToMap(Map& map_data)
             {
                 map_data.tile[y1][x2]=0;
                 map_data.tile[y2][x2]=0;
+                Mix_PlayChannel(-1, gEarn_Heart, 0);  
                 IncreaseMoney();
             }
             else
@@ -365,6 +374,7 @@ void MainObject::CheckToMap(Map& map_data)
             {
                 map_data.tile[y1][x2]=0;
                 map_data.tile[y2][x2]=0;
+                Mix_PlayChannel(-1, gEarn_Heart, 0);                                                    //////////////
                 IncreaseMoney();
             }
             else

@@ -20,7 +20,6 @@ class MainObject : public BaseObject
 public:
         MainObject();
         ~MainObject();
-
         enum WalkType
         {
                 WALK_RIGHT = 0,
@@ -32,8 +31,8 @@ public:
         void HandelInputAction(SDL_Event events, SDL_Renderer* screen);
         void set_clips();
 
-        void DoPlayer(Map& map_data);
-        void CheckToMap(Map& map_data);
+        void DoPlayer(Map& map_data, Mix_Chunk *gEarn_Heart);
+        void CheckToMap(Map& map_data, Mix_Chunk *gEarn_Heart);
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
         SDL_Rect GetRectFrame();
 

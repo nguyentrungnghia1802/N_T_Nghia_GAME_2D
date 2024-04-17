@@ -28,7 +28,6 @@ TTF_Font *gFont4 = NULL;
 
 Mix_Music *gMusic = NULL;
 Mix_Chunk *gMainMusic = NULL;
-Mix_Chunk *gEarn_Heart = NULL;
 Mix_Chunk *gMedium = NULL;
 Mix_Chunk *gLow = NULL;
 
@@ -137,7 +136,7 @@ int main(int argc, char *argv[])
         //            PLAYER
         p_player.HanleBullet(g_screen);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
-        p_player.DoPlayer(map_data);
+        p_player.DoPlayer(map_data, gEarn_Heart);
         p_player.Show(g_screen);
 
         game_map.SetMap(map_data);
@@ -454,7 +453,7 @@ void LoadFromFile()
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
 
-    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav"); ///////////////////////////////////////////////
+    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav"); // sua lai duong dan ten file              ///////////////////////////////////////////////
     gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
 }
 
@@ -523,8 +522,8 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->set_x_pos(3500 + i * (650 + 100 * (rand() % 50))); //  Set Threats_position
             p_threat->set_y_pos(200);
 
-            int pos1 = p_threat->get_x_pos() - 200;
-            int pos2 = p_threat->get_x_pos() + 200;
+            int pos1 = p_threat->get_x_pos() - 100;
+            int pos2 = p_threat->get_x_pos() + 100;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
 
