@@ -10,6 +10,7 @@
 #include "TextObject.h"
 
 BaseObject g_background;
+BaseObject gMonster;
 ImpTimer fps_timer;
 GameMap game_map;
 MainObject p_player;
@@ -134,11 +135,17 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
         SDL_RenderClear(g_screen);
 
-        g_background.Render(g_screen, NULL);
+        minus -= 2;
+        if (minus <= -SCREEN_WIDTH)
+        {
+            minus = 0;
+        }
+        g_background.Render1(g_screen, NULL);
+        gMonster.Render(g_screen, NULL);
 
         //             MAP
         map_data = game_map.getMap();
-        if(map_data.start_x_<MAX_MAP_X*TILE_SIZE-1500)
+        if (map_data.start_x_ < MAX_MAP_X * TILE_SIZE - 1500)
         {
             game_map.MapRun(map_data);
         }
@@ -333,6 +340,7 @@ void LoadFromFile()
     gWin_game = IMG_Load("map/WIN_GAME.png");
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
+    gMonster.LoadImg("img/Monster.png", g_screen);
 
     gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
     gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
@@ -346,6 +354,7 @@ void LoadFromFile()
 void close()
 {
     g_background.Free();
+    gMonster.Free();
 
     SDL_DestroyRenderer(g_screen);
     g_screen = NULL;
@@ -518,7 +527,7 @@ void Win_Game()
 
         heart_game.SetText("POINTS: " + heart_str);
         heart_game.LoadFromRenderText(gFont3, g_screen);
-        heart_game.RenderText(g_screen, SCREEN_WIDTH / 2 - 232, 30);
+        heart_game.RenderText(g_screen, SCREEN_WIDTH / 2 - 252, 30);
 
         SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve_win))

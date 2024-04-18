@@ -47,7 +47,8 @@ const int RENDER_DRAW_COLOR=0xff;
 #define MAX_MAP_X 1011
 #define MAX_MAP_Y 10
 
- extern bool winner;
+extern bool winner;
+extern int minus;
 
 typedef struct Input
 {

@@ -31,20 +31,31 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 Đừng bỏ cuộc nhé!
 
 3, Hướng dẫn chơi game:
+
 - Khởi động game, chơi lại và thoát game:
+
 + Ở mục MENU: nhấn phím SPACE để bắt đầu chơi
               nhấn phím ESC để thoát game
 
 + Khi vào game: Nhấn nút "X" ở góc phải window để thoát game
-                Khi nhân vật chết 4 lần, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại.
+                Khi nhân vật chết 4 mạng, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại.
 
 + Khi "phá đảo": T-Kun và Isha được đoàn tụ, hiện điểm, số ngày trải qua. 
                  Nhấn phím SPACE để chơi lại.
                  Nhấn phím ESC để thoát game.
 
-+ Các thao tác trong game:  Phím "d": di chuyển sang phải
+- Các thao tác trong game:  Phím "d": di chuyển sang phải
                             Phím "a": di chuyển sang trái
                             Phím "w": nhảy lên
                             Chuột trái: bắn đạn
+
+- Nội dung Game:  Bạn phải liên tục điều khiển T-Kun di chuyển sang phải để tránh bị quái vật DarkClaw bắt được.
+                  Nếu T-Kun bị quái vật bắt, rơi xuống vực hoặc va chạm với Threats trên hành trình sẽ bị trừ một mạng.
+                  Nhặt trái tim trên đường đi để nhận điểm.
+                  Sử dụng đạn để tiêu diệt Threats cản đường.
+                  Sử dụng linh hoạt các phím di chuyển để vượt qua thung lũng, mê cung.
+                  Khi đi hết hành trình và gặp được Isha thì game sẽ kết thúc và hiện điểm.
+
+**NOTE: Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy
 
    

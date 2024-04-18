@@ -3,6 +3,7 @@
 #include <iostream>
 
 bool winner = false;
+int minus = 0;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
