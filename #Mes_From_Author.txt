@@ -1,0 +1,38 @@
+*******************
+1, Some information about Author:
+- Name: Nguyen Trung Nghia
+- Student ID: 23020688
+- Age: 19
+- Class: K68J
+- School: VNU University of Engineering and Technology (VNU-UET)
+
+2, Some information about this Game:
+- A project of subject: Advanced Programming.
+- It's a project which we (Students of K68J) have to finish to pass the subject.
+- It's about a game 2d or a program created by SDL2 Library.
+
+- To finish this project, I learned how to use SDL2 from some sources of reference:
++ https://courses.uet.vnu.edu.vn/course/view.php?id=10853
++ https://lazyfoo.net/tutorials/SDL/
++ https://phattrienphanmem123az.com/lap-trinh-game-cpp
++ https://www.youtube.com/@PhatTrienPhanMem123AZ
++ https://www.youtube.com/watch?v=ObEOK7HSq2E
++ https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B
++ https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR
+
+- Besides, during making this game, I had been receiving lots of assistance from some great people:
++ Le Duc Trong          (my teacher)
++ Tran Truong Thuy      (my teacher)
++ Nguyen Trung Hieu     (my brother)
++ Tan Van Quyen         (my friend)
++ Dang Tien Dung        (my mentor)
+
+Sending all of you my deepest gratitude. Wish you all the best in the life!
+
+3, Sent to my Users:
+Because this is my first time creating a game, there may be mistakes, so I hope for your understanding and feedback.
+Thank you for choosing my game, hope you will have amazing experiences when playing this game.
+One more time, THANK YOU SO MUCH!
+
+
+
