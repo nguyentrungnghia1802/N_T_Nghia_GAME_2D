@@ -46,9 +46,21 @@ SDL_Surface *gWin_game;
 SDL_Texture *WinGame;
 SDL_Rect WinGameRect;
 
-SDL_Surface *journey_Surface;
-SDL_Texture *journey_Texture;
-SDL_Rect journey_Rect;
+SDL_Surface *journey_Surface_1;
+SDL_Surface *journey_Surface_2;
+SDL_Surface *journey_Surface_3;
+SDL_Surface *journey_Surface_4;
+SDL_Surface *journey_Surface_5;
+SDL_Texture *journey_Texture_1;
+SDL_Texture *journey_Texture_2;
+SDL_Texture *journey_Texture_3;
+SDL_Texture *journey_Texture_4;
+SDL_Texture *journey_Texture_5;
+SDL_Rect journey_Rect_1;
+SDL_Rect journey_Rect_2;
+SDL_Rect journey_Rect_3;
+SDL_Rect journey_Rect_4;
+SDL_Rect journey_Rect_5;
 
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
@@ -70,16 +82,10 @@ void close();
 void renderText(const std::string &text, int x, int y, TTF_Font *font);
 void LoadFromFile();
 void Call_Menu();
-void Win_Game(); // Win_Game when Main Player reach the goal
-void render_journey_img();                                         
-void Create_texture()
-{
-    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
-    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
+void Win_Game();           // Win_Game when Main Player reach the goal
+void render_journey_img();   
+void Create_texture();
 
-    journey_Texture = SDL_CreateTextureFromSurface(g_screen, journey_Surface); 
-    journey_Rect = {0, 0, journey_Surface->w, journey_Surface->h};
-}
 
 std::vector<ThreatsObject *> MakeThreats();
 
@@ -355,7 +361,11 @@ void LoadFromFile()
 
     g_img_menu = IMG_Load("menu/menu.png");
     gWin_game = IMG_Load("map/WIN_GAME.png");
-    journey_Surface = IMG_Load("journey/journey_1.png");
+    journey_Surface_1 = IMG_Load("journey/journey_1.png");
+    journey_Surface_2 = IMG_Load("journey/journey_2.png");
+    journey_Surface_3 = IMG_Load("journey/journey_3.png");
+    journey_Surface_4 = IMG_Load("journey/journey_4.png");
+    journey_Surface_5 = IMG_Load("journey/journey_5.png");
 
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
@@ -403,32 +413,6 @@ void close()
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();
-}
-
-void render_journey_img()
-{
-    if(map_data.start_x_==JOURNEY_EACH_MAP*0+280)
-    {
-        bool replay_game = false;
-        while (replay_game == false)
-        {
-            SDL_RenderCopy(g_screen, journey_Texture, NULL, &journey_Rect);
-            SDL_RenderPresent(g_screen);
-            while (SDL_PollEvent(&eve_win))
-            {
-                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
-                {
-                    replay_game = true;
-                }
-                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
-                {
-                    replay_game = true;
-                    is_quit = true;
-                }
-            }
-        }
-        replay_game = false;
-    }
 }
 
 bool InitData()
@@ -614,62 +598,161 @@ std::vector<ThreatsObject *> MakeThreats()
 {
     std::vector<ThreatsObject *> list_threats;
 
-    ThreatsObject *ThreatFly1 = new ThreatsObject[NUM_THREATS_LIST];
-
+//             -  THREAT 1 -
+    ThreatsObject *ThreatFly_1 = new ThreatsObject[NUM_THREATS_LIST];
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        ThreatsObject *p_threat = (ThreatFly1 + i);
+        ThreatsObject *p_threat = (ThreatFly_1 + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_1.png", g_screen);              //  Orc_Fly
+            p_threat->LoadImg("img/threat_1.png", g_screen);              //  Orc_Fly 
             p_threat->set_clips();
-            p_threat->set_x_pos(2000 + i * (780 + 100 * ((rand() % 3) + 3)));  
+            p_threat->set_x_pos(JOURNEY_EACH_MAP * 0 + 2000 + i * (780 + 100 * ((rand() % 3) + 3)));  
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
             p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
-
             list_threats.push_back(p_threat);
         }
     }
 
-    ThreatsObject *ThreatFly2 = new ThreatsObject[NUM_THREATS_LIST];
-
-    for (int i = 0; i < NUM_THREATS_LIST; i++)
-    {
-        ThreatsObject *p_threat = (ThreatFly2 + i);
-        if (p_threat != NULL)
-        {
-            p_threat->LoadImg("img/threat_3_left.png", g_screen);              //  Pterosaurs
-            p_threat->set_clips();
-            p_threat->set_x_pos(16170 + i * (780 + 100 * ((rand() % 3) + 3)));  
-            p_threat->set_y_pos(200 + 10 * (rand() % 5));
-            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
-
-            list_threats.push_back(p_threat);
-        }
-    }
-
-    ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
-
+//              -  THREAT 2 -
+        ThreatsObject *dynamic_threats_1 = new ThreatsObject[NUM_THREATS_LIST];
     for (int i = 0; i < NUM_THREATS_LIST; i++)                                
     {
-        ThreatsObject *p_threat = (dynamic_threats + i);
+        ThreatsObject *p_threat = (dynamic_threats_1 + i);
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_2_left.png", g_screen);              //  WHITE Dinasaur
+            p_threat->LoadImg("img/threat_2_left.png", g_screen);              //  WHITE Dinasaur  
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3) + 7))); 
+            p_threat->set_x_pos(JOURNEY_EACH_MAP * 1 + 500 + i * (780 + 100 * ((rand() % 3) + 3))); 
             p_threat->set_y_pos(200);
-
             int pos1 = p_threat->get_x_pos() - 100;
             int pos2 = p_threat->get_x_pos() + 100;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
+            list_threats.push_back(p_threat);
+        }
+    }
+
+//              -  THREAT 3 -
+        ThreatsObject *dynamic_threats_2 = new ThreatsObject[NUM_THREATS_LIST];
+        for (int i = 0; i < NUM_THREATS_LIST; i++)                                
+    {
+        ThreatsObject *p_threat = (dynamic_threats_2 + i);
+
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("threats/threat_3_left.png", g_screen);           
+            p_threat->set_clips();
+            p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
+            p_threat->set_x_pos(JOURNEY_EACH_MAP * 2 + 500 + i * (780 + 100 * ((rand() % 3) + 3))); 
+            p_threat->set_y_pos(200);
+            int pos1 = p_threat->get_x_pos() - 100;
+            int pos2 = p_threat->get_x_pos() + 100;
+            p_threat->SetAnimationPos(pos1, pos2);
+            p_threat->set_input_left(1);
+            list_threats.push_back(p_threat);
+        }
+    }
+
+//              -  THREAT 4 -
+    ThreatsObject *ThreatFly_2 = new ThreatsObject[NUM_THREATS_LIST];
+
+    for (int i = 0; i < NUM_THREATS_LIST; i++)
+    {
+        ThreatsObject *p_threat = (ThreatFly_2 + i);
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("img/threat_4.png", g_screen);              //  Pterosaurs
+            p_threat->set_clips();
+            p_threat->set_x_pos(JOURNEY_EACH_MAP * 3 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));  
+            p_threat->set_y_pos(200 + 10 * (rand() % 5));
+            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
 
             list_threats.push_back(p_threat);
         }
     }
 
+
+
     return list_threats;
+}
+
+void Create_texture()
+{
+    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
+    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
+
+    journey_Texture_1 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_1); 
+    journey_Rect_1 = {0, 0, journey_Surface_1->w, journey_Surface_1->h};
+
+    journey_Texture_2 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_2);
+    journey_Rect_2 = {0, 0, journey_Surface_2->w, journey_Surface_2->h};
+
+    journey_Texture_3 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_3);
+    journey_Rect_3 = {0, 0, journey_Surface_3->w, journey_Surface_3->h};
+
+    journey_Texture_4 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_4);
+    journey_Rect_4 = {0, 0, journey_Surface_4->w, journey_Surface_4->h};
+
+    journey_Texture_5 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_5);
+    journey_Rect_5 = {0, 0, journey_Surface_5->w, journey_Surface_5->h};
+}
+
+void render_journey_img()
+{
+    if (map_data.start_x_ == JOURNEY_EACH_MAP * 0 + 280 ||
+        map_data.start_x_ == JOURNEY_EACH_MAP * 1 + 280 ||
+        map_data.start_x_ == JOURNEY_EACH_MAP * 2 + 280 ||
+        map_data.start_x_ == JOURNEY_EACH_MAP * 3 + 280 ||
+        map_data.start_x_ == JOURNEY_EACH_MAP * 4 + 280)
+    {
+        bool jour_img = false;
+        while (jour_img == false)
+        {
+            if(map_data.start_x_ == JOURNEY_EACH_MAP * 0 + 280)
+            {
+                SDL_RenderCopy(g_screen, journey_Texture_1, NULL, &journey_Rect_1);
+            }
+            else if(map_data.start_x_ == JOURNEY_EACH_MAP * 1 + 280)
+            {
+                if(change_threats==true)
+                {
+                    change_threats=false;
+                }
+                SDL_RenderCopy(g_screen, journey_Texture_2, NULL, &journey_Rect_2);
+            }
+            else if(map_data.start_x_ == JOURNEY_EACH_MAP * 2 + 280)
+            {
+                if(change_threats==false)
+                {
+                    change_threats=true;
+                }
+                SDL_RenderCopy(g_screen, journey_Texture_3, NULL, &journey_Rect_3);
+            }
+            else if(map_data.start_x_ == JOURNEY_EACH_MAP * 3 + 280)
+            {
+                SDL_RenderCopy(g_screen, journey_Texture_4, NULL, &journey_Rect_4);
+            }
+            else if(map_data.start_x_ == JOURNEY_EACH_MAP * 4 + 280)
+            {
+                SDL_RenderCopy(g_screen, journey_Texture_5, NULL, &journey_Rect_5);
+            }
+            SDL_RenderPresent(g_screen);
+            while (SDL_PollEvent(&eve_win))
+            {
+                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
+                {
+                    jour_img = true;
+                }
+                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    jour_img = true;
+                    is_quit = true;
+                }
+            }
+        }
+        jour_img = false;
+    }
 }

@@ -50,6 +50,7 @@ const int RENDER_DRAW_COLOR=0xff;
 
 extern bool winner;
 extern int minus;
+extern bool change_threats;
 
 typedef struct Input
 {

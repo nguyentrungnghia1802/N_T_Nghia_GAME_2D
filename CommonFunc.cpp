@@ -4,6 +4,7 @@
 
 bool winner = false;
 int minus = 0;
+bool change_threats = false;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
