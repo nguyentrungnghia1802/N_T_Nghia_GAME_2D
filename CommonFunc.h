@@ -40,12 +40,13 @@ const int RENDER_DRAW_COLOR=0xff;
 #define BLANK_TILE 0
 #define TILE_SIZE 80
 
-//Item map:
 #define POINT_ITEM_1 1   // TILE 1 IS HEART
-
 
 #define MAX_MAP_X 1011
 #define MAX_MAP_Y 10
+
+#define JOURNEY_SUM 5
+#define JOURNEY_EACH_MAP 16170     // int MAP_EACH_JOURNEY = (TILE_SIZE * MAX_MAP_X) / JOURNEY_SUM  ... MAP_EACH_JOURNEY % MAP_RUN == 0
 
 extern bool winner;
 extern int minus;

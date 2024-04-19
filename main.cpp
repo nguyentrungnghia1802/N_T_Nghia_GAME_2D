@@ -8,9 +8,12 @@
 #include "ThreatObject.h"
 #include "PlayHealth.h"
 #include "TextObject.h"
+#include <chrono>
+#include <thread>
 
 BaseObject g_background;
 BaseObject gMonster;
+
 ImpTimer fps_timer;
 GameMap game_map;
 MainObject p_player;
@@ -43,6 +46,10 @@ SDL_Surface *gWin_game;
 SDL_Texture *WinGame;
 SDL_Rect WinGameRect;
 
+SDL_Surface *journey_Surface;
+SDL_Texture *journey_Texture;
+SDL_Rect journey_Rect;
+
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
@@ -64,6 +71,15 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font);
 void LoadFromFile();
 void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
+void render_journey_img();                                         
+void Create_texture()
+{
+    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
+    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
+
+    journey_Texture = SDL_CreateTextureFromSurface(g_screen, journey_Surface); 
+    journey_Rect = {0, 0, journey_Surface->w, journey_Surface->h};
+}
 
 std::vector<ThreatsObject *> MakeThreats();
 
@@ -97,8 +113,8 @@ int main(int argc, char *argv[])
 
     threats_list = MakeThreats();
 
-    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
-    WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
+    Create_texture();
+
 
     //      _START_GAME_
     while (!is_quit)
@@ -142,6 +158,7 @@ int main(int argc, char *argv[])
         }
         g_background.Render1(g_screen, NULL);
         gMonster.Render(g_screen, NULL);
+        render_journey_img();                       /////////////////////////////////////////////////////////////////////////////////// BUG
 
         //             MAP
         map_data = game_map.getMap();
@@ -338,6 +355,8 @@ void LoadFromFile()
 
     g_img_menu = IMG_Load("menu/menu.png");
     gWin_game = IMG_Load("map/WIN_GAME.png");
+    journey_Surface = IMG_Load("journey/journey_1.png");
+
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
     gMonster.LoadImg("img/Monster.png", g_screen);
@@ -384,6 +403,32 @@ void close()
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();
+}
+
+void render_journey_img()
+{
+    if(map_data.start_x_==JOURNEY_EACH_MAP*0+280)
+    {
+        bool replay_game = false;
+        while (replay_game == false)
+        {
+            SDL_RenderCopy(g_screen, journey_Texture, NULL, &journey_Rect);
+            SDL_RenderPresent(g_screen);
+            while (SDL_PollEvent(&eve_win))
+            {
+                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
+                {
+                    replay_game = true;
+                }
+                if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    replay_game = true;
+                    is_quit = true;
+                }
+            }
+        }
+        replay_game = false;
+    }
 }
 
 bool InitData()
@@ -569,41 +614,58 @@ std::vector<ThreatsObject *> MakeThreats()
 {
     std::vector<ThreatsObject *> list_threats;
 
-    ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
+    ThreatsObject *ThreatFly1 = new ThreatsObject[NUM_THREATS_LIST];
 
     for (int i = 0; i < NUM_THREATS_LIST; i++)
+    {
+        ThreatsObject *p_threat = (ThreatFly1 + i);
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("img/threat_1.png", g_screen);              //  Orc_Fly
+            p_threat->set_clips();
+            p_threat->set_x_pos(2000 + i * (780 + 100 * ((rand() % 3) + 3)));  
+            p_threat->set_y_pos(200 + 10 * (rand() % 5));
+            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+    ThreatsObject *ThreatFly2 = new ThreatsObject[NUM_THREATS_LIST];
+
+    for (int i = 0; i < NUM_THREATS_LIST; i++)
+    {
+        ThreatsObject *p_threat = (ThreatFly2 + i);
+        if (p_threat != NULL)
+        {
+            p_threat->LoadImg("img/threat_3_left.png", g_screen);              //  Pterosaurs
+            p_threat->set_clips();
+            p_threat->set_x_pos(16170 + i * (780 + 100 * ((rand() % 3) + 3)));  
+            p_threat->set_y_pos(200 + 10 * (rand() % 5));
+            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
+
+            list_threats.push_back(p_threat);
+        }
+    }
+
+    ThreatsObject *dynamic_threats = new ThreatsObject[NUM_THREATS_LIST];
+
+    for (int i = 0; i < NUM_THREATS_LIST; i++)                                
     {
         ThreatsObject *p_threat = (dynamic_threats + i);
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_2_left.png", g_screen);
+            p_threat->LoadImg("img/threat_2_left.png", g_screen);              //  WHITE Dinasaur
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
-            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3) + 7))); //  Set Threats_position
+            p_threat->set_x_pos(15500 + i * (1000 + 100 * ((rand() % 3) + 7))); 
             p_threat->set_y_pos(200);
 
             int pos1 = p_threat->get_x_pos() - 100;
             int pos2 = p_threat->get_x_pos() + 100;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
-
-            list_threats.push_back(p_threat);
-        }
-    }
-
-    ThreatsObject *ThreatFly = new ThreatsObject[NUM_THREATS_LIST];
-
-    for (int i = 0; i < NUM_THREATS_LIST; i++)
-    {
-        ThreatsObject *p_threat = (ThreatFly + i);
-        if (p_threat != NULL)
-        {
-            p_threat->LoadImg("img/threat_3_left.png", g_screen);
-            p_threat->set_clips();
-            p_threat->set_x_pos(5000 + i * (1380 + 100 * ((rand() % 3) + 3))); //  Set Threats_position
-            p_threat->set_y_pos(200 + 10 * (rand() % 5));
-            p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
 
             list_threats.push_back(p_threat);
         }

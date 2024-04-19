@@ -55,11 +55,6 @@ void BaseObject::Render1(SDL_Renderer *des, const SDL_Rect *clip)
 void BaseObject::Render(SDL_Renderer *des, const SDL_Rect *clip)
 {   
     SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w, rect_.h};
-    if(rect_.x<=-SCREEN_WIDTH)
-    {
-        rect_.x=0;
-    }
-
     SDL_RenderCopy(des, p_object_, clip, &renderquad);
 }
 
