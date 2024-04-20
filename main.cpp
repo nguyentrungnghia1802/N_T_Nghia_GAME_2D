@@ -21,7 +21,7 @@ PlayerPower player_power; // HP survival
 PlayerMoney player_heart; // point
 TextObject time_game;
 TextObject heart_game;
-TextObject point_win;
+TextObject high_score_game;
 Map map_data;
 
 TTF_Font *font_time = NULL;
@@ -66,15 +66,18 @@ std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
 std::string str_val;
+std::string high_score_str;
 
 bool isRestarting = false; // Replay game if game over
 bool is_quit = false;      // Turn off game
 bool start_Game = false;   // After that, we can Play Game
 bool bCol2 = false;        // Collide:   Player and  Threats
 bool win_and_restart = false;
+bool is_minusLinve = false;
 
 int num_die = 0;
 int heart_count = 0;
+int high_score = 0;
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
 bool InitData();
@@ -107,12 +110,12 @@ int main(int argc, char *argv[])
     // Load and set position HP_player  and   Heart_point
     player_power.Init(g_screen);
     player_heart.Init(g_screen);
-    player_heart.SetPos(SCREEN_WIDTH * 0.5 - 12, 42);
+    player_heart.SetPos(SCREEN_WIDTH * 0.5 - 191, 5);
 
     // Text
     time_game.SetColor(TextObject::WHITE_TEXT);
     heart_game.SetColor(TextObject::RED_TEXT);
-    point_win.SetColor(TextObject::RED_TEXT);
+    high_score_game.SetColor(TextObject::WHITE_TEXT);
 
     // MENU
     Call_Menu();
@@ -163,7 +166,7 @@ int main(int argc, char *argv[])
         }
         g_background.Render1(g_screen, NULL);
         gMonster.Render(g_screen, NULL);
-        render_journey_img(); /////////////////////////////////////////////////////////////////////////////////// BUG
+        render_journey_img(); 
 
         //             MAP
         map_data = game_map.getMap();
@@ -188,7 +191,7 @@ int main(int argc, char *argv[])
         player_power.Show(g_screen);
         player_heart.Show(g_screen);
 
-        bool is_minusLinve = p_player.GetIsMinusLive();
+        is_minusLinve = p_player.GetIsMinusLive();
 
         for (int i = 0; i < threats_list.size(); i++)
         {
@@ -237,7 +240,7 @@ int main(int argc, char *argv[])
                 while (quit_game_over == false)
                 {
 
-                    renderText("POINT: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
+                    renderText("SCORE: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
                     renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
 
                     renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
@@ -350,7 +353,17 @@ int main(int argc, char *argv[])
         heart_str = std::to_string(heart_count);
         heart_game.SetText(heart_str);
         heart_game.LoadFromRenderText(font_heart, g_screen);
-        heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5, 5);
+        heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5 - 140, 5);
+
+        if (heart_count > high_score)
+        {
+            high_score = heart_count;
+        }
+
+        high_score_str = std::to_string(high_score);
+        high_score_game.SetText("HIGH SCORE: " + high_score_str);
+        high_score_game.LoadFromRenderText(font_heart, g_screen);
+        high_score_game.RenderText(g_screen, SCREEN_WIDTH * 0.5 + 40, 5);
 
         SDL_RenderPresent(g_screen);
 
@@ -570,7 +583,7 @@ void Win_Game()
         renderText(str_val, SCREEN_WIDTH / 2 + 290, 180, gFont4);
         renderText("DAYS ", SCREEN_WIDTH / 2 + 455, 180, gFont4);
 
-        heart_game.SetText("POINTS: " + heart_str);
+        heart_game.SetText("SCORE: " + heart_str);
         heart_game.LoadFromRenderText(gFont3, g_screen);
         heart_game.RenderText(g_screen, SCREEN_WIDTH / 2 - 252, 30);
 
@@ -582,6 +595,7 @@ void Win_Game()
                 Mix_PlayChannel(-1, gGame_Start, 0);
                 win_and_restart = true;
                 replay_game = true;
+                SDL_Delay(4);
             }
             if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
             {
