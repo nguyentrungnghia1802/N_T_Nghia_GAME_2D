@@ -62,6 +62,10 @@ SDL_Rect journey_Rect_3;
 SDL_Rect journey_Rect_4;
 SDL_Rect journey_Rect_5;
 
+Uint32 start_time;
+Uint32 current_time;
+Uint32 time_render;
+
 std::vector<ThreatsObject *> threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
@@ -268,6 +272,7 @@ int main(int argc, char *argv[])
         //           Win_Game
         if (winner == true)
         {
+            start_time = current_time;  // Đặt lại thời gian bắt đầu
             Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
             if (win_and_restart == true)
@@ -326,12 +331,11 @@ int main(int argc, char *argv[])
         }
 
         //    Show game time
-        std::string str_time = "Days: ";
-        Uint32 time_val = SDL_GetTicks() / 1000;
-        Uint32 val_time = 0 + time_val;
+        current_time = SDL_GetTicks()/1000;
+        time_render = current_time - start_time; 
 
         //    LIMITED TIME
-        if (val_time >= 9999)
+        if (time_render >= 9999)
         {
             if (MessageBoxW(NULL, L"T-kun lost her!", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
             {
@@ -341,10 +345,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-            str_val = std::to_string(val_time);
-            str_time += str_val;
-
-            time_game.SetText(str_time);
+            str_val = std::to_string(time_render);
+            time_game.SetText("Days: "+ str_val);
             time_game.LoadFromRenderText(font_time, g_screen);
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
@@ -593,9 +595,9 @@ void Win_Game()
             if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
             {
                 Mix_PlayChannel(-1, gGame_Start, 0);
+                SDL_Delay(4000);
                 win_and_restart = true;
                 replay_game = true;
-                SDL_Delay(4);
             }
             if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
             {
