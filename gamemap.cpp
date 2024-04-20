@@ -95,4 +95,87 @@ void GameMap::DrawMap(SDL_Renderer *screen)
         }
         map_y++;
     }
-};
+}
+
+void GameMap::ResetMap(Map &map_data)
+{
+    if (winner == true)
+    {
+        map_data.start_x_ = 0;
+    }
+    else if (winner == false)
+    {
+        if (map_start < JOURNEY_EACH_MAP * 1 + 280)
+        {
+            map_data.start_x_ = 0;
+        }
+        else if (map_start >= JOURNEY_EACH_MAP * 1 + 280 && map_start < JOURNEY_EACH_MAP * 2 + 280)
+        {
+            map_data.start_x_ = JOURNEY_EACH_MAP * 1 + 280;
+        }
+        else if (map_start >= JOURNEY_EACH_MAP * 2 + 280)
+        {
+            map_data.start_x_ = JOURNEY_EACH_MAP * 2 + 280;
+        }
+    }
+}
+
+void GameMap::LoadMap_Return(const char path[])
+{
+    std::ifstream file;
+    file.open(path);
+    if (!file.is_open())
+    {
+        std::cout << "Uable to load " << path << "\n";
+        return;
+    }
+
+    game_map_.max_x_ = 0;
+    game_map_.max_y_ = 0;
+
+    for (int i = 0; i < MAX_MAP_Y; i++)
+    {
+        for (int j = 0; j < MAX_MAP_X; j++)
+        {
+            file >> game_map_.tile[i][j];
+            int val = game_map_.tile[i][j];
+            if (val > 0)
+            {
+                if (j > game_map_.max_x_)
+                {
+                    game_map_.max_x_ = j;
+                }
+
+                if (i > game_map_.max_y_)
+                {
+                    game_map_.max_y_ = i;
+                }
+            }
+        }
+    }
+
+    game_map_.max_x_ = (game_map_.max_x_ + 1) * TILE_SIZE;
+    game_map_.max_y_ = (game_map_.max_y_ + 1) * TILE_SIZE;
+
+    if (winner == true)
+    {
+        game_map_.start_x_ = 0;
+    }
+    else if (winner == false)
+    {
+        if (map_start < JOURNEY_EACH_MAP * 1 + 280)
+        {
+            game_map_.start_x_ = 0;
+        }
+        else if (map_start >= JOURNEY_EACH_MAP * 1 + 280 && map_start < JOURNEY_EACH_MAP * 2 + 280)
+        {
+            game_map_.start_x_ = JOURNEY_EACH_MAP * 1 + 280;
+        }
+        else if (map_start >= JOURNEY_EACH_MAP * 2 + 280)
+        {
+            game_map_.start_x_ = JOURNEY_EACH_MAP * 2 + 280;
+        }
+    }
+
+    file.close();
+}

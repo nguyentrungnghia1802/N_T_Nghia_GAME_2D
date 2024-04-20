@@ -5,6 +5,7 @@
 bool winner = false;
 int minus = 0;
 bool change_threats = false;
+int map_start = 0;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {

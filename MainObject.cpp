@@ -447,14 +447,17 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
     {
         x_pos_ = map_data.max_x_ - width_frame_ - 1;
     }
-    if (y_pos_ > map_data.max_y_ || x_pos_ < map_data.start_x_)
+    if (winner != true)
     {
-        if (x_pos_ < map_data.start_x_)
+        if (y_pos_ > map_data.max_y_ || x_pos_ < map_data.start_x_)
         {
-            check_x = true;
+            if (x_pos_ < map_data.start_x_)
+            {
+                check_x = true;
+            }
+            come_back_time_ = 3;
+            is_minus_live = true;
         }
-        come_back_time_ = 3;
-        is_minus_live = true;
     }
 }
 

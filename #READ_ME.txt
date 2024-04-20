@@ -29,7 +29,7 @@ When T-Rex learns of this, he cannot sit idly by. He decides to leave his forest
 The power of love and courage leads T-Rex through dangerous challenges and past the awaiting Threats.
 
 The road ahead is full of obstacles and challenges...
-Help T-Kun find Isha soon by assisting him in overcoming valleys, mazes, and defeating the Threats.
+Please help T-Kun find Isha soon by assisting him in overcoming valleys, mazes, and defeating the Threats.
 The day they reunite is not far away...
 Don't give up!
 
