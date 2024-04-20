@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
         }
         g_background.Render1(g_screen, NULL);
         gMonster.Render(g_screen, NULL);
-        render_journey_img(); 
+        render_journey_img();
 
         //             MAP
         map_data = game_map.getMap();
@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
         //           Win_Game
         if (winner == true)
         {
-            start_time = current_time;  // Đặt lại thời gian bắt đầu
+            start_time = current_time; // Đặt lại thời gian bắt đầu
             Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
             if (win_and_restart == true)
@@ -331,8 +331,8 @@ int main(int argc, char *argv[])
         }
 
         //    Show game time
-        current_time = SDL_GetTicks()/1000;
-        time_render = current_time - start_time; 
+        current_time = SDL_GetTicks() / 1000;
+        time_render = current_time - start_time;
 
         //    LIMITED TIME
         if (time_render >= 9999)
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
         else
         {
             str_val = std::to_string(time_render);
-            time_game.SetText("Days: "+ str_val);
+            time_game.SetText("Days: " + str_val);
             time_game.LoadFromRenderText(font_time, g_screen);
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
@@ -400,7 +400,7 @@ void LoadFromFile()
 
     game_map.LoadMap("map/map01.txt");
     p_player.LoadImg("img/player_right1.png", g_screen);
-    gMonster.LoadImg("img/Monster.png", g_screen);
+    gMonster.LoadImg("threats/Monster.png", g_screen);
 
     gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
     gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
@@ -734,7 +734,7 @@ std::vector<ThreatsObject *> MakeThreats()
         ThreatsObject *p_threat = (ThreatFly_1 + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_1.png", g_screen); //  Orc_Fly
+            p_threat->LoadImg("threats/threat_1.png", g_screen); //  Orc_Fly
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 0 + 2000 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
@@ -751,7 +751,7 @@ std::vector<ThreatsObject *> MakeThreats()
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_2_left.png", g_screen); //  WHITE Dinasaur
+            p_threat->LoadImg("threats/threat_2_left.png", g_screen); //  WHITE Dinasaur
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 1 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
@@ -793,7 +793,7 @@ std::vector<ThreatsObject *> MakeThreats()
         ThreatsObject *p_threat = (ThreatFly_2 + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("img/threat_4.png", g_screen); //  Pterosaurs
+            p_threat->LoadImg("threats/threat_4.png", g_screen); //  Pterosaurs
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 3 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
@@ -805,3 +805,4 @@ std::vector<ThreatsObject *> MakeThreats()
 
     return list_threats;
 }
+

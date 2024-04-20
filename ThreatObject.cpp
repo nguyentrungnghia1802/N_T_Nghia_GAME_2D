@@ -287,7 +287,7 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
                 input_type_.right_ = 0;
                 if (change_threats == false)
                 {
-                    LoadImg("img/threat_2_left.png", screen);
+                    LoadImg("threats/threat_2_left.png", screen);
                 }
                 else if (change_threats==true)
                 {
@@ -300,7 +300,7 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
                 input_type_.right_ = 1;
                 if (change_threats == false)
                 {
-                    LoadImg("img/threat_2_right.png", screen);
+                    LoadImg("threats/threat_2_right.png", screen);
                 }
                 else if (change_threats == true)
                 {
@@ -312,7 +312,14 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
         {
             if (input_type_.left_ == 1)
             {
-                LoadImg("img/threat_2_left.png", screen);
+                if (change_threats == false)
+                {
+                    LoadImg("threats/threat_2_left.png", screen);
+                }
+                else if (change_threats == true)
+                {
+                    LoadImg("threats/threat_3_left.png", screen);
+                }
             }
         }
     }
