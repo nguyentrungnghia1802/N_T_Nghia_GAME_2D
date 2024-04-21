@@ -6,10 +6,10 @@
 #include <vector>
 #include <fstream>
 
-#include "src/include/SDL2/SDL.h"
-#include "src/include/SDL2/SDL_image.h"
-#include "src/include/SDL2/SDL_ttf.h"
-#include "src/include/SDL2/SDL_mixer.h"
+#include "include/SDL2/SDL.h"
+#include "include/SDL2/SDL_image.h"
+#include "include/SDL2/SDL_ttf.h"
+#include "include/SDL2/SDL_mixer.h"
 #include "TextObject.h"
 
 static Mix_Chunk *gEarn_Heart = NULL;

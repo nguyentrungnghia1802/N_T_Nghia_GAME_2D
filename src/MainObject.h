@@ -13,7 +13,7 @@
 #define PLAYER_SPEED 8
 #define PLAYER_JUMP_VAL 20
 #define MAX_FRAME_PLAYER 6
-#define POS_MAP_DATA_START_X_TO_WIN 79760            //79800
+#define POS_MAP_DATA_START_X_TO_WIN 79760            //79760
 
 
 class MainObject : public BaseObject
