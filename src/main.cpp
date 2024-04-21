@@ -193,10 +193,6 @@ int main(int argc, char *argv[])
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
 
-        //              MONSTER
-        gMonster.Render(g_screen, NULL);
-
-
         //      SHOW_GAME_INFORMATION
         player_power.Show(g_screen);
         player_heart.Show(g_screen);
@@ -224,6 +220,10 @@ int main(int argc, char *argv[])
                 }
             }
         }
+     
+        //              MONSTER
+        gMonster.Render(g_screen, NULL);
+
         //   Collision
         if (bCol2 || is_minusLinve == true)
         {
