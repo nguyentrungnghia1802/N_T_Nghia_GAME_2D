@@ -94,11 +94,11 @@ void MainObject::Show(SDL_Renderer *des)
 {
     if (status_ == WALK_LEFT)
     {
-        LoadImg("img/player_left1.png", des);
+        LoadImg("res/pic/img/player_left1.png", des);
     }
     else
     {
-        LoadImg("img/player_right1.png", des);
+        LoadImg("res/pic/img/player_right1.png", des);
     }
 
     if (input_type_.left_ == 1 ||
@@ -183,7 +183,7 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
         {
             Mix_PlayChannel(-1, gFire_ball, 0);
             BulletObject *p_bullet = new BulletObject();
-            p_bullet->LoadImg("img/fire.png", screen);
+            p_bullet->LoadImg("res/pic/img/fire.png", screen);
 
             if (status_ == WALK_LEFT)
             {

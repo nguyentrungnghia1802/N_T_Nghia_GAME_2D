@@ -49,7 +49,7 @@ void GameMap::LoadMap(const char path[])
 
 void GameMap::LoadTiles(SDL_Renderer *screen)
 {
-    std::vector<std::string> map_path = {"map/0.png", "map/1.png", "map/2.png", "map/3.png", "map/4.png", "map/5.png", "map/6.png", "map/7.png"};
+    std::vector<std::string> map_path = {"res/pic/map/0.png", "res/pic/map/1.png", "res/pic/map/2.png", "res/pic/map/3.png", "res/pic/map/4.png", "res/pic/map/5.png", "res/pic/map/6.png", "res/pic/map/7.png"};
     tile_mat[0].LoadImg(map_path[0], screen);
     tile_mat[1].LoadImg(map_path[1], screen); // heart
     tile_mat[2].LoadImg(map_path[2], screen);

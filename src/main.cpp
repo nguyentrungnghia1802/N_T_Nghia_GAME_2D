@@ -163,13 +163,15 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
         SDL_RenderClear(g_screen);
 
+        //        BackGround run
         minus -= 2;
         if (minus <= -SCREEN_WIDTH)
         {
             minus = 0;
         }
         g_background.Render1(g_screen, NULL);
-        gMonster.Render(g_screen, NULL);
+
+        //          Journey
         render_journey_img();
 
         //             MAP
@@ -190,6 +192,10 @@ int main(int argc, char *argv[])
         //            SET MAP
         game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
+
+        //              MONSTER
+        gMonster.Render(g_screen, NULL);
+
 
         //      SHOW_GAME_INFORMATION
         player_power.Show(g_screen);
@@ -385,30 +391,30 @@ int main(int argc, char *argv[])
 
 void LoadFromFile()
 {
-    gFont1 = TTF_OpenFont("font/2.ttf", 30);
-    gFont2 = TTF_OpenFont("font/2.ttf", 30);
-    gFont3 = TTF_OpenFont("font/1.ttf", 120);
-    gFont4 = TTF_OpenFont("font/2.ttf", 100);
+    gFont1 = TTF_OpenFont("res/font/2.ttf", 30);
+    gFont2 = TTF_OpenFont("res/font/2.ttf", 30);
+    gFont3 = TTF_OpenFont("res/font/1.ttf", 120);
+    gFont4 = TTF_OpenFont("res/font/2.ttf", 100);
 
-    g_img_menu = IMG_Load("menu/menu.png");
-    gWin_game = IMG_Load("map/WIN_GAME.png");
-    journey_Surface_1 = IMG_Load("journey/journey_1.png");
-    journey_Surface_2 = IMG_Load("journey/journey_2.png");
-    journey_Surface_3 = IMG_Load("journey/journey_3.png");
-    journey_Surface_4 = IMG_Load("journey/journey_4.png");
-    journey_Surface_5 = IMG_Load("journey/journey_5.png");
+    g_img_menu = IMG_Load("res/pic/menu/menu.png");
+    gWin_game = IMG_Load("res/pic/map/WIN_GAME.png");
+    journey_Surface_1 = IMG_Load("res/pic/journey/journey_1.png");
+    journey_Surface_2 = IMG_Load("res/pic/journey/journey_2.png");
+    journey_Surface_3 = IMG_Load("res/pic/journey/journey_3.png");
+    journey_Surface_4 = IMG_Load("res/pic/journey/journey_4.png");
+    journey_Surface_5 = IMG_Load("res/pic/journey/journey_5.png");
 
-    game_map.LoadMap("map/map01.txt");
-    p_player.LoadImg("img/player_right1.png", g_screen);
-    gMonster.LoadImg("threats/Monster.png", g_screen);
+    game_map.LoadMap("res/pic/map/map01.txt");
+    p_player.LoadImg("res/pic/img/player_right1.png", g_screen);
+    gMonster.LoadImg("res/pic/threats/Monster.png", g_screen);
 
-    gMainMusic = Mix_LoadWAV("Music/through_Map_music.wav");
-    gEarn_Heart = Mix_LoadWAV("Music/earn_Heart.wav");
-    gFire_ball = Mix_LoadWAV("Music/Fire_Ball.wav");
-    gPlayer_Die = Mix_LoadWAV("Music/Player_Die.wav");
-    gGame_Start = Mix_LoadWAV("Music/Start.wav");
-    gThreats_Die = Mix_LoadWAV("Music/Threats_Die.wav");
-    gCongrat = Mix_LoadWAV("Music/Congrats.wav");
+    gMainMusic = Mix_LoadWAV("res/Music/through_Map_music.wav");
+    gEarn_Heart = Mix_LoadWAV("res/Music/earn_Heart.wav");
+    gFire_ball = Mix_LoadWAV("res/Music/Fire_Ball.wav");
+    gPlayer_Die = Mix_LoadWAV("res/Music/Player_Die.wav");
+    gGame_Start = Mix_LoadWAV("res/Music/Start.wav");
+    gThreats_Die = Mix_LoadWAV("res/Music/Threats_Die.wav");
+    gCongrat = Mix_LoadWAV("res/Music/Congrats.wav");
 }
 
 void close()
@@ -484,8 +490,8 @@ bool InitData()
             std::cout << "Cannot open folder!";
         }
 
-        font_time = TTF_OpenFont("font/1.ttf", 35);
-        font_heart = TTF_OpenFont("font/1.ttf", SIZE_FONT_HEART);
+        font_time = TTF_OpenFont("res/font/1.ttf", 35);
+        font_heart = TTF_OpenFont("res/font/1.ttf", SIZE_FONT_HEART);
 
         if (font_time == NULL)
         {
@@ -511,7 +517,7 @@ bool InitData()
 
 bool LoadBackground()
 {
-    bool ret = g_background.LoadImg("img/background.jpg", g_screen);
+    bool ret = g_background.LoadImg("res/pic/img/background.jpg", g_screen);
     if (ret == false)
         return false;
 
@@ -611,7 +617,7 @@ void Win_Game()
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
 {
-    game_map.LoadMap_Return("map/map01.txt");
+    game_map.LoadMap_Return("res/pic/map/map01.txt");
     game_map.LoadTiles(g_screen);
     game_map.ResetMap(map_data);
 
@@ -734,7 +740,7 @@ std::vector<ThreatsObject *> MakeThreats()
         ThreatsObject *p_threat = (ThreatFly_1 + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("threats/threat_1.png", g_screen); //  Orc_Fly
+            p_threat->LoadImg("res/pic/threats/threat_1.png", g_screen); //  Orc_Fly
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 0 + 2000 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
@@ -751,7 +757,7 @@ std::vector<ThreatsObject *> MakeThreats()
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("threats/threat_2_left.png", g_screen); //  WHITE Dinasaur
+            p_threat->LoadImg("res/pic/threats/threat_2_left.png", g_screen); //  WHITE Dinasaur
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 1 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
@@ -772,7 +778,7 @@ std::vector<ThreatsObject *> MakeThreats()
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("threats/threat_3_left.png", g_screen);
+            p_threat->LoadImg("res/pic/threats/threat_3_left.png", g_screen);
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 2 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
@@ -793,7 +799,7 @@ std::vector<ThreatsObject *> MakeThreats()
         ThreatsObject *p_threat = (ThreatFly_2 + i);
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("threats/threat_4.png", g_screen); //  Pterosaurs
+            p_threat->LoadImg("res/pic/threats/threat_4.png", g_screen); //  Pterosaurs
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 3 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
