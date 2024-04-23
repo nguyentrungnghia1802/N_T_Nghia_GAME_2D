@@ -173,13 +173,9 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 - Và các các bạn lớp K68J 
 ***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
 
-# Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian lắng nghe. ❤️❤️
+# Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️
 
-
-
-///////////////////////////
-
-
+![text](123.png)
 
 
 
