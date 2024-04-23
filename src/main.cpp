@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
-            threats_list.clear();
+            threats_list.clear();          // Delete old Threats
             threats_list = MakeThreats();
             Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
             isRestarting = !isRestarting;
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
                 player_power.Render(g_screen);
                 continue;
             }
-            else
+            else                              // When LOSE
             {
                 bool quit_game_over = false;
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
                     SDL_RenderPresent(g_screen);
                     while (SDL_PollEvent(&eve))
                     {
-                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)         // REPLAY
                         {
                             Mix_PlayChannel(-1, gGame_Start, 0);
                             SDL_Delay(4000);
@@ -269,7 +269,12 @@ int main(int argc, char *argv[])
                             isRestarting = true;
                             quit_game_over = true;
                         }
-                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)        // EXIT
+                        {
+                            quit_game_over = true;
+                            is_quit = true;
+                        }
+                        if(eve.type==SDL_QUIT)
                         {
                             quit_game_over = true;
                             is_quit = true;
@@ -399,6 +404,8 @@ void LoadFromFile()
     gFont2 = TTF_OpenFont("res/font/2.ttf", 30);
     gFont3 = TTF_OpenFont("res/font/1.ttf", 120);
     gFont4 = TTF_OpenFont("res/font/2.ttf", 100);
+    font_time = TTF_OpenFont("res/font/1.ttf", 35);
+    font_heart = TTF_OpenFont("res/font/1.ttf", SIZE_FONT_HEART);
 
     g_img_menu = IMG_Load("res/pic/menu/menu.png");
     gWin_game = IMG_Load("res/pic/map/WIN_GAME.png");
@@ -493,15 +500,6 @@ bool InitData()
         {
             success = false;
             std::cout << "Cannot open folder!";
-        }
-
-        font_time = TTF_OpenFont("res/font/1.ttf", 35);
-        font_heart = TTF_OpenFont("res/font/1.ttf", SIZE_FONT_HEART);
-
-        if (font_time == NULL)
-        {
-            success = false;
-            std::cout << "Cannot open folder! ";
         }
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -689,7 +687,7 @@ void Win_Game()
                 win_and_restart = true;
                 replay_game = true;
             }
-            if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_ESCAPE)
+            if (eve_win.type == SDL_QUIT)
             {
                 replay_game = true;
                 is_quit = true;

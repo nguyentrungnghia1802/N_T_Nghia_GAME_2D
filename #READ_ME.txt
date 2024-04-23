@@ -36,22 +36,22 @@ Don't give up!
 3, Game Instructions:
 Starting the game, replaying, and quitting the game:
 In the MENU section: + Press SPACE to start playing
-+ Press ESC to quit the game
+                     + Click the "X" button at the top right of the window to exit the game
 While in the game: + Click the "X" button at the top right of the window to exit the game
-+ When the character dies 4 times, the game pauses and shows the score. Press SPACE to replay.
+                   + When the character dies 4 times, the game pauses and shows the score. Press SPACE to replay.
 When "beating the game": + T-Kun and Isha reunite, showing the score and the number of days passed.
-+ Press SPACE to replay.
-+ Press ESC to quit the game.
-Actions in the game: + Key "d": move right
-+ Key "a": move left
-+ Key "w": jump
-+ Left mouse button: shoot bullets
+                         + Press SPACE to replay.
+                        + Click the "X" button at the top right of the window to exit the game
+Actions in the game: + Key "d": move right 
+                     + Key "a": move left
+                     + Key "w": jump
+                     + Left mouse button: shoot bullets
 Game Content: + You must continuously control T-Kun to move right to avoid being caught by the DarkClaw monster.
-+ If T-Kun is caught (touches the left edge of the screen), falls into a ravine, or collides with Threats on the way, one life will be deducted.
-+ Collect hearts along the way to earn points.
-+ Use bullets to eliminate Threats blocking the path.
-+ Flexibly use movement keys to overcome valleys, mazes.
-+ When reaching the end of the journey and meeting Isha, the game will end and show the score.
+              + If T-Kun is caught (touches the left edge of the screen), falls into a ravine, or collides with Threats on the way, one life will be deducted.
+              + Collect hearts along the way to earn points.
+              + Use bullets to eliminate Threats blocking the path.
+              + Flexibly use movement keys to overcome valleys, mazes.
+              + When reaching the end of the journey and meeting Isha, the game will end and show the score.
 
 **NOTE: The "a" key is not useless as you might think, it's essential
 
@@ -99,12 +99,12 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
               + Nhấn chọn EXIT để thoát game
 
 + Khi vào game: + Nhấn nút "X" ở góc phải window để thoát game
-                + Khi nhân vật chết 4 mạng, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại, nhấn ESC để thoát game.
+                + Khi nhân vật chết 4 mạng, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại, nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
                 + Khi hiện thông báo Journey: Nhấn phím SPACE để tiếp tục.
 
 + Khi "phá đảo": + T-Kun và Isha được đoàn tụ, hiện điểm, số ngày trải qua. 
                  + Nhấn phím SPACE để chơi lại.
-                 + Nhấn phím ESC để thoát game.
+                 + Nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
 
 - Các thao tác trong game:  + Phím "d": di chuyển sang phải
                             + Phím "a": di chuyển sang trái
@@ -119,7 +119,6 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
                   + Khi đi hết hành trình và gặp được Isha thì game sẽ kết thúc và hiện điểm.
 
 **NOTE: Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy
-
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
