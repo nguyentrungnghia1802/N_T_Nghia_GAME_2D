@@ -13,10 +13,9 @@
 
 ---
 ## 1. HƯỚNG DẪN CÀI ĐẶT
-- **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
-- **Cách 2:** Build file trong VSCode:
-*Build file bằng lệnh sau:*
-`g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer`
+#### **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
+#### **Cách 2:** Build file trong VSCode:
+       g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 **Chạy file bằng lệnh:* `./main`
 
 ---
@@ -108,12 +107,12 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 
 ## 5. TÀI LIỆU THAM KHẢO
 - [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
-- <**https://lazyfoo.net/tutorials/SDL/**>
-- <**https://www.youtube.com/watch?v=ObEOK7HSq2E**>
-- <**https://phattrienphanmem123az.com/lap-trinh-game-cpp**>
-- <**https://www.youtube.com/@PhatTrienPhanMem123AZ**>
-- <**https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**>
-- <**https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**>
+- https://lazyfoo.net/tutorials/SDL/
+- https://www.youtube.com/watch?v=ObEOK7HSq2E
+- https://phattrienphanmem123az.com/lap-trinh-game-cpp
+- https://www.youtube.com/@PhatTrienPhanMem123AZ
+- https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B
+- https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR
 ---
 
 ## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
@@ -174,7 +173,7 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 - Và các các bạn lớp K68J 
 ***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
 
-Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian lắng nghe. ❤️❤️❤️
+# Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian lắng nghe. ❤️❤️
 
 
 
