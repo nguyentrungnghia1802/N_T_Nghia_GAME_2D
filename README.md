@@ -13,10 +13,9 @@
 
 ---
 ## 1. HƯỚNG DẪN CÀI ĐẶT
-- **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
-- **Cách 2:** Build file trong VSCode:
-*Build file bằng lệnh sau:*
-`g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer`
+#### **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
+#### **Cách 2:** Build file trong VSCode:
+       g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 **Chạy file bằng lệnh:* `./main`
 
 ---
