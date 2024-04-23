@@ -107,12 +107,12 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 
 ## 5. TÀI LIỆU THAM KHẢO
 - [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
-- <**https://lazyfoo.net/tutorials/SDL/**>
-- <**https://www.youtube.com/watch?v=ObEOK7HSq2E**>
-- <**https://phattrienphanmem123az.com/lap-trinh-game-cpp**>
-- <**https://www.youtube.com/@PhatTrienPhanMem123AZ**>
-- <**https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**>
-- <**https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**>
+- **https://lazyfoo.net/tutorials/SDL/**
+- **https://www.youtube.com/watch?v=ObEOK7HSq2E**
+- **https://phattrienphanmem123az.com/lap-trinh-game-cpp**
+- **https://www.youtube.com/@PhatTrienPhanMem123AZ**
+- **https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**
+- **https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**
 ---
 
 ## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
@@ -173,7 +173,7 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 - Và các các bạn lớp K68J 
 ***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
 
-Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian lắng nghe. ❤️❤️
+# Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian lắng nghe. ❤️❤️
 
 
 
