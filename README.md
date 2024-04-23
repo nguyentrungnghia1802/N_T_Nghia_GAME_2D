@@ -107,12 +107,12 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 
 ## 5. TÀI LIỆU THAM KHẢO
 - [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
-- https://lazyfoo.net/tutorials/SDL/
-- https://www.youtube.com/watch?v=ObEOK7HSq2E
-- https://phattrienphanmem123az.com/lap-trinh-game-cpp
-- https://www.youtube.com/@PhatTrienPhanMem123AZ
-- https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B
-- https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR
+- **https://lazyfoo.net/tutorials/SDL/**
+- **https://www.youtube.com/watch?v=ObEOK7HSq2E**
+- **https://phattrienphanmem123az.com/lap-trinh-game-cpp**
+- **https://www.youtube.com/@PhatTrienPhanMem123AZ**
+- **https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**
+- **https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**
 ---
 
 ## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
@@ -148,7 +148,7 @@ Có thể dùng Coin để đổi các vật phẩm sau:
 
 ---
 ## 7. KẾT LUẬN
-- Tất cả code trong game 100% do bản thân em viết, có sự tham khảo và học hỏi từ [Lazyfool](https://lazyfoo.net/tutorials/SDL/), [phattrienphanmem123az](https://phattrienphanmem123az.com/lap-trinh-game-cpp),...
+Tất cả code trong game 100% do bản thân em viết, có sự tham khảo và học hỏi từ [Lazyfool](https://lazyfoo.net/tutorials/SDL/), [phattrienphanmem123az](https://phattrienphanmem123az.com/lap-trinh-game-cpp),...
 #### Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:
 - Hiểu được mô hình phát triển 1 phần mềm kiểu thác nước: Phân tích, thiết kế, lập trình, kiểm thử, chuyển giao và bảo trì (forever).
 - Sử dụng thành thạo class, pointer, chia tách file,...
