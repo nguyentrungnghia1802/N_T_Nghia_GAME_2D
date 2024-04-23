@@ -95,11 +95,12 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 
 - Khởi động game, chơi lại và thoát game:
 
-+ Ở mục MENU: + Nhấn phím SPACE để bắt đầu chơi
-              + Nhấn phím ESC để thoát game
++ Ở mục MENU: + Nhấn chọn START để bắt đầu chơi
+              + Nhấn chọn EXIT để thoát game
 
 + Khi vào game: + Nhấn nút "X" ở góc phải window để thoát game
-                + Khi nhân vật chết 4 mạng, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại.
+                + Khi nhân vật chết 4 mạng, game dừng và hiện điểm. Nhấn phím SPACE để chơi lại, nhấn ESC để thoát game.
+                + Khi hiện thông báo Journey: Nhấn phím SPACE để tiếp tục.
 
 + Khi "phá đảo": + T-Kun và Isha được đoàn tụ, hiện điểm, số ngày trải qua. 
                  + Nhấn phím SPACE để chơi lại.

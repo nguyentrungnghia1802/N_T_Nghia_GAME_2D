@@ -98,7 +98,6 @@ void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
 void render_journey_img();
 void Create_texture();
-
 std::vector<ThreatsObject *> MakeThreats();
 
 int main(int argc, char *argv[])
@@ -283,7 +282,7 @@ int main(int argc, char *argv[])
         //           Win_Game
         if (winner == true)
         {
-            start_time = current_time; // Đặt lại thời gian bắt đầu
+            start_time = current_time;     //SET_TIME_START_BACK
             Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
             if (win_and_restart == true)
@@ -569,8 +568,8 @@ void Call_Menu()
     text_menu[1].SetText("START");
     text_menu[1].LoadFromRenderText(gFont3, g_screen);
 
-    start_button = {SCREEN_WIDTH - 350, 420, 200, 100};
-    quit_button = {50, 420, 200, 100};
+    start_button = {SCREEN_WIDTH - 350, 420, 350, 200};
+    quit_button = {50, 420, 220, 200};
 
     while (start_Game == false)
     {
