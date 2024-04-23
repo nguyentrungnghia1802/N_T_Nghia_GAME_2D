@@ -9,7 +9,7 @@ All file build and app running operations are done through the Terminal.
 If you don't have Terminal, press "Ctrl + `" to call it.
 BUILD FILE WITH THE FOLLOWING COMMAND:
 
-g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp gamemap.cpp MainObject.cpp ImpTimer.cpp BulletObject.cpp  ThreatObject.cpp PlayHealth.cpp TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 Run the file with the command: ./main
 
@@ -66,7 +66,7 @@ Các thao tác build, chạy app đều thao tác bằng Terminal.
 Nếu không có Terminal bấm "Ctrl + `" để gọi.
 
 BUILD FILE BẰNG LỆNH SAU: 
-g++ -Isrc/include -Lsrc/lib -o main main.cpp CommonFunc.cpp BaseObject.cpp gamemap.cpp MainObject.cpp ImpTimer.cpp BulletObject.cpp  ThreatObject.cpp PlayHealth.cpp TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+g++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 Chạy file bằng lệnh: ./main
 
