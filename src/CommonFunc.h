@@ -72,7 +72,7 @@ typedef struct Map
 namespace SDLCommonFunc
 {
     bool CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2);
-
+    bool CheckFocusMouse(const int &x, const int &y, const SDL_Rect& pos);
 }
 
 #endif

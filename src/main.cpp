@@ -22,6 +22,8 @@ PlayerMoney player_heart; // point
 TextObject time_game;
 TextObject heart_game;
 TextObject high_score_game;
+TextObject text_menu[2];
+
 Map map_data;
 
 TTF_Font *font_time = NULL;
@@ -61,6 +63,8 @@ SDL_Rect journey_Rect_2;
 SDL_Rect journey_Rect_3;
 SDL_Rect journey_Rect_4;
 SDL_Rect journey_Rect_5;
+SDL_Rect start_button;
+SDL_Rect quit_button;
 
 Uint32 start_time;
 Uint32 current_time;
@@ -78,6 +82,7 @@ bool start_Game = false;   // After that, we can Play Game
 bool bCol2 = false;        // Collide:   Player and  Threats
 bool win_and_restart = false;
 bool is_minusLinve = false;
+bool focus_mouse = false;
 
 int num_die = 0;
 int heart_count = 0;
@@ -220,7 +225,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-     
+
         //              MONSTER
         gMonster.Render(g_screen, NULL);
 
@@ -450,6 +455,7 @@ void close()
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();
+    exit(0);
 }
 
 bool InitData()
@@ -551,31 +557,110 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font)
 
 void Call_Menu()
 {
+    int xm = 0;
+    int ym = 0;
+    bool selected[2] = {false, false};
     menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
     menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           //    set menu_position
+
+    text_menu[0].SetText("EXIT");
+    text_menu[0].LoadFromRenderText(gFont3, g_screen);
+
+    text_menu[1].SetText("START");
+    text_menu[1].LoadFromRenderText(gFont3, g_screen);
+
+    start_button = {SCREEN_WIDTH - 350, 420, 200, 100};
+    quit_button = {50, 420, 200, 100};
+
     while (start_Game == false)
     {
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
-        renderText("SPACE TO START!", SCREEN_WIDTH - 300, 420, gFont1);
-        renderText("ESC TO EXIT!", 30, 420, gFont2);
+
+        text_menu[1].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
+        text_menu[0].RenderText(g_screen, 50, 420);
+
         SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve))
         {
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)
+            if (eve.type == SDL_MOUSEMOTION)
             {
-                start_Game = true; // Ready to Play Game
-                Mix_PlayChannel(-1, gGame_Start, 0);
-                SDL_Delay(4000);
-                Mix_PlayChannel(-1, gMainMusic, -1);
-                SDL_FreeSurface(g_img_menu);
-                SDL_DestroyTexture(menu);
-                break;
+                SDL_GetMouseState(&xm, &ym);
+                for (int i = 0; i < 2; i++)
+                {
+                    if (i == 1) // START_BUTTON
+                    {
+                        if (SDLCommonFunc::CheckFocusMouse(xm, ym, start_button))
+                        {
+                            if (selected[i] == false)
+                            {
+                                selected[i] = true;
+                                text_menu[i].SetColor(TextObject::RED_TEXT);
+                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
+                                text_menu[i].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
+                                SDL_RenderPresent(g_screen);
+                            }
+                        }
+
+                        else
+                        {
+                            if (selected[i] == true)
+                            {
+                                selected[i] = false;
+                                text_menu[i].SetColor(TextObject::WHITE_TEXT);
+                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
+                                text_menu[i].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
+                                SDL_RenderPresent(g_screen);
+                            }
+                        }
+                    }
+
+                    if (i == 0) // QUIT_BUTTON
+                    {
+                        if (SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button))
+                        {
+                            if (selected[i] == false)
+                            {
+                                selected[i] = true;
+                                text_menu[i].SetColor(TextObject::RED_TEXT);
+                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
+                                text_menu[i].RenderText(g_screen, 50, 420);
+                                SDL_RenderPresent(g_screen);
+                            }
+                        }
+
+                        else
+                        {
+                            if (selected[i] == true)
+                            {
+                                selected[i] = false;
+                                text_menu[i].SetColor(TextObject::WHITE_TEXT);
+                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
+                                text_menu[i].RenderText(g_screen, 50, 420);
+                                SDL_RenderPresent(g_screen);
+                            }
+                        }
+                    }
+                }
             }
-            if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)
+            if (eve.type == SDL_MOUSEBUTTONDOWN && eve.button.button == SDL_BUTTON_LEFT)
             {
-                SDL_FreeSurface(g_img_menu);
-                SDL_DestroyTexture(menu);
-                close(); // Exit Game
+                if (selected[1] == true)
+                {
+                    start_Game = true; // Ready to Play Game
+                    Mix_PlayChannel(-1, gGame_Start, 0);
+                    SDL_Delay(4000);
+                    Mix_PlayChannel(-1, gMainMusic, -1);
+                    SDL_FreeSurface(g_img_menu);
+                    SDL_DestroyTexture(menu);
+                    break;
+                }
+                else if (selected[0] == true)
+                {
+                    SDL_FreeSurface(g_img_menu);
+                    SDL_DestroyTexture(menu);
+                    close(); // Exit Game
+                    break;
+                }
             }
         }
     }
@@ -811,4 +896,3 @@ std::vector<ThreatsObject *> MakeThreats()
 
     return list_threats;
 }
-

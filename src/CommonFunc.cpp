@@ -52,3 +52,12 @@ bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &obje
   }
   return false;
 }
+
+bool SDLCommonFunc::CheckFocusMouse(const int &x, const int &y,const SDL_Rect& pos)
+{
+  if (x > pos.x && x < pos.x + pos.w && y > pos.y && y < pos.y + pos.h)
+  {
+    return true;
+  }
+  return false;
+}
