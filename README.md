@@ -13,7 +13,6 @@
   - [2. MÔ TẢ CHUNG](#2-mô-tả-chung)
     - [Giới thiệu](#giới-thiệu)
     - [Cốt truyện](#cốt-truyện)
-  - [](#)
   - [3. CÁC THAO TÁC TRONG GAME](#3-các-thao-tác-trong-game)
     - [1. Khởi động game, chơi lại và thoát game:](#1-khởi-động-game-chơi-lại-và-thoát-game)
       - [***Ở mục MENU:***](#ở-mục-menu)
@@ -21,12 +20,10 @@
       - [***Khi "phá đảo":***](#khi-phá-đảo)
     - [2. Cách chơi:](#2-cách-chơi)
       - [***Sử dụng "bàn phím" và "chuột"***:](#sử-dụng-bàn-phím-và-chuột)
-  - [  ](#--)
   - [4. KỸ THUẬT LẬP TRÌNH](#4-kỹ-thuật-lập-trình)
     - [***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***](#phát-triển-trên-nền-tảng-ngôn-ngữ-c-và-thư-viện-sdl2)
     - [***Các kỹ thuật lập trình:***](#các-kỹ-thuật-lập-trình)
     - [***Ứng dụng:***](#ứng-dụng)
-  - [  ](#---1)
   - [5. TÀI LIỆU THAM KHẢO](#5-tài-liệu-tham-khảo)
   - [6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI](#6-các-hướng-đi-trong-tương-lai)
     - [1. Nâng cấp và cải thiện gameplay:](#1-nâng-cấp-và-cải-thiện-gameplay)
@@ -43,7 +40,6 @@
       - [Lời kết:](#lời-kết)
 - [Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️](#em-xin-chân-thành-cảm-ơn-thầy-cô-các-bạn-và-mọi-người-đã-dành-thời-gian-để-đọc-️️)
 
-
 ---
 ## 1. HƯỚNG DẪN CÀI ĐẶT
 #### **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
@@ -52,7 +48,6 @@
 **Chạy file bằng lệnh:* `./main`
 
 ---
-
 ## 2. MÔ TẢ CHUNG
 ### Giới thiệu
 - Game "T-Kun's Journey" là một tựa game thể loại platform.
@@ -60,7 +55,6 @@
 - Trên đường đi liên tục nhặt "trái tim" để dành được số điểm cao nhất.
 - Người chơi thua cuộc khi bị chết quá 4 lần và chiến thắng khi đến đích.
 ![pic_2](res/pic_for_rm/pic _11.png)  ![pic_3](res/pic_for_rm/pic_3.png)
-
 
 ### Cốt truyện
 (Thế giới giả tưởng)
@@ -84,8 +78,8 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 Đừng bỏ cuộc nhé!
 ![fight](res/pic_for_rm/pic_6.png)
 ![couple](res/pic_for_rm/pic_14.jpg)
----
 
+---
 ## 3. CÁC THAO TÁC TRONG GAME
 ### 1. Khởi động game, chơi lại và thoát game:
 
@@ -113,10 +107,9 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
     + Phím "w": nhảy lên
     + Chuột trái: bắn đạn
 **NOTE:** *Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy*
-
 ![pic_7](res/pic_for_rm/pic_7.png)  ![pic_12](res/pic_for_rm/pic_12.png)
----
 
+---
 ## 4. KỸ THUẬT LẬP TRÌNH
 ### ***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***
 - SDL_Mixer: Hỗ trợ xử lý âm thanh.
@@ -144,10 +137,9 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 - Tạo hàm kiểm tra va giữa đối tượng và map.
 - Sử dụng Vector để lưu trữ Threats, Bullet...
 - Sử dụng các vòng lặp để liên tục xử lý các sự kiện và hiển thị hình ảnh trong game.
-
 ![code](res/pic_for_rm/pic_15.png)  ![tile](res/pic_for_rm/pic_16.png)
----
 
+---
 ## 5. TÀI LIỆU THAM KHẢO
 - [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
 - **https://lazyfoo.net/tutorials/SDL/**
@@ -157,7 +149,6 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 - **https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**
 - **https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**
 ---
-
 ## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
 ### 1. Nâng cấp và cải thiện gameplay:
 - Thêm các yếu tố mới như power-up, vũ khí, kỹ năng đặc biệt, hoặc các yếu tố điều khiển khác để làm phong phú gameplay.
