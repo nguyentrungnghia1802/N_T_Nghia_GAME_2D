@@ -68,7 +68,7 @@ Cậu con trai của vị thần rừng, tên là T-Rex, đã yêu Isha từ l�
 
 Và dường như Isha cũng thầm yêu T-Rex, thường đi khám phá mọi thứ cùng cậu, và gọi cậu với cái tên thân thương: T-Kun. Họ là hai linh hồn sinh ra để tương hợp với nhau, nhưng vận mệnh lại đưa họ vào cuộc thử thách đầy nguy hiểm.
 
-Một ngày, khi Maya đang thăm rừng một mình, cô bị mắc kẹt trong một cái bẫy do một con quái vật đáng sợ tên là DarkClaw tạo ra. DarkClaw là một con quái vật hung dữ và tàn bạo, luôn săn đuổi và bắt giữ những sinh vật khác để ăn thịt.
+Một ngày, khi Isha đang thăm rừng một mình, cô bị mắc kẹt trong một cái bẫy do một con quái vật đáng sợ tên là DarkClaw tạo ra. DarkClaw là một con quái vật hung dữ và tàn bạo, luôn săn đuổi và bắt giữ những sinh vật khác để ăn thịt.
 
 Khi T-Rex biết về việc này, anh không thể ngồi yên. Anh quyết định rời khỏi vùng rừng của mình và bắt đầu hành trình giải cứu Isha. Sức mạnh của tình yêu và lòng dũng cảm đã dẫn dắt T-Rex đi qua những thử thách nguy hiểm và vượt qua những con quái thú Threats đang chờ đợi.
 
@@ -206,7 +206,7 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 - Anh Nguyễn Trung Hiếu.
 - Anh Đặng Tiến Dũng.
 - Bạn Tẩn Vần Quyên.
-- Và các các bạn lớp K68J 
+- Và các bạn lớp K68J 
 
 ***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
 
