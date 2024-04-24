@@ -26,6 +26,8 @@
 - Người chơi phải liên tục di chuyển linh hoạt để vượt qua các địa hình hiểm trở, tiêu diệt quái vật để đến đích.
 - Trên đường đi liên tục nhặt "trái tim" để dành được số điểm cao nhất.
 - Người chơi thua cuộc khi bị chết quá 4 lần và chiến thắng khi đến đích.
+![pic_2](res/pic_for_rm/pic_2.png)  ![pic_3](res/pic_for_rm/pic_3.png)
+
 
 ### Cốt truyện
 (Thế giới giả tưởng)
@@ -47,7 +49,8 @@ Bạn hãy giúp T-Kun sớm tìm được Isha bằng cách giúp cậu ấy v�
 
 Ngày mà cả hai đoàn tụ sẽ không xa...
 Đừng bỏ cuộc nhé!
-
+![fight](res/pic_for_rm/pic_6.png)
+![couple](res/pic_for_rm/pic_14.jpg)
 ---
 
 ## 3. CÁC THAO TÁC TRONG GAME
@@ -56,15 +59,19 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 #### ***Ở mục MENU:***
     + Nhấn chọn START để bắt đầu chơi
     + Nhấn chọn EXIT để thoát game
+ ![menu](res/pic_for_rm/pic_2.png)
 
 #### ***Khi vào game:***
     + Nhấn nút "X" ở góc phải window để thoát game
     + Khi thua: Nhấn phím SPACE để chơi lại, nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
     + Khi hiện thông báo Journey: Nhấn phím SPACE để tiếp tục.
+![lose](res/pic_for_rm/pic_9.png)
+![hourney](res/pic_for_rm/pic_5.png)
 
 #### ***Khi "phá đảo":***
     + Nhấn phím SPACE để chơi lại.
     + Nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
+![win](res/pic_for_rm/pic_13.png)
 
 ### 2. Cách chơi:
 #### ***Sử dụng "bàn phím" và "chuột"***:
@@ -74,6 +81,7 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
     + Chuột trái: bắn đạn
 **NOTE:** *Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy*
 
+![pic_7](res/pic_for_rm/pic_7.png)  ![pic_12](res/pic_for_rm/pic_12.png)
 ---
 
 ## 4. KỸ THUẬT LẬP TRÌNH
@@ -103,6 +111,8 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 - Tạo hàm kiểm tra va giữa đối tượng và map.
 - Sử dụng Vector để lưu trữ Threats, Bullet...
 - Sử dụng các vòng lặp để liên tục xử lý các sự kiện và hiển thị hình ảnh trong game.
+
+![code](res/pic_for_rm/pic_15.png)  ![tile](res/pic_for_rm/pic_16.png)
 ---
 
 ## 5. TÀI LIỆU THAM KHẢO
@@ -175,7 +185,7 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 
 # Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️
 
-![text](123.png)
+![img](123.png)
 
 
 
