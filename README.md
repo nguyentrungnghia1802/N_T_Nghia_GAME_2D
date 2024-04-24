@@ -24,7 +24,9 @@
     - [***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***](#phát-triển-trên-nền-tảng-ngôn-ngữ-c-và-thư-viện-sdl2)
     - [***Các kỹ thuật lập trình:***](#các-kỹ-thuật-lập-trình)
     - [***Ứng dụng:***](#ứng-dụng)
-  - [5. TÀI LIỆU THAM KHẢO](#5-tài-liệu-tham-khảo)
+  - [5. TRÍCH DẪN NGUỒN](#5-trích-dẫn-nguồn)
+    - [Tài liệu tham khảo:](#tài-liệu-tham-khảo)
+    - [Nguồn hình ảnh, âm thanh:](#nguồn-hình-ảnh-âm-thanh)
   - [6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI](#6-các-hướng-đi-trong-tương-lai)
     - [1. Nâng cấp và cải thiện gameplay:](#1-nâng-cấp-và-cải-thiện-gameplay)
     - [2. Phát triển đồ họa và âm thanh:](#2-phát-triển-đồ-họa-và-âm-thanh)
@@ -141,7 +143,8 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 ![code](res/pic_for_rm/pic_15.png)  ![tile](res/pic_for_rm/pic_16.png)
 
 ---
-## 5. TÀI LIỆU THAM KHẢO
+## 5. TRÍCH DẪN NGUỒN
+### Tài liệu tham khảo:
 - [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
 - **https://lazyfoo.net/tutorials/SDL/**
 - **https://www.youtube.com/watch?v=ObEOK7HSq2E**
@@ -149,6 +152,9 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
 - **https://www.youtube.com/@PhatTrienPhanMem123AZ**
 - **https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**
 - **https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**
+### Nguồn hình ảnh, âm thanh:
+- **https://www.shutterstock.com/vi/**
+- **https://pixabay.com/vi/**
 ---
 ## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
 ### 1. Nâng cấp và cải thiện gameplay:
