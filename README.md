@@ -35,9 +35,9 @@
     - [7. Tạo DLC hoặc phần tiếp theo:](#7-tạo-dlc-hoặc-phần-tiếp-theo)
     - [8. Tư bản hóa trò chơi: Hệ thống nạp tiền Pay to Play:](#8-tư-bản-hóa-trò-chơi-hệ-thống-nạp-tiền-pay-to-play)
   - [7. KẾT LUẬN](#7-kết-luận)
-      - [Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:](#việc-hoàn-thiện-1-dự-án-lập-trình-như-thế-này-giúp-em-mở-mang-kiến-thức-rất-nhiều)
-      - [Khuyết điểm:](#khuyết-điểm)
-      - [Lời kết:](#lời-kết)
+    - [Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:](#việc-hoàn-thiện-1-dự-án-lập-trình-như-thế-này-giúp-em-mở-mang-kiến-thức-rất-nhiều)
+    - [Khuyết điểm:](#khuyết-điểm)
+    - [Lời kết:](#lời-kết)
 - [Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️](#em-xin-chân-thành-cảm-ơn-thầy-cô-các-bạn-và-mọi-người-đã-dành-thời-gian-để-đọc-️️)
 
 ---
@@ -184,21 +184,22 @@ Có thể dùng Coin để đổi các vật phẩm sau:
 ---
 ## 7. KẾT LUẬN
 Tất cả code trong game 100% do bản thân em viết, có sự tham khảo và học hỏi từ [Lazyfool](https://lazyfoo.net/tutorials/SDL/), [phattrienphanmem123az](https://phattrienphanmem123az.com/lap-trinh-game-cpp),...
-#### Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:
+### Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:
 - Hiểu được mô hình phát triển 1 phần mềm kiểu thác nước: Phân tích, thiết kế, lập trình, kiểm thử, chuyển giao và bảo trì (forever).
 - Sử dụng thành thạo class, pointer, chia tách file,...
 - Cách dùng github.
 - Học rất nhiều syntax, thuật toán mới của c++.
 - Hiểu sơ sơ một số khía cạnh của lập trình hướng đối tượng: kế thừa, đa hình,...
 - Hình thành tư duy xử lý và giải quyết bài toán.
-#### Khuyết điểm:
+### Khuyết điểm:
 - Code chưa được tối ưu hoàn toàn.
 - Các syntax và thuật toán vẫn còn ngây ngô.
 - Chưa refac code đến nơi đến chốn.
 - Một vài hàm lặp lại do chưa chưa thể tổng hợp thành một hàm hoàn thiện để sử dụng chung.
-#### Lời kết:
+### Lời kết:
 Cuối cùng, em xin chân thành cảm ơn bố mẹ, ông bà, anh chị, các thầy cô à các bạn đã đồng hành cùng em suốt chặng đường hoàn thiện tựa Game "bom tấn" này.
 Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
+
 ***A Special Thanks To:***
 - Thầy Lê Đức Trọng.
 - Thầy Trần Trường Thuỷ.
@@ -206,6 +207,7 @@ Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 - Anh Đặng Tiến Dũng.
 - Bạn Tẩn Vần Quyên.
 - Và các các bạn lớp K68J 
+
 ***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
 
 # Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️
