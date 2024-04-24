@@ -54,7 +54,8 @@
 - Người chơi phải liên tục di chuyển linh hoạt để vượt qua các địa hình hiểm trở, tiêu diệt quái vật để đến đích.
 - Trên đường đi liên tục nhặt "trái tim" để dành được số điểm cao nhất.
 - Người chơi thua cuộc khi bị chết quá 4 lần và chiến thắng khi đến đích.
-![pic_2](res/pic_for_rm/pic_11.png)  ![pic_3](res/pic_for_rm/pic_3.png)
+![pic_2](res/pic_for_rm/pic_11.png)  
+![pic_3](res/pic_for_rm/pic_3.png)
 
 ### Cốt truyện
 (Thế giới giả tưởng)
