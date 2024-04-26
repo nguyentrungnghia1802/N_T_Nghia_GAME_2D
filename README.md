@@ -1,11 +1,13 @@
 # **GAME: "T-Kun's Journey" - SDL2**
 ---
 ## ***Video Demo :***   
-
+**https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s**
+`
 ---
 ## ***Table of Contents***
 - [**GAME: "T-Kun's Journey" - SDL2**](#game-t-kuns-journey---sdl2)
   - [***Video Demo :***](#video-demo-)
+  - [\`](#)
   - [***Table of Contents***](#table-of-contents)
   - [1. HƯỚNG DẪN CÀI ĐẶT](#1-hướng-dẫn-cài-đặt)
       - [**Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.](#cách-1--để-khởi-động-trò-chơi-double-click-vào-file-mainexe)
@@ -20,7 +22,7 @@
       - [***Khi "phá đảo":***](#khi-phá-đảo)
     - [2. Cách chơi:](#2-cách-chơi)
       - [***Sử dụng "bàn phím" và "chuột"***:](#sử-dụng-bàn-phím-và-chuột)
-  - [4. KỸ THUẬT LẬP TRÌNH](#4-kỹ-thuật-lập-trình)
+  - [4. VỀ SOURCE CODE](#4-về-source-code)
     - [***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***](#phát-triển-trên-nền-tảng-ngôn-ngữ-c-và-thư-viện-sdl2)
     - [***Các kỹ thuật lập trình:***](#các-kỹ-thuật-lập-trình)
     - [***Ứng dụng:***](#ứng-dụng)
@@ -110,11 +112,14 @@ Ngày mà cả hai đoàn tụ sẽ không xa...
     + Phím "a": di chuyển sang trái
     + Phím "w": nhảy lên
     + Chuột trái: bắn đạn
-**NOTE:** *Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy*
+**NOTE:** 
++ Mình hướng dẫn chi tiết trong [Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s).
++ *Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy*
 ![pic_7](res/pic_for_rm/pic_7.png)  ![pic_12](res/pic_for_rm/pic_12.png)
 
 ---
-## 4. KỸ THUẬT LẬP TRÌNH
+## 4. VỀ SOURCE CODE
+***Mình đã giải thích khá chi tiết các file, hàm trong [Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s)!***
 ### ***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***
 - SDL_Mixer: Hỗ trợ xử lý âm thanh.
 - SDL_Ttf: Hỗ trợ xử lý fonts chữ.
