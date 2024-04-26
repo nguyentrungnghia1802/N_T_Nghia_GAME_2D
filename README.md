@@ -2,12 +2,11 @@
 ---
 ## ***Video Demo :***   
 **https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s**
-`
+
 ---
 ## ***Table of Contents***
 - [**GAME: "T-Kun's Journey" - SDL2**](#game-t-kuns-journey---sdl2)
   - [***Video Demo :***](#video-demo-)
-  - [\`](#)
   - [***Table of Contents***](#table-of-contents)
   - [1. HƯỚNG DẪN CÀI ĐẶT](#1-hướng-dẫn-cài-đặt)
       - [**Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.](#cách-1--để-khởi-động-trò-chơi-double-click-vào-file-mainexe)
