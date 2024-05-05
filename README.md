@@ -210,7 +210,7 @@ Tất cả code trong game 100% do bản thân em viết, có sự tham khảo v
 - Chưa refac code đến nơi đến chốn.
 - Một vài hàm lặp lại do chưa chưa thể tổng hợp thành một hàm hoàn thiện để sử dụng chung.
 ### Lời kết:
-Cuối cùng, em xin chân thành cảm ơn bố mẹ, ông bà, anh chị, các thầy cô à các bạn đã đồng hành cùng em suốt chặng đường hoàn thiện tựa Game "bom tấn" này.
+Cuối cùng, em xin chân thành cảm ơn bố mẹ, ông bà, anh chị, các thầy cô và các bạn đã đồng hành cùng em suốt chặng đường hoàn thiện tựa Game "bom tấn" này.
 Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
 
 ***A Special Thanks To:***
