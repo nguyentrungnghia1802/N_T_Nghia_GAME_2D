@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
-            threats_list.clear();          // Delete old Threats
+            threats_list.clear(); // Delete old Threats
             threats_list = MakeThreats();
             Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
             isRestarting = !isRestarting;
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
         }
 
         //              MONSTER
-        gMonster.Render(g_screen, NULL);
+        gMonster.Render1(g_screen, NULL);
 
         //   Collision
         if (bCol2 || is_minusLinve == true)
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
                 player_power.Render(g_screen);
                 continue;
             }
-            else                              // When LOSE
+            else // When LOSE
             {
                 bool quit_game_over = false;
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
                     SDL_RenderPresent(g_screen);
                     while (SDL_PollEvent(&eve))
                     {
-                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)         // REPLAY
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE) // REPLAY
                         {
                             Mix_PlayChannel(-1, gGame_Start, 0);
                             SDL_Delay(4000);
@@ -269,12 +269,12 @@ int main(int argc, char *argv[])
                             isRestarting = true;
                             quit_game_over = true;
                         }
-                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)        // EXIT
+                        if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE) // EXIT
                         {
                             quit_game_over = true;
                             is_quit = true;
                         }
-                        if(eve.type==SDL_QUIT)
+                        if (eve.type == SDL_QUIT)
                         {
                             quit_game_over = true;
                             is_quit = true;
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
         //           Win_Game
         if (winner == true)
         {
-            start_time = current_time;     //SET_TIME_START_BACK
+            start_time = current_time; // SET_TIME_START_BACK
             Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
             if (win_and_restart == true)
@@ -417,7 +417,7 @@ void LoadFromFile()
 
     game_map.LoadMap("res/pic/map/map01.txt");
     p_player.LoadImg("res/pic/img/player_right1.png", g_screen);
-    gMonster.LoadImg("res/pic/threats/Monster.png", g_screen);
+    gMonster.LoadImg("res/pic/threats/Monster_vip.png", g_screen);
 
     gMainMusic = Mix_LoadWAV("res/Music/through_Map_music.wav");
     gEarn_Heart = Mix_LoadWAV("res/Music/earn_Heart.wav");
@@ -579,6 +579,13 @@ void Call_Menu()
         SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve))
         {
+            if (eve.type == SDL_QUIT)
+            {
+                SDL_FreeSurface(g_img_menu);
+                SDL_DestroyTexture(menu);
+                close(); // Exit Game
+                break;
+            }
             if (eve.type == SDL_MOUSEMOTION)
             {
                 SDL_GetMouseState(&xm, &ym);
@@ -893,3 +900,4 @@ std::vector<ThreatsObject *> MakeThreats()
 
     return list_threats;
 }
+
