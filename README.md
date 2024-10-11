@@ -46,7 +46,7 @@
 ---
 ## 1. HƯỚNG DẪN CÀI ĐẶT
 ***Link download Game:*** 
-**https://drive.google.com/file/d/1GBu9Yg6-h3DW2xqFoJVCVs_9_Pc_T0jN/view**
+**https://drive.google.com/file/d/1yLTw8t-sJPpChuiPVr7DDYAAzELyCXZv/view?usp=sharing**
 #### **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
 #### **Cách 2:** Build file trong VSCode:
         g++ -std=c++17 -static-libgcc -static-libstdc++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
