@@ -1,229 +1,229 @@
-# **GAME: "T-Kun's Journey" - SDL2**
+# **ゲーム: "T-Kun's Journey" - SDL2**
 ---
-## ***Video Demo :***   
+## ***ビデオデモ :***   
 **https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s**
 
 ---
-## ***Table of Contents***
-- [**GAME: "T-Kun's Journey" - SDL2**](#game-t-kuns-journey---sdl2)
-  - [***Video Demo :***](#video-demo-)
-  - [***Table of Contents***](#table-of-contents)
-  - [1. HƯỚNG DẪN CÀI ĐẶT](#1-hướng-dẫn-cài-đặt)
-      - [**Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.](#cách-1--để-khởi-động-trò-chơi-double-click-vào-file-mainexe)
-      - [**Cách 2:** Build file trong VSCode:](#cách-2-build-file-trong-vscode)
-  - [2. MÔ TẢ CHUNG](#2-mô-tả-chung)
-    - [Giới thiệu](#giới-thiệu)
-    - [Cốt truyện](#cốt-truyện)
-  - [3. CÁC THAO TÁC TRONG GAME](#3-các-thao-tác-trong-game)
-    - [1. Khởi động game, chơi lại và thoát game:](#1-khởi-động-game-chơi-lại-và-thoát-game)
-      - [***Ở mục MENU:***](#ở-mục-menu)
-      - [***Khi vào game:***](#khi-vào-game)
-      - [***Khi "phá đảo":***](#khi-phá-đảo)
-    - [2. Cách chơi:](#2-cách-chơi)
-      - [***Sử dụng "bàn phím" và "chuột"***:](#sử-dụng-bàn-phím-và-chuột)
-  - [4. VỀ SOURCE CODE](#4-về-source-code)
-    - [***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***](#phát-triển-trên-nền-tảng-ngôn-ngữ-c-và-thư-viện-sdl2)
-    - [***Các kỹ thuật lập trình:***](#các-kỹ-thuật-lập-trình)
-    - [***Ứng dụng:***](#ứng-dụng)
-  - [5. TRÍCH DẪN NGUỒN](#5-trích-dẫn-nguồn)
-    - [Tài liệu tham khảo:](#tài-liệu-tham-khảo)
-    - [Nguồn hình ảnh, âm thanh:](#nguồn-hình-ảnh-âm-thanh)
-  - [6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI](#6-các-hướng-đi-trong-tương-lai)
-    - [1. Nâng cấp và cải thiện gameplay:](#1-nâng-cấp-và-cải-thiện-gameplay)
-    - [2. Phát triển đồ họa và âm thanh:](#2-phát-triển-đồ-họa-và-âm-thanh)
-    - [3. Tích hợp câu chuyện và thế giới:](#3-tích-hợp-câu-chuyện-và-thế-giới)
-    - [4. Tích hợp tính năng mạng xã hội hoặc multiplayer:](#4-tích-hợp-tính-năng-mạng-xã-hội-hoặc-multiplayer)
-    - [5. Xây dựng cộng đồng và marketing:](#5-xây-dựng-cộng-đồng-và-marketing)
-    - [6. Phát triển lên các nền tảng khác:](#6-phát-triển-lên-các-nền-tảng-khác)
-    - [7. Tạo DLC hoặc phần tiếp theo:](#7-tạo-dlc-hoặc-phần-tiếp-theo)
-    - [8. Tư bản hóa trò chơi: Hệ thống nạp tiền Pay to Play:](#8-tư-bản-hóa-trò-chơi-hệ-thống-nạp-tiền-pay-to-play)
-  - [7. KẾT LUẬN](#7-kết-luận)
-    - [Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:](#việc-hoàn-thiện-1-dự-án-lập-trình-như-thế-này-giúp-em-mở-mang-kiến-thức-rất-nhiều)
-    - [Khuyết điểm:](#khuyết-điểm)
-    - [Lời kết:](#lời-kết)
-- [Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️](#em-xin-chân-thành-cảm-ơn-thầy-cô-các-bạn-và-mọi-người-đã-dành-thời-gian-để-đọc-️️)
+## ***目次***
+<!-- filepath: d:\_CODE_BANK\Project_\N_T_Nghia_GAME_2D\README.md -->
+- [**ゲーム: "T-Kun's Journey" - SDL2**](#ゲーム-t-kuns-journey---sdl2)
+  - [***ビデオデモ :***](#ビデオデモ-)
+  - [***目次***](#目次)
+  - [1. インストールガイド](#1-インストールガイド)
+      - [**方法 1:**  ゲームを起動するには、`main.exe`ファイルをダブルクリックします。](#方法-1--ゲームを起動するにはmainexeファイルをダブルクリックします)
+      - [**方法 2:** VSCodeでファイルをビルドします:](#方法-2-vscodeでファイルをビルドします)
+  - [2. 概要](#2-概要)
+    - [紹介](#紹介)
+    - [ストーリー](#ストーリー)
+  - [3. ゲーム内の操作](#3-ゲーム内の操作)
+    - [1. ゲームの起動、再プレイ、終了:](#1-ゲームの起動再プレイ終了)
+      - [***メニューで:***](#メニューで)
+      - [***ゲームに入ると:***](#ゲームに入ると)
+      - [***クリア時:***](#クリア時)
+    - [2. ゲームの操作:](#2-ゲームの操作)
+      - [***「キーボード」と「マウス」を使用:***](#キーボードとマウスを使用)
+  - [4. 詳細はビデオデモで説明しています。](#4-詳細はビデオデモで説明しています)
+    - [***C++言語とSDL2ライブラリを使用した開発:***](#c言語とsdl2ライブラリを使用した開発)
+    - [***プログラミング技術:***](#プログラミング技術)
+    - [***応用:***](#応用)
+  - [5. 参考文献](#5-参考文献)
+    - [参考文献:](#参考文献)
+    - [画像、音声の出典:](#画像音声の出典)
+  - [6. 将来の方向性](#6-将来の方向性)
+    - [1. ゲームプレイのアップグレードと改善:](#1-ゲームプレイのアップグレードと改善)
+    - [2. グラフィックとサウンドの改善:](#2-グラフィックとサウンドの改善)
+    - [3. ストーリーと世界の統合:](#3-ストーリーと世界の統合)
+    - [4. ソーシャル機能やマルチプレイヤーの統合:](#4-ソーシャル機能やマルチプレイヤーの統合)
+    - [5. コミュニティの構築とマーケティング:](#5-コミュニティの構築とマーケティング)
+    - [6. 他プラットフォームへの展開:](#6-他プラットフォームへの展開)
+    - [7. DLCまたは続編の作成:](#7-dlcまたは続編の作成)
+    - [8. ゲームのマネタイズ: ペイ・トゥ・プレイシステム:](#8-ゲームのマネタイズ-ペイトゥプレイシステム)
+  - [7. 結論](#7-結論)
+    - [このようなプログラミングプロジェクトを完成させることで、私は多くの知識を広げることができました。](#このようなプログラミングプロジェクトを完成させることで私は多くの知識を広げることができました)
+    - [課題:](#課題)
+    - [今後の改善点:](#今後の改善点)
+- [読んでいただいたすべての皆様に心より感謝申し上げます。❤️❤️](#読んでいただいたすべての皆様に心より感謝申し上げます️️)
 
 ---
-## 1. HƯỚNG DẪN CÀI ĐẶT
-***Link download Game:*** 
+## 1. インストールガイド
+***ゲームのダウンロードリンク:*** 
 **https://drive.google.com/file/d/1yLTw8t-sJPpChuiPVr7DDYAAzELyCXZv/view?usp=sharing**
-#### **Cách 1:**  Để khởi động trò chơi, double click vào file `main.exe`.
-#### **Cách 2:** Build file trong VSCode:
+#### **方法 1:**  ゲームを起動するには、`main.exe`ファイルをダブルクリックします。
+#### **方法 2:** VSCodeでファイルをビルドします:
         g++ -std=c++17 -static-libgcc -static-libstdc++ -Isrc/include -Lsrc/lib -o main src/main.cpp src/CommonFunc.cpp src/BaseObject.cpp src/gamemap.cpp src/MainObject.cpp src/ImpTimer.cpp src/BulletObject.cpp src/ThreatObject.cpp src/PlayHealth.cpp src/TextObject.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
-**Chạy file bằng lệnh:* `./main`
+**コマンドで実行:** `./main`
 
 ---
-## 2. MÔ TẢ CHUNG
-### Giới thiệu
-- Game "T-Kun's Journey" là một tựa game thể loại platform.
-- Người chơi phải liên tục di chuyển linh hoạt để vượt qua các địa hình hiểm trở, tiêu diệt quái vật để đến đích.
-- Trên đường đi liên tục nhặt "trái tim" để dành được số điểm cao nhất.
-- Người chơi thua cuộc khi bị chết quá 4 lần và chiến thắng khi đến đích.
+## 2. 概要
+### 紹介
+- ゲーム "T-Kun's Journey" はプラットフォームゲームです。
+- プレイヤーは、危険な地形を乗り越え、敵を倒して目的地に到達するために、常に柔軟に移動し続ける必要があります。
+- 道中で「ハート」を拾い続けて、最高得点を獲得します。
+- プレイヤーは4回以上死ぬと敗北し、目的地に到達すると勝利します。
 ![pic_2](res/pic_for_rm/pic_11.png)  
 ![pic_3](res/pic_for_rm/pic_3.png)
 
-### Cốt truyện
-(Thế giới giả tưởng)
+### ストーリー
+(ファンタジーの世界)
 
-Trong thế giới huyền bí của kỷ Jura, khi mặt đất vẫn trải đầy rừng rậm và thung lũng, có một câu chuyện cảm động về tình yêu và sự dũng cảm.
+ジュラ紀の神秘的な世界、地上が森と谷で覆われていた時代、愛と勇気の感動的な物語がありました。
 
-Cô bé khủng long tên là Isha, là một cô bé tinh nghịch và đáng yêu, luôn mơ mộng về những cuộc phiêu lưu xa xôi. 
+イシャという名前の恐竜の女の子は、いたずら好きで可愛らしく、遠い冒険を夢見ていました。
 
-Cậu con trai của vị thần rừng, tên là T-Rex, đã yêu Isha từ lần đầu tiên anh nhìn thấy cô bé.
+森の神の息子T-Rexは、イシャを初めて見た瞬間から彼女を愛していました。
 
-Và dường như Isha cũng thầm yêu T-Rex, thường đi khám phá mọi thứ cùng cậu, và gọi cậu với cái tên thân thương: T-Kun. Họ là hai linh hồn sinh ra để tương hợp với nhau, nhưng vận mệnh lại đưa họ vào cuộc thử thách đầy nguy hiểm.
+イシャも密かにT-Rexを愛していたようで、よく一緒に探検し、親しみを込めて「T-Kun」と呼んでいました。二人は運命的に惹かれ合う魂でしたが、運命は彼らに危険な試練を与えました。
 
-Một ngày, khi Isha đang thăm rừng một mình, cô bị mắc kẹt trong một cái bẫy do một con quái vật đáng sợ tên là DarkClaw tạo ra. DarkClaw là một con quái vật hung dữ và tàn bạo, luôn săn đuổi và bắt giữ những sinh vật khác để ăn thịt.
+ある日、イシャが一人で森を訪れていた時、恐ろしいモンスター「DarkClaw」によって罠にかかってしまいました。DarkClawは凶暴で残忍なモンスターで、他の生き物を狩り、捕らえて食べてしまいます。
 
-Khi T-Rex biết về việc này, anh không thể ngồi yên. Anh quyết định rời khỏi vùng rừng của mình và bắt đầu hành trình giải cứu Isha. Sức mạnh của tình yêu và lòng dũng cảm đã dẫn dắt T-Rex đi qua những thử thách nguy hiểm và vượt qua những con quái thú Threats đang chờ đợi.
+T-Rexはこのことを知り、じっとしていられませんでした。彼は自分の森を離れ、イシャを救う旅に出ることを決意します。愛と勇気の力がT-Rexを危険な試練へと導き、待ち受けるモンスター「Threats」を乗り越えていきます。
 
-Chặng đường phía trước đầy chông gai và thử thách... 
-Bạn hãy giúp T-Kun sớm tìm được Isha bằng cách giúp cậu ấy vượt qua những thung lũng, mê cung, tiêu diệt các Threats.
+これからの道のりは困難と試練に満ちています... あなたはT-Kunがイシャを見つけられるよう、谷や迷宮を越え、Threatsを倒す手助けをしてください。
 
-Ngày mà cả hai đoàn tụ sẽ không xa...
-Đừng bỏ cuộc nhé!
+二人が再会する日は遠くありません... 諦めないでください！
 ![fight](res/pic_for_rm/pic_6.png)
 ![couple](res/pic_for_rm/pic_14.jpg)
 
 ---
-## 3. CÁC THAO TÁC TRONG GAME
-### 1. Khởi động game, chơi lại và thoát game:
+## 3. ゲーム内の操作
+### 1. ゲームの起動、再プレイ、終了:
 
-#### ***Ở mục MENU:***
-    + Nhấn chọn START để bắt đầu chơi
-    + Nhấn chọn EXIT để thoát game
+#### ***メニューで:***
+    + STARTを選択してゲームを開始します
+    + EXITを選択してゲームを終了します
  ![menu](res/pic_for_rm/pic_2.png)
 
-#### ***Khi vào game:***
-    + Nhấn nút "X" ở góc phải window để thoát game
-    + Khi thua: Nhấn phím SPACE để chơi lại, nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
-    + Khi hiện thông báo Journey: Nhấn phím SPACE để tiếp tục.
+#### ***ゲームに入ると:***
+    + ウィンドウの右上隅にある「X」ボタンを押してゲームを終了します
+    + 負けた場合: SPACEキーを押して再プレイし、右上隅の「X」ボタンを選択してゲームを終了します。
+    + 「Journey」メッセージ表示時：SPACEキーで続行
 ![lose](res/pic_for_rm/pic_9.png)
 ![hourney](res/pic_for_rm/pic_5.png)
 
-#### ***Khi "phá đảo":***
-    + Nhấn phím SPACE để chơi lại.
-    + Nhấn chọn dấu "X" ở góc trên bên phải để thoát game.
+#### ***クリア時:***
+    + SPACEキーを押して再プレイします。
+    + 右上隅の「X」ボタンを選択してゲームを終了します。
 ![win](res/pic_for_rm/pic_13.png)
 
-### 2. Cách chơi:
-#### ***Sử dụng "bàn phím" và "chuột"***:
-    + Phím "d": di chuyển sang phải
-    + Phím "a": di chuyển sang trái
-    + Phím "w": nhảy lên
-    + Chuột trái: bắn đạn
-**NOTE:** 
-+ Mình hướng dẫn chi tiết trong [Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s).
-+ *Phím "a" không vô dụng như bạn nghĩ đâu, nó rất cần thiết đấy*
+### 2. ゲームの操作:
+#### ***「キーボード」と「マウス」を使用:***
+    + "d"キー: 右に移動
+    + "a"キー: 左に移動
+    + "w"キー: ジャンプ
+    + 左クリック: 弾を発射
+**注意:** 
++ 詳細はビデオデモで説明しています [Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s).
++ *"a"キーは無駄ではありません、非常に重要です*
+
 ![pic_7](res/pic_for_rm/pic_7.png)  ![pic_12](res/pic_for_rm/pic_12.png)
 
 ---
-## 4. VỀ SOURCE CODE
-***Mình đã giải thích khá chi tiết các file, hàm trong [Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s)!***
-### ***Phát triển trên nền tảng ngôn ngữ C++ và thư viện SDL2:***
-- SDL_Mixer: Hỗ trợ xử lý âm thanh.
-- SDL_Ttf: Hỗ trợ xử lý fonts chữ.
-- Các thư viện mở rộng C++.
-- IDE Visual Code.
+## 4. 詳細はビデオデモで説明しています。
+***[Video Demo](https://www.youtube.com/watch?v=ZlPvO_iXwlE&t=568s) で各ファイルや関数を詳しく説明しています！!***
+### ***C++言語とSDL2ライブラリを使用した開発:***
+- SDL_Mixer: 音声処理をサポート。
+- SDL_Ttf: フォント処理をサポート。
+- 拡張C++ライブラリ。
+- IDE Visual Code。
 
-### ***Các kỹ thuật lập trình:***
-- Gồm tất cả các kỹ thuật cơ bản:
-- Biến (static, extern), vòng lặp, cấu trúc rẽ nhánh, mảng, chuỗi.
-- Con trỏ, set, map, vector
-- Class: Tạo, hủy, member function.
-- Đọc viết file binary.
-- Multithreading: Xử lý chức năng Battle.
-- Tách file giấu code.
-- Kỹ thuật duyệt mảng, sinh số ngẫu nhiên.
-- Kỹ năng refac code.
-- Các kỹ thuật, syntax của SDL.
-- Kỹ thuật giải phóng bộ nhớ động.
+### ***プログラミング技術:***
+- 基本的な技術を網羅
+- 変数 (static, extern)、ループ、分岐構造、配列、文字列。
+- ポインタ、set、map、vector
+- クラス: 作成、破棄、メンバー関数。
+- バイナリファイルの読み書き。
+- マルチスレッド: バトル機能の処理。
+- コードを隠すためのファイル分割。
+- 配列の走査、乱数生成の技術。
+- コードのリファクタリングスキル。
+- SDLの技術、構文。
+- 動的メモリ解放の技術。
 
-### ***Ứng dụng:***
-- Mỗi chức năng của game (Map, Main Player, Threats, Bullet, Text,...) được xác định bằng 1 đối tượng (class) riêng biệt.
--  Xây dựng Tile Map.
-- Tạo hàm kiểm tra va chạm giữa các đối tượng.
-- Tạo hàm kiểm tra va giữa đối tượng và map.
-- Sử dụng Vector để lưu trữ Threats, Bullet...
-- Sử dụng các vòng lặp để liên tục xử lý các sự kiện và hiển thị hình ảnh trong game.
+### ***応用:***
+- ゲームの各機能 (Map, Main Player, Threats, Bullet, Text,...) はそれぞれ独自のオブジェクト (クラス) として定義されています。
+- タイルマップの構築。
+- オブジェクト間の衝突を検出する関数の作成。
+- オブジェクトとマップの間の衝突を検出する関数の作成。
+- ベクターを使用してThreats、Bulletを保存します。
+- ループを使用してゲーム内のイベントを継続的に処理し、画像を表示します。
+ 
 ![code](res/pic_for_rm/pic_15.png)  ![tile](res/pic_for_rm/pic_16.png)
 
 ---
-## 5. TRÍCH DẪN NGUỒN
-### Tài liệu tham khảo:
-- [Khoá học của trường](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
+## 5. 参考文献
+### 参考文献:
+- [学校のコース](https://courses.uet.vnu.edu.vn/course/view.php?id=10853)
 - **https://lazyfoo.net/tutorials/SDL/**
 - **https://www.youtube.com/watch?v=ObEOK7HSq2E**
 - **https://phattrienphanmem123az.com/lap-trinh-game-cpp**
 - **https://www.youtube.com/@PhatTrienPhanMem123AZ**
 - **https://www.youtube.com/playlist?list=PLu4oc9P-ABcOXNOyoAvnMyUwn_kkiVA5B**
 - **https://www.youtube.com/playlist?list=PL4cUxeGkcC9goXbgTDQ0n_4TBzOO0ocPR**
-### Nguồn hình ảnh, âm thanh:
+### 画像、音声の出典:
 - **https://www.shutterstock.com/vi/**
 - **https://pixabay.com/vi/**
 ---
-## 6. CÁC HƯỚNG ĐI TRONG TƯƠNG LAI
-### 1. Nâng cấp và cải thiện gameplay:
-- Thêm các yếu tố mới như power-up, vũ khí, kỹ năng đặc biệt, hoặc các yếu tố điều khiển khác để làm phong phú gameplay.
-- Tạo ra nhiều cấp độ (level) với độ khó tăng dần, hoặc thêm các yếu tố khác như boss battle.
-### 2. Phát triển đồ họa và âm thanh:
-- Nâng cấp đồ họa bằng cách thêm chi tiết cho môi trường, nhân vật, hoặc các hiệu ứng đặc biệt như ánh sáng và bóng đổ.
-- Tạo ra âm thanh chân thực hơn, bao gồm nhạc nền, hiệu ứng âm thanh, và giọng nói của nhân vật (nếu cần).
-### 3. Tích hợp câu chuyện và thế giới:
-- Xây dựng một cốt truyện chi tiết để giúp người chơi hiểu thêm về nhân vật và thế giới trong game.
-- Thêm các đoạn cắt cảnh (cutscene) hoặc văn bản kể chuyện để làm cho game thêm hấp dẫn.
-### 4. Tích hợp tính năng mạng xã hội hoặc multiplayer:
-- Cho phép người chơi chia sẻ tiến trình hoặc kết quả chơi của mình trên mạng xã hội.
-- Thêm chế độ multiplayer cho phép người chơi cạnh tranh hoặc hợp tác với nhau.
-### 5. Xây dựng cộng đồng và marketing:
-- Tạo ra các kênh truyền thông xã hội cho game của bạn để kết nối với người chơi và nhận phản hồi.
-- Tổ chức các sự kiện, cuộc thi hoặc chương trình beta để thu hút sự chú ý và xây dựng cộng đồng người chơi.
-### 6. Phát triển lên các nền tảng khác:
-- Chuyển game sang các nền tảng khác như di động, console, hoặc VR để mở rộng tầm nhìn của bạn.
-- Đảm bảo game tương thích với nhiều thiết bị và hệ điều hành khác nhau.
-### 7. Tạo DLC hoặc phần tiếp theo:
-- Phát hành các gói nội dung bổ sung (DLC) để tiếp tục giữ chân người chơi sau khi hoàn thành game chính.
-- Lên kế hoạch cho phần tiếp theo hoặc một dự án game mới dựa trên thành công của game đầu tiên.
-### 8. Tư bản hóa trò chơi: Hệ thống nạp tiền Pay to Play:
-***Người chơi sẽ nạp tiền vào game, số tiền sẽ chuyển vào tài khoản nhà phát hành.***
-***Tiền nạp sẽ chuyển hóa thành Coin với tỷ lệ tương ứng.***
-Có thể dùng Coin để đổi các vật phẩm sau:
-  - Skin cho nhân vật.
-  - Theme UI game mới.
-  - Theme Music game mới.
-  - Tốn Coin để sử dụng Buff, giúp chiến thắng một cách dễ dàng, giảm đi áp lực cuộc sống.
+## 6. 将来の方向性
+### 1. ゲームプレイのアップグレードと改善:
+- 新しい要素を追加してゲームプレイを豊かにする (パワーアップ、武器、特別なスキル、または他のコントロール要素)。
+- 難易度が徐々に上がる複数のレベルを作成するか、ボスバトルなどの他の要素を追加します。
+### 2. グラフィックとサウンドの改善:
+- 環境、キャラクター、または光や影のような特殊効果の詳細を追加することでグラフィックをアップグレードします。
+- バックグラウンドミュージック、効果音、キャラクターの声 (必要に応じて) を含む、よりリアルなサウンドを作成します。
+### 3. ストーリーと世界の統合:
+- プレイヤーがゲーム内のキャラクターや世界をより理解できるように、詳細なストーリーを構築します。
+- ゲームをより魅力的にするために、カットシーンやナレーションテキストを追加します。
+### 4. ソーシャル機能やマルチプレイヤーの統合:
+- プレイヤーが自分の進行状況や結果をソーシャルメディアで共有できるようにします。
+- プレイヤーが競争したり協力したりできるマルチプレイヤーモードを追加します。
+### 5. コミュニティの構築とマーケティング:
+- プレイヤーとつながり、フィードバックを受け取るために、ゲームのソーシャルメディアチャンネルを作成します。
+- イベントやコンテスト、ベータテストで注目度・コミュニティ拡大
+### 6. 他プラットフォームへの展開:
+- ゲームをモバイル、コンソール、VRなどの他のプラットフォームに移植して視野を広げます。
+- ゲームがさまざまなデバイスやオペレーティングシステムと互換性があることを確認します。
+### 7. DLCまたは続編の作成:
+- メインゲームをクリアした後もプレイヤーを引き留めるために、追加コンテンツ（DLC）をリリースします。
+- 最初のゲームの成功に基づいて続編や新しいゲームプロジェクトの計画を立てます。
+### 8. ゲームのマネタイズ: ペイ・トゥ・プレイシステム:
+***プレイヤーはゲームに課金し、金額は運営者の口座に振り込まれます。 課金はコインに変換され、対応するレートで使用可能。 コインで交換できるアイテム：***
+プレイヤーはコインを使用して以下のアイテムと交換できます。
+  - キャラクターのスキン。
+  - 新しいゲームのUIテーマ。
+  - 新しいゲームのテーマ音楽。
+  - バフを使用するためにコインを消費し、勝利を容易にし、生活のストレスを軽減します。
 
 ---
-## 7. KẾT LUẬN
-Tất cả code trong game 100% do bản thân em viết, có sự tham khảo và học hỏi từ [Lazyfool](https://lazyfoo.net/tutorials/SDL/), [phattrienphanmem123az](https://phattrienphanmem123az.com/lap-trinh-game-cpp),...
-### Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang kiến thức rất nhiều:
-- Hiểu được mô hình phát triển 1 phần mềm kiểu thác nước: Phân tích, thiết kế, lập trình, kiểm thử, chuyển giao và bảo trì (forever).
-- Sử dụng thành thạo class, pointer, chia tách file,...
-- Cách dùng github.
-- Học rất nhiều syntax, thuật toán mới của c++.
-- Hiểu sơ sơ một số khía cạnh của lập trình hướng đối tượng: kế thừa, đa hình,...
-- Hình thành tư duy xử lý và giải quyết bài toán.
-### Khuyết điểm:
-- Code chưa được tối ưu hoàn toàn.
-- Các syntax và thuật toán vẫn còn ngây ngô.
-- Chưa refac code đến nơi đến chốn.
-- Một vài hàm lặp lại do chưa chưa thể tổng hợp thành một hàm hoàn thiện để sử dụng chung.
-### Lời kết:
-Cuối cùng, em xin chân thành cảm ơn bố mẹ, ông bà, anh chị, các thầy cô và các bạn đã đồng hành cùng em suốt chặng đường hoàn thiện tựa Game "bom tấn" này.
-Chúc các gamer có một trải nghiệm thú vị và đáng nhớ.
+## 7. 結論
+ゲーム内のすべてのコードは100％自分で書いたものであり、[Lazyfool](https://lazyfoo.net/tutorials/SDL/)や[phattrienphanmem123az](https://phattrienphanmem123az.com/lap-trinh-game-cpp)からの参考や学びが含まれています。
+### このようなプログラミングプロジェクトを完成させることで、私は多くの知識を広げることができました。
+- ウォーターフォール型ソフトウェア開発モデルの理解: 分析、設計、プログラミング、テスト、移行、保守（永続的）。
+- クラス、ポインタ、ファイル分割の熟練した使用。
+- GitHubの使い方。
+- C++の新しい構文やアルゴリズムを多く学びました。
+- オブジェクト指向プログラミングのいくつかの側面をざっくり理解しました: 継承、多態性、...
+- 問題を処理し解決するための思考を形成しました。
+### 課題:
+- コードは完全に最適化されていません。
+- 構文やアルゴリズムはまだ未熟です。
+- コードのリファクタリングが不十分です。
+- 一部の関数は、共通で使用するための完全な関数に統合できていないため、繰り返し使用されています。
+### 今後の改善点:
+- コードの最適化を進め、パフォーマンスを向上させる。
+- 構文やアルゴリズムの理解を深め、より洗練された実装を目指す。
+- コードのリファクタリングを行い、可読性と保守性を向上させる。
 
-***A Special Thanks To:***
-- Thầy Lê Đức Trọng.
-- Thầy Trần Trường Thuỷ.
-- Anh Nguyễn Trung Hiếu.
-- Anh Đặng Tiến Dũng.
-- Bạn Tẩn Vần Quyên.
-- Và các bạn lớp K68J 
+***特別な感謝を捧げます***
+- レ・ドゥック・チョン先生
+- グエン・チュン・ヒエウさん
+- ダン・ティエン・ズンさん
+- タン・ヴァン・クエンさん
+- K68Jクラスの皆さん
 
-***đã tạo động lực, đóng góp ý tưởng, giúp đỡ mình để sản phẩm tuyệt vời này được hoàn thiện.***
+***このプロジェクトを完成させるために、モチベーションを与え、アイデアを提供し、サポートしてくれたことに感謝します。***
 
-# Em xin chân thành cảm ơn thầy, cô, các bạn và mọi người đã dành thời gian để đọc. ❤️❤️
+# 読んでいただいたすべての皆様に心より感謝申し上げます。❤️❤️
 
 ![img](123.png)
 
