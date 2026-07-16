@@ -1010,8 +1010,10 @@ void Win_Game()
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
-    game_map.LoadMap_Return("res/pic/map/map01.txt");
+    game_map.ResetFromBaseMap();
+    map_data = game_map.getMap();
     game_map.ResetMap(map_data);
+    game_map.SetMap(map_data);
 
     if (winner == true)
     {

@@ -1,8 +1,14 @@
 
 #include <iostream>
 #include "gamemap.h"
+#include <algorithm>
 #include <fstream>
 #include <vector>
+
+GameMap::GameMap()
+{
+    has_base_map_ = false;
+}
 
 void GameMap::LoadMap(const char path[])
 {
@@ -45,6 +51,8 @@ void GameMap::LoadMap(const char path[])
     game_map_.start_y_ = 0;
 
     file.close();
+    base_map_ = game_map_;
+    has_base_map_ = true;
 }
 
 void GameMap::LoadTiles(SDL_Renderer *screen)
@@ -63,37 +71,44 @@ void GameMap::LoadTiles(SDL_Renderer *screen)
 void GameMap::DrawMap(SDL_Renderer *screen)
 {
     int x1 = 0;
-    int x2 = 0;
 
     int y1 = 0;
-    int y2 = 0;
 
-    int map_x = 0;
-    int map_y = 0;
-
-    map_x = game_map_.start_x_ / TILE_SIZE;
     x1 = (game_map_.start_x_ % TILE_SIZE) * -1;
-    x2 = x1 + SCREEN_WIDTH + (x1 == 0 ? 0 : TILE_SIZE);
-
-    map_y = game_map_.start_y_ / TILE_SIZE;
-
     y1 = (game_map_.start_y_ % TILE_SIZE) * -1;
-    y2 = y1 + SCREEN_HEIGHT + (y1 == 0 ? 0 : TILE_SIZE);
 
-    for (int i = y1; i < y2; i += TILE_SIZE)
+    const TileRange visible_range = GetVisibleTileRange(game_map_);
+    int draw_y = y1;
+    for (int map_y = visible_range.first_y; map_y <= visible_range.last_y; map_y++, draw_y += TILE_SIZE)
     {
-        map_x = game_map_.start_x_ / TILE_SIZE;
-        for (int j = x1; j < x2; j += TILE_SIZE)
+        int draw_x = x1;
+        for (int map_x = visible_range.first_x; map_x <= visible_range.last_x; map_x++, draw_x += TILE_SIZE)
         {
             int val = game_map_.tile[map_y][map_x];
             if (val > 0)
             {
-                tile_mat[val].SetRect(j, i);
+                tile_mat[val].SetRect(draw_x, draw_y);
                 tile_mat[val].Render(screen);
             }
-            map_x++;
         }
-        map_y++;
+    }
+}
+
+GameMap::TileRange GameMap::GetVisibleTileRange(const Map &map_data) const
+{
+    TileRange range;
+    range.first_x = std::max(0, map_data.start_x_ / TILE_SIZE);
+    range.last_x = std::min(MAX_MAP_X - 1, (map_data.start_x_ + SCREEN_WIDTH + TILE_SIZE - 1) / TILE_SIZE);
+    range.first_y = std::max(0, map_data.start_y_ / TILE_SIZE);
+    range.last_y = std::min(MAX_MAP_Y - 1, (map_data.start_y_ + SCREEN_HEIGHT + TILE_SIZE - 1) / TILE_SIZE);
+    return range;
+}
+
+void GameMap::ResetFromBaseMap()
+{
+    if (has_base_map_)
+    {
+        game_map_ = base_map_;
     }
 }
 
