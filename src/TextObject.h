@@ -41,8 +41,11 @@ public:
 
 private:
     std::string str_val_;
+    std::string rendered_text_;
     SDL_Color text_color_;
+    SDL_Color rendered_color_;
     SDL_Texture *texture_;
+    TTF_Font *rendered_font_;
     int width_;
     int height_;
     SDL_Rect rect_;

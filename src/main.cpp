@@ -87,7 +87,6 @@ struct ThreatCollisionTarget
 };
 
 ThreatList threats_list;
-std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
 std::string str_val;
 std::string high_score_str;
@@ -384,14 +383,14 @@ int main(int argc, char *argv[])
         }
 
         //            Bullet
-        bullet_arr = p_player.get_bullet_list();
-        for (int r = 0; r < bullet_arr.size(); r++)
+        const std::vector<BulletObject *> &bullet_arr = p_player.get_bullet_list();
+        for (size_t r = 0; r < bullet_arr.size();)
         {
             BulletObject *p_bullet = bullet_arr.at(r);
+            bool bullet_removed = false;
             {
                 if (p_bullet != NULL)
                 {
-                    bool bullet_removed = false;
                     for (size_t t = 0; t < active_threats.size() && !bullet_removed; t++)
                     {
                         ThreatCollisionTarget &target = active_threats.at(t);
@@ -421,6 +420,10 @@ int main(int argc, char *argv[])
                         }
                     }
                 }
+            }
+            if (!bullet_removed)
+            {
+                r++;
             }
         }
 
@@ -590,7 +593,6 @@ void close()
     is_closed = true;
 
     threats_list.clear();
-    bullet_arr.clear();
     p_player.ClearBulletList();
 
     time_game.Free();

@@ -44,7 +44,7 @@ public:
         {
                 p_bullet_list_=bullet_list;
         }
-        std::vector<BulletObject*>get_bullet_list() const {return p_bullet_list_;}
+        const std::vector<BulletObject*>& get_bullet_list() const {return p_bullet_list_;}
         void HanleBullet(SDL_Renderer* rec);
         void RemoveBullet(const int& idx);
         void ClearBulletList();
