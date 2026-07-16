@@ -109,6 +109,7 @@ enum class GameState
 };
 
 const float MAX_DELTA_TIME = 0.05f;
+const int THREAT_ACTIVE_MARGIN = SCREEN_WIDTH;
 GameState game_state = GameState::MENU;
 Uint32 last_frame_ticks = 0;
 float delta_time = 0.0f;
@@ -139,6 +140,7 @@ Mix_Chunk *LoadProfiledWav(const char *path);
 void LoadRuntimeTextures();
 void FreeRuntimeTextures();
 void ConfigureDynamicThreat(ThreatsObject *p_threat);
+bool IsThreatActive(const ThreatsObject *p_threat, const Map &map_data);
 float UpdateDeltaTime();
 void CapFrameRate(Uint32 frame_start_ticks);
 bool WaitWithEventPump(Uint32 wait_ms);
@@ -258,12 +260,18 @@ int main(int argc, char *argv[])
         player_heart.Show(g_screen);
 
         is_minusLinve = p_player.GetIsMinusLive();
+        bCol2 = false;
 
         for (size_t i = 0; i < threats_list.size(); i++)
         {
             ThreatsObject *p_threat = threats_list.at(i).get();
             if (p_threat != NULL)
             {
+                if (!IsThreatActive(p_threat, map_data))
+                {
+                    continue;
+                }
+
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
                 p_threat->ImpMoveType(g_screen);
                 p_threat->DoPlayer(map_data);
@@ -378,6 +386,11 @@ int main(int argc, char *argv[])
                         ThreatsObject *obj_threat = threats_list.at(t).get();
                         if (obj_threat != NULL)
                         {
+                            if (!IsThreatActive(obj_threat, map_data))
+                            {
+                                continue;
+                            }
+
                             SDL_Rect tRect;
                             tRect.x = obj_threat->GetRect().x;
                             tRect.y = obj_threat->GetRect().y;
@@ -714,6 +727,21 @@ void ConfigureDynamicThreat(ThreatsObject *p_threat)
                                     gThreat2RightTexture.GetObject(), gThreat2RightTexture.GetRect().w, gThreat2RightTexture.GetRect().h,
                                     gThreat3LeftTexture.GetObject(), gThreat3LeftTexture.GetRect().w, gThreat3LeftTexture.GetRect().h,
                                     gThreat3RightTexture.GetObject(), gThreat3RightTexture.GetRect().w, gThreat3RightTexture.GetRect().h);
+}
+
+bool IsThreatActive(const ThreatsObject *p_threat, const Map &map_data)
+{
+    if (p_threat == NULL)
+    {
+        return false;
+    }
+
+    const int active_left = map_data.start_x_ - THREAT_ACTIVE_MARGIN;
+    const int active_right = map_data.start_x_ + SCREEN_WIDTH + THREAT_ACTIVE_MARGIN;
+    const int threat_left = static_cast<int>(p_threat->get_x_pos());
+    const int threat_right = threat_left + p_threat->get_width_frame();
+
+    return threat_right >= active_left && threat_left <= active_right;
 }
 
 bool InitData()
