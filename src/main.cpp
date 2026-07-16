@@ -80,6 +80,12 @@ Uint32 time_render;
 
 using ThreatList = std::vector<std::unique_ptr<ThreatsObject>>;
 
+struct ThreatCollisionTarget
+{
+    ThreatsObject *threat;
+    SDL_Rect rect;
+};
+
 ThreatList threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
@@ -262,6 +268,8 @@ int main(int argc, char *argv[])
         is_minusLinve = p_player.GetIsMinusLive();
         bCol2 = false;
         SDL_Rect screen_viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+        std::vector<ThreatCollisionTarget> active_threats;
+        active_threats.reserve(threats_list.size());
 
         for (size_t i = 0; i < threats_list.size(); i++)
         {
@@ -280,6 +288,7 @@ int main(int argc, char *argv[])
 
                 SDL_Rect rect_player = p_player.GetRectFrame();
                 SDL_Rect rect_threat = p_threat->GetRectFrame();
+                active_threats.push_back({p_threat, rect_threat});
                 bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
                 if (bCol2 == true)
                 {
@@ -382,31 +391,32 @@ int main(int argc, char *argv[])
             {
                 if (p_bullet != NULL)
                 {
-                    for (size_t t = 0; t < threats_list.size(); t++)
+                    bool bullet_removed = false;
+                    for (size_t t = 0; t < active_threats.size() && !bullet_removed; t++)
                     {
-                        ThreatsObject *obj_threat = threats_list.at(t).get();
-                        if (obj_threat != NULL)
+                        ThreatCollisionTarget &target = active_threats.at(t);
+                        if (target.threat != NULL)
                         {
-                            if (!IsThreatActive(obj_threat, map_data))
-                            {
-                                continue;
-                            }
-
-                            SDL_Rect tRect;
-                            tRect.x = obj_threat->GetRect().x;
-                            tRect.y = obj_threat->GetRect().y;
-                            tRect.w = obj_threat->get_width_frame();
-                            tRect.h = obj_threat->get_height_frame();
-
                             SDL_Rect bRect = p_bullet->GetRect();
 
-                            bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+                            bool bCol = SDLCommonFunc::CheckCollision(bRect, target.rect);
 
                             if (bCol)
                             {
                                 Mix_PlayChannel(-1, gThreats_Die, 0);
                                 p_player.RemoveBullet(r);
-                                threats_list.erase(threats_list.begin() + t);
+                                ThreatsObject *hit_threat = target.threat;
+                                ThreatList::iterator hit_it = std::find_if(threats_list.begin(), threats_list.end(),
+                                                                            [hit_threat](const std::unique_ptr<ThreatsObject> &threat)
+                                                                            {
+                                                                                return threat.get() == hit_threat;
+                                                                            });
+                                if (hit_it != threats_list.end())
+                                {
+                                    threats_list.erase(hit_it);
+                                }
+                                active_threats.erase(active_threats.begin() + t);
+                                bullet_removed = true;
                             }
                         }
                     }
