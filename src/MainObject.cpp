@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include "MainObject.h"
+#include "Profiler.h"
 
 MainObject::MainObject()
 {
@@ -128,6 +129,7 @@ void MainObject::Show(SDL_Renderer *des)
         SDL_Rect *current_clip = &frame_clip_[frame_];
         SDL_Rect renderQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
 
+        Profiler::CountEntityRender();
         SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
     }
 }
@@ -216,7 +218,9 @@ void MainObject::HanleBullet(SDL_Renderer *des)
         {
             if (p_bullet->get_is_move() == true)
             {
+                Profiler::CountEntityUpdate();
                 p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                Profiler::CountEntityRender();
                 p_bullet->Render(des);
             }
             else
@@ -250,6 +254,7 @@ void MainObject::RemoveBullet(const int &idx)
 
 void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)
 {
+    Profiler::CountEntityUpdate();
 
     if (come_back_time_ == 0)
     {

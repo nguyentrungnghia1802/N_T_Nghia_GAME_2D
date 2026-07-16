@@ -1,5 +1,6 @@
 #include <iostream>
 #include "BaseObject.h"
+#include "Profiler.h"
 
 BaseObject::BaseObject()
 {
@@ -19,10 +20,12 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer *screen)
     Free();
     SDL_Texture *new_texture = NULL;
 
+    Profiler::CountImageLoad();
     SDL_Surface *load_surface = IMG_Load(path.c_str());
     if (load_surface != NULL)
     {
         SDL_SetColorKey(load_surface, SDL_TRUE, SDL_MapRGB(load_surface->format, COLOR_KEY_R, COLOR_KEY_G, COLOR_KEY_B));
+        Profiler::CountTextureCreate();
         new_texture = SDL_CreateTextureFromSurface(screen, load_surface);
         if (new_texture != NULL)
         {

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "ThreatObject.h"
 #include "BaseObject.h"
+#include "Profiler.h"
 
 ThreatsObject::ThreatsObject()
 {
@@ -82,12 +83,15 @@ void ThreatsObject::Show(SDL_Renderer *des)
 
         SDL_Rect *currentClip = &frame_clip_[frame_];
         SDL_Rect rendQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
+        Profiler::CountEntityRender();
         SDL_RenderCopy(des, p_object_, currentClip, &rendQuad);
     }
 }
 
 void ThreatsObject::DoPlayer(Map &gMap)
 {
+    Profiler::CountEntityUpdate();
+
     if (come_back_time_ == 0)
     {
         x_val_ = 0;

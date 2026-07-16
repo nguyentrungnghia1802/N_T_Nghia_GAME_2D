@@ -8,6 +8,7 @@
 #include "ThreatObject.h"
 #include "PlayHealth.h"
 #include "TextObject.h"
+#include "Profiler.h"
 #include <chrono>
 #include <thread>
 
@@ -100,11 +101,18 @@ void render_journey_img();
 void Create_texture();
 std::vector<ThreatsObject *> MakeThreats();
 
+TTF_Font *OpenProfiledFont(const char *path, int size);
+SDL_Surface *LoadProfiledSurface(const char *path);
+SDL_Texture *CreateProfiledTextureFromSurface(SDL_Renderer *screen, SDL_Surface *surface);
+Mix_Chunk *LoadProfiledWav(const char *path);
+
 int main(int argc, char *argv[])
 {
     std::srand(time(NULL));
     if (InitData() == false)
         return -1;
+
+    Profiler::Init();
 
     if (LoadBackground() == false)
         return -1;
@@ -131,10 +139,13 @@ int main(int argc, char *argv[])
     threats_list = MakeThreats();
 
     Create_texture();
+    Profiler::StartInterval();
 
     //      _START_GAME_
     while (!is_quit)
     {
+        Profiler::BeginFrame();
+
         //      CHECK RESTART
         if (isRestarting)
         {
@@ -245,6 +256,7 @@ int main(int argc, char *argv[])
                 SDL_Delay(1000);
                 player_power.Decrease();
                 player_power.Render(g_screen);
+                Profiler::EndFrame();
                 continue;
             }
             else                              // When LOSE
@@ -383,6 +395,7 @@ int main(int argc, char *argv[])
         high_score_game.RenderText(g_screen, SCREEN_WIDTH * 0.5 + 40, 5);
 
         SDL_RenderPresent(g_screen);
+        Profiler::EndFrame();
 
         //        FPS
         int real_imp_time = fps_timer.get_ticks();
@@ -400,32 +413,56 @@ int main(int argc, char *argv[])
 
 void LoadFromFile()
 {
-    gFont1 = TTF_OpenFont("res/font/2.ttf", 30);
-    gFont2 = TTF_OpenFont("res/font/2.ttf", 30);
-    gFont3 = TTF_OpenFont("res/font/1.ttf", 120);
-    gFont4 = TTF_OpenFont("res/font/2.ttf", 100);
-    font_time = TTF_OpenFont("res/font/1.ttf", 35);
-    font_heart = TTF_OpenFont("res/font/1.ttf", SIZE_FONT_HEART);
+    gFont1 = OpenProfiledFont("res/font/2.ttf", 30);
+    gFont2 = OpenProfiledFont("res/font/2.ttf", 30);
+    gFont3 = OpenProfiledFont("res/font/1.ttf", 120);
+    gFont4 = OpenProfiledFont("res/font/2.ttf", 100);
+    font_time = OpenProfiledFont("res/font/1.ttf", 35);
+    font_heart = OpenProfiledFont("res/font/1.ttf", SIZE_FONT_HEART);
 
-    g_img_menu = IMG_Load("res/pic/menu/menu.png");
-    gWin_game = IMG_Load("res/pic/map/WIN_GAME.png");
-    journey_Surface_1 = IMG_Load("res/pic/journey/journey_1.png");
-    journey_Surface_2 = IMG_Load("res/pic/journey/journey_2.png");
-    journey_Surface_3 = IMG_Load("res/pic/journey/journey_3.png");
-    journey_Surface_4 = IMG_Load("res/pic/journey/journey_4.png");
-    journey_Surface_5 = IMG_Load("res/pic/journey/journey_5.png");
+    g_img_menu = LoadProfiledSurface("res/pic/menu/menu.png");
+    gWin_game = LoadProfiledSurface("res/pic/map/WIN_GAME.png");
+    journey_Surface_1 = LoadProfiledSurface("res/pic/journey/journey_1.png");
+    journey_Surface_2 = LoadProfiledSurface("res/pic/journey/journey_2.png");
+    journey_Surface_3 = LoadProfiledSurface("res/pic/journey/journey_3.png");
+    journey_Surface_4 = LoadProfiledSurface("res/pic/journey/journey_4.png");
+    journey_Surface_5 = LoadProfiledSurface("res/pic/journey/journey_5.png");
 
     game_map.LoadMap("res/pic/map/map01.txt");
     p_player.LoadImg("res/pic/img/player_right1.png", g_screen);
     gMonster.LoadImg("res/pic/threats/Monster.png", g_screen);
 
-    gMainMusic = Mix_LoadWAV("res/Music/through_Map_music.wav");
-    gEarn_Heart = Mix_LoadWAV("res/Music/earn_Heart.wav");
-    gFire_ball = Mix_LoadWAV("res/Music/Fire_Ball.wav");
-    gPlayer_Die = Mix_LoadWAV("res/Music/Player_Die.wav");
-    gGame_Start = Mix_LoadWAV("res/Music/Start.wav");
-    gThreats_Die = Mix_LoadWAV("res/Music/Threats_Die.wav");
-    gCongrat = Mix_LoadWAV("res/Music/Congrats.wav");
+    gMainMusic = LoadProfiledWav("res/Music/through_Map_music.wav");
+    gEarn_Heart = LoadProfiledWav("res/Music/earn_Heart.wav");
+    gFire_ball = LoadProfiledWav("res/Music/Fire_Ball.wav");
+    gPlayer_Die = LoadProfiledWav("res/Music/Player_Die.wav");
+    gGame_Start = LoadProfiledWav("res/Music/Start.wav");
+    gThreats_Die = LoadProfiledWav("res/Music/Threats_Die.wav");
+    gCongrat = LoadProfiledWav("res/Music/Congrats.wav");
+}
+
+TTF_Font *OpenProfiledFont(const char *path, int size)
+{
+    Profiler::CountFontLoad();
+    return TTF_OpenFont(path, size);
+}
+
+SDL_Surface *LoadProfiledSurface(const char *path)
+{
+    Profiler::CountImageLoad();
+    return IMG_Load(path);
+}
+
+SDL_Texture *CreateProfiledTextureFromSurface(SDL_Renderer *screen, SDL_Surface *surface)
+{
+    Profiler::CountTextureCreate();
+    return SDL_CreateTextureFromSurface(screen, surface);
+}
+
+Mix_Chunk *LoadProfiledWav(const char *path)
+{
+    Profiler::CountSoundLoad();
+    return Mix_LoadWAV(path);
 }
 
 void close()
@@ -530,6 +567,7 @@ bool LoadBackground()
 void renderText(const std::string &text, int x, int y, TTF_Font *font)
 {
     SDL_Color textColor = {255, 255, 255}; // White color
+    Profiler::CountTextRender();
     SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
     if (textSurface == nullptr)
     {
@@ -537,6 +575,7 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font)
         return;
     }
 
+    Profiler::CountTextureCreate();
     SDL_Texture *texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
     if (texture == nullptr)
     {
@@ -557,7 +596,7 @@ void Call_Menu()
     int xm = 0;
     int ym = 0;
     bool selected[2] = {false, false};
-    menu = SDL_CreateTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
+    menu = CreateProfiledTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
     menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           //    set menu_position
 
     text_menu[0].SetText("EXIT");
@@ -735,22 +774,22 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
 
 void Create_texture()
 {
-    WinGame = SDL_CreateTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
+    WinGame = CreateProfiledTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
     WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
 
-    journey_Texture_1 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_1);
+    journey_Texture_1 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_1);
     journey_Rect_1 = {0, 0, journey_Surface_1->w, journey_Surface_1->h};
 
-    journey_Texture_2 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_2);
+    journey_Texture_2 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_2);
     journey_Rect_2 = {0, 0, journey_Surface_2->w, journey_Surface_2->h};
 
-    journey_Texture_3 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_3);
+    journey_Texture_3 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_3);
     journey_Rect_3 = {0, 0, journey_Surface_3->w, journey_Surface_3->h};
 
-    journey_Texture_4 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_4);
+    journey_Texture_4 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_4);
     journey_Rect_4 = {0, 0, journey_Surface_4->w, journey_Surface_4->h};
 
-    journey_Texture_5 = SDL_CreateTextureFromSurface(g_screen, journey_Surface_5);
+    journey_Texture_5 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_5);
     journey_Rect_5 = {0, 0, journey_Surface_5->w, journey_Surface_5->h};
 }
 

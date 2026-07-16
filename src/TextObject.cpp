@@ -1,5 +1,6 @@
 #include <iostream>
 #include "TextObject.h"
+#include "Profiler.h"
 
 TextObject::TextObject()
 {
@@ -16,9 +17,11 @@ TextObject::~TextObject()
 bool TextObject::LoadFromRenderText(TTF_Font *font, SDL_Renderer *screen)
 {
     Free();
+    Profiler::CountTextRender();
     SDL_Surface *text_surface = TTF_RenderText_Solid(font, str_val_.c_str(), text_color_);
     if (text_surface)
     {
+        Profiler::CountTextureCreate();
         texture_ = SDL_CreateTextureFromSurface(screen, text_surface);
         width_ = text_surface->w;
         height_ = text_surface->h;

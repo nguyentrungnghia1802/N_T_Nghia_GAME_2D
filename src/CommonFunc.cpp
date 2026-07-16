@@ -1,4 +1,5 @@
 #include "CommonFunc.h"
+#include "Profiler.h"
 
 #include <iostream>
 
@@ -9,6 +10,8 @@ int map_start = 0;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
+  Profiler::CountCollisionCheck();
+
   int left_a = object1.x;
   int right_a = object1.x + 115;
   int top_a = object1.y;
