@@ -45,7 +45,7 @@ class ThreatsObject: public BaseObject
                                    SDL_Texture* threat2_right, int threat2_right_width, int threat2_right_height,
                                    SDL_Texture* threat3_left, int threat3_left_width, int threat3_left_height,
                                    SDL_Texture* threat3_right, int threat3_right_width, int threat3_right_height);
-        void Show(SDL_Renderer* des);
+        void Show(SDL_Renderer* des, const SDL_Rect* viewport = NULL);
         int get_width_frame() const {return width_frame_;}
         int get_height_frame() const{return height_frame_;}
         void DoPlayer (Map& gMap);

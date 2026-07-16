@@ -58,6 +58,16 @@ void BaseObject::UseTexture(SDL_Texture *texture, int width, int height)
     owns_texture_ = false;
 }
 
+bool BaseObject::IsVisibleInViewport(const SDL_Rect &viewport) const
+{
+    if (rect_.w <= 0 || rect_.h <= 0)
+    {
+        return false;
+    }
+
+    return SDL_HasIntersection(&rect_, &viewport) == SDL_TRUE;
+}
+
 void BaseObject::Render1(SDL_Renderer *des, const SDL_Rect *clip)
 {   
     SDL_Rect renderquad = {rect_.x + minus, rect_.y, rect_.w, rect_.h};

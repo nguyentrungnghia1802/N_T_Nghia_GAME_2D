@@ -100,7 +100,7 @@ void ThreatsObject::set_clips()
     }
 }
 
-void ThreatsObject::Show(SDL_Renderer *des)
+void ThreatsObject::Show(SDL_Renderer *des, const SDL_Rect *viewport)
 {
     if (come_back_time_ == 0)
     {
@@ -115,6 +115,11 @@ void ThreatsObject::Show(SDL_Renderer *des)
 
         SDL_Rect *currentClip = &frame_clip_[frame_];
         SDL_Rect rendQuad = {rect_.x, rect_.y, width_frame_, height_frame_};
+        if (viewport != NULL && !IsVisibleInViewport(*viewport))
+        {
+            return;
+        }
+
         Profiler::CountEntityRender();
         SDL_RenderCopy(des, p_object_, currentClip, &rendQuad);
     }

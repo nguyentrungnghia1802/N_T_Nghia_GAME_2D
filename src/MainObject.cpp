@@ -3,6 +3,15 @@
 #include "MainObject.h"
 #include "Profiler.h"
 
+namespace
+{
+SDL_Rect GetScreenViewport()
+{
+    SDL_Rect viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    return viewport;
+}
+}
+
 MainObject::MainObject()
 {
     frame_ = 0;
@@ -264,6 +273,7 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
 
 void MainObject::HanleBullet(SDL_Renderer *des)
 {
+    const SDL_Rect viewport = GetScreenViewport();
     for (int i = 0; i < p_bullet_list_.size(); i++)
     {
         BulletObject *p_bullet = p_bullet_list_.at(i);
@@ -273,8 +283,11 @@ void MainObject::HanleBullet(SDL_Renderer *des)
             {
                 Profiler::CountEntityUpdate();
                 p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-                Profiler::CountEntityRender();
-                p_bullet->Render(des);
+                if (p_bullet->IsVisibleInViewport(viewport))
+                {
+                    Profiler::CountEntityRender();
+                    p_bullet->Render(des);
+                }
             }
             else
             {

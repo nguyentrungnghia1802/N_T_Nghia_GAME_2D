@@ -261,6 +261,7 @@ int main(int argc, char *argv[])
 
         is_minusLinve = p_player.GetIsMinusLive();
         bCol2 = false;
+        SDL_Rect screen_viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
         for (size_t i = 0; i < threats_list.size(); i++)
         {
@@ -275,7 +276,7 @@ int main(int argc, char *argv[])
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
                 p_threat->ImpMoveType(g_screen);
                 p_threat->DoPlayer(map_data);
-                p_threat->Show(g_screen);
+                p_threat->Show(g_screen, &screen_viewport);
 
                 SDL_Rect rect_player = p_player.GetRectFrame();
                 SDL_Rect rect_threat = p_threat->GetRectFrame();

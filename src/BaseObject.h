@@ -14,6 +14,7 @@ public:
 
     virtual bool LoadImg(std::string path, SDL_Renderer *screen);
     void UseTexture(SDL_Texture *texture, int width, int height);
+    bool IsVisibleInViewport(const SDL_Rect &viewport) const;
     void Render1(SDL_Renderer *des, const SDL_Rect *clip = NULL);
     void Render(SDL_Renderer *des, const SDL_Rect *clip = NULL);
 
