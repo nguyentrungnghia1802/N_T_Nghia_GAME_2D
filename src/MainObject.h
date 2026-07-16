@@ -44,6 +44,7 @@ public:
         std::vector<BulletObject*>get_bullet_list() const {return p_bullet_list_;}
         void HanleBullet(SDL_Renderer* rec);
         void RemoveBullet(const int& idx);
+        void ClearBulletList();
         void IncreaseMoney();
         void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
         bool GetIsMinusLive() {return is_minus_live;}

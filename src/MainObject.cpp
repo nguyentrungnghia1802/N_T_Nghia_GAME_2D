@@ -28,6 +28,7 @@ MainObject::MainObject()
 
 MainObject::~MainObject()
 {
+    ClearBulletList();
 }
 
 bool MainObject::LoadImg(std::string path, SDL_Renderer *screen)
@@ -250,6 +251,19 @@ void MainObject::RemoveBullet(const int &idx)
             p_bullet = NULL;
         }
     }
+}
+
+void MainObject::ClearBulletList()
+{
+    for (size_t i = 0; i < p_bullet_list_.size(); i++)
+    {
+        BulletObject *p_bullet = p_bullet_list_.at(i);
+        if (p_bullet != NULL)
+        {
+            delete p_bullet;
+        }
+    }
+    p_bullet_list_.clear();
 }
 
 void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)

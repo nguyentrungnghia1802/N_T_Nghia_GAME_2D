@@ -12,6 +12,7 @@ TextObject::TextObject()
 
 TextObject::~TextObject()
 {
+    Free();
 }
 
 bool TextObject::LoadFromRenderText(TTF_Font *font, SDL_Renderer *screen)

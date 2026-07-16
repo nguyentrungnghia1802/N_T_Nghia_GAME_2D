@@ -10,6 +10,7 @@
 #include "TextObject.h"
 #include "Profiler.h"
 #include <chrono>
+#include <memory>
 #include <thread>
 
 BaseObject g_background;
@@ -71,7 +72,9 @@ Uint32 start_time;
 Uint32 current_time;
 Uint32 time_render;
 
-std::vector<ThreatsObject *> threats_list;
+using ThreatList = std::vector<std::unique_ptr<ThreatsObject>>;
+
+ThreatList threats_list;
 std::vector<BulletObject *> bullet_arr; // bullet
 std::string heart_str;
 std::string str_val;
@@ -89,17 +92,24 @@ int num_die = 0;
 int heart_count = 0;
 int high_score = 0;
 
-void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list);
+void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power);
 bool InitData();
 bool LoadBackground();
 void close();
+void FreeSurface(SDL_Surface *&surface);
+void DestroyTexture(SDL_Texture *&texture);
+void CloseFont(TTF_Font *&font);
+void FreeChunk(Mix_Chunk *&chunk);
+void FreeMenuResources();
+void FreeJourneyResources();
+void FreeWinResources();
 void renderText(const std::string &text, int x, int y, TTF_Font *font);
 void LoadFromFile();
 void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
 void render_journey_img();
 void Create_texture();
-std::vector<ThreatsObject *> MakeThreats();
+ThreatList MakeThreats();
 
 TTF_Font *OpenProfiledFont(const char *path, int size);
 SDL_Surface *LoadProfiledSurface(const char *path);
@@ -110,12 +120,18 @@ int main(int argc, char *argv[])
 {
     std::srand(time(NULL));
     if (InitData() == false)
+    {
+        close();
         return -1;
+    }
 
     Profiler::Init();
 
     if (LoadBackground() == false)
+    {
+        close();
         return -1;
+    }
 
     LoadFromFile(); // Load Files
 
@@ -135,6 +151,11 @@ int main(int argc, char *argv[])
 
     // MENU
     Call_Menu();
+    if (is_quit)
+    {
+        close();
+        return 0;
+    }
 
     threats_list = MakeThreats();
 
@@ -149,18 +170,9 @@ int main(int argc, char *argv[])
         //      CHECK RESTART
         if (isRestarting)
         {
-            for (int i = 0; i < threats_list.size(); i++)
-            {
-                ThreatsObject *p_threat = threats_list.at(i);
-                if (p_threat != NULL)
-                {
-                    p_threat->Free();
-                    break;
-                }
-            }
             threats_list.clear();          // Delete old Threats
             threats_list = MakeThreats();
-            Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
+            Restart(map_data, num_die, heart_count, p_player, player_power);
             isRestarting = !isRestarting;
         }
 
@@ -214,9 +226,9 @@ int main(int argc, char *argv[])
 
         is_minusLinve = p_player.GetIsMinusLive();
 
-        for (int i = 0; i < threats_list.size(); i++)
+        for (size_t i = 0; i < threats_list.size(); i++)
         {
-            ThreatsObject *p_threat = threats_list.at(i);
+            ThreatsObject *p_threat = threats_list.at(i).get();
             if (p_threat != NULL)
             {
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
@@ -229,7 +241,6 @@ int main(int argc, char *argv[])
                 bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
                 if (bCol2 == true)
                 {
-                    p_threat->Free();
                     threats_list.erase(threats_list.begin() + i);
                     break;
                 }
@@ -304,18 +315,9 @@ int main(int argc, char *argv[])
             Win_Game();
             if (win_and_restart == true)
             {
-                for (int i = 0; i < threats_list.size(); i++)
-                {
-                    ThreatsObject *p_threat = threats_list.at(i);
-                    if (p_threat != NULL)
-                    {
-                        p_threat->Free();
-                        break;
-                    }
-                }
                 threats_list.clear();
                 threats_list = MakeThreats();
-                Restart(map_data, num_die, heart_count, p_player, player_power, threats_list);
+                Restart(map_data, num_die, heart_count, p_player, player_power);
                 win_and_restart = false;
             }
             winner = false;
@@ -329,9 +331,9 @@ int main(int argc, char *argv[])
             {
                 if (p_bullet != NULL)
                 {
-                    for (int t = 0; t < threats_list.size(); t++)
+                    for (size_t t = 0; t < threats_list.size(); t++)
                     {
-                        ThreatsObject *obj_threat = threats_list.at(t);
+                        ThreatsObject *obj_threat = threats_list.at(t).get();
                         if (obj_threat != NULL)
                         {
                             SDL_Rect tRect;
@@ -348,7 +350,6 @@ int main(int argc, char *argv[])
                             {
                                 Mix_PlayChannel(-1, gThreats_Die, 0);
                                 p_player.RemoveBullet(r);
-                                obj_threat->Free();
                                 threats_list.erase(threats_list.begin() + t);
                             }
                         }
@@ -408,6 +409,7 @@ int main(int argc, char *argv[])
                 SDL_Delay(delay_time);
         }
     }
+    close();
     return 0;
 }
 
@@ -467,8 +469,38 @@ Mix_Chunk *LoadProfiledWav(const char *path)
 
 void close()
 {
+    static bool is_closed = false;
+    if (is_closed)
+    {
+        return;
+    }
+    is_closed = true;
+
+    threats_list.clear();
+    bullet_arr.clear();
+    p_player.ClearBulletList();
+
+    time_game.Free();
+    heart_game.Free();
+    high_score_game.Free();
+    text_menu[0].Free();
+    text_menu[1].Free();
+
     g_background.Free();
     gMonster.Free();
+    player_power.Free();
+    player_heart.Free();
+
+    FreeMenuResources();
+    FreeWinResources();
+    FreeJourneyResources();
+
+    CloseFont(gFont1);
+    CloseFont(gFont2);
+    CloseFont(gFont3);
+    CloseFont(gFont4);
+    CloseFont(font_time);
+    CloseFont(font_heart);
 
     SDL_DestroyRenderer(g_screen);
     g_screen = NULL;
@@ -476,29 +508,87 @@ void close()
     SDL_DestroyWindow(g_window);
     g_window = NULL;
 
-    Mix_FreeChunk(gEarn_Heart);
-    Mix_FreeChunk(gMainMusic);
-    Mix_FreeChunk(gFire_ball);
-    Mix_FreeChunk(gPlayer_Die);
-    Mix_FreeChunk(gGame_Start);
-    Mix_FreeChunk(gThreats_Die);
-    Mix_FreeChunk(gCongrat);
-
-    gEarn_Heart = NULL;
-    gMainMusic = NULL;
-    gFire_ball = NULL;
-    gPlayer_Die = NULL;
-    gGame_Start = NULL;
-    gThreats_Die = NULL;
-    gCongrat = NULL;
+    FreeChunk(gEarn_Heart);
+    FreeChunk(gMainMusic);
+    FreeChunk(gFire_ball);
+    FreeChunk(gPlayer_Die);
+    FreeChunk(gGame_Start);
+    FreeChunk(gThreats_Die);
+    FreeChunk(gCongrat);
 
     Mix_FreeMusic(gMusic);
     gMusic = NULL;
 
     Mix_Quit();
     IMG_Quit();
+    if (TTF_WasInit())
+    {
+        TTF_Quit();
+    }
     SDL_Quit();
-    exit(0);
+}
+
+void FreeSurface(SDL_Surface *&surface)
+{
+    if (surface != NULL)
+    {
+        SDL_FreeSurface(surface);
+        surface = NULL;
+    }
+}
+
+void DestroyTexture(SDL_Texture *&texture)
+{
+    if (texture != NULL)
+    {
+        SDL_DestroyTexture(texture);
+        texture = NULL;
+    }
+}
+
+void CloseFont(TTF_Font *&font)
+{
+    if (font != NULL)
+    {
+        TTF_CloseFont(font);
+        font = NULL;
+    }
+}
+
+void FreeChunk(Mix_Chunk *&chunk)
+{
+    if (chunk != NULL)
+    {
+        Mix_FreeChunk(chunk);
+        chunk = NULL;
+    }
+}
+
+void FreeMenuResources()
+{
+    DestroyTexture(menu);
+    FreeSurface(g_img_menu);
+}
+
+void FreeWinResources()
+{
+    DestroyTexture(WinGame);
+    FreeSurface(gWin_game);
+}
+
+void FreeJourneyResources()
+{
+    DestroyTexture(journey_Texture_1);
+    DestroyTexture(journey_Texture_2);
+    DestroyTexture(journey_Texture_3);
+    DestroyTexture(journey_Texture_4);
+    DestroyTexture(journey_Texture_5);
+
+    FreeSurface(journey_Surface_1);
+    FreeSurface(journey_Surface_2);
+    FreeSurface(journey_Surface_3);
+    FreeSurface(journey_Surface_4);
+    FreeSurface(journey_Surface_5);
 }
 
 bool InitData()
@@ -686,17 +776,23 @@ void Call_Menu()
                     Mix_PlayChannel(-1, gGame_Start, 0);
                     SDL_Delay(4000);
                     Mix_PlayChannel(-1, gMainMusic, -1);
-                    SDL_FreeSurface(g_img_menu);
-                    SDL_DestroyTexture(menu);
+                    FreeMenuResources();
                     break;
                 }
                 else if (selected[0] == true)
                 {
-                    SDL_FreeSurface(g_img_menu);
-                    SDL_DestroyTexture(menu);
-                    close(); // Exit Game
+                    is_quit = true;
+                    start_Game = true;
+                    FreeMenuResources();
                     break;
                 }
+            }
+            if (eve.type == SDL_QUIT)
+            {
+                is_quit = true;
+                start_Game = true;
+                FreeMenuResources();
+                break;
             }
         }
     }
@@ -736,7 +832,7 @@ void Win_Game()
     replay_game = false;
 }
 
-void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power, std::vector<ThreatsObject *> threats_list)
+void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
     game_map.LoadMap_Return("res/pic/map/map01.txt");
     game_map.LoadTiles(g_screen);
@@ -850,15 +946,14 @@ void render_journey_img()
     }
 }
 
-std::vector<ThreatsObject *> MakeThreats()
+ThreatList MakeThreats()
 {
-    std::vector<ThreatsObject *> list_threats;
+    ThreatList list_threats;
 
     //             -  THREAT 1 -
-    ThreatsObject *ThreatFly_1 = new ThreatsObject[NUM_THREATS_LIST];
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        ThreatsObject *p_threat = (ThreatFly_1 + i);
+        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
         if (p_threat != NULL)
         {
             p_threat->LoadImg("res/pic/threats/threat_1.png", g_screen); //  Orc_Fly
@@ -866,15 +961,14 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 0 + 2000 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
             p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
-            list_threats.push_back(p_threat);
+            list_threats.push_back(std::move(p_threat));
         }
     }
 
     //              -  THREAT 2 -
-    ThreatsObject *dynamic_threats_1 = new ThreatsObject[NUM_THREATS_LIST];
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        ThreatsObject *p_threat = (dynamic_threats_1 + i);
+        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
 
         if (p_threat != NULL)
         {
@@ -887,15 +981,14 @@ std::vector<ThreatsObject *> MakeThreats()
             int pos2 = p_threat->get_x_pos() + 100;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
-            list_threats.push_back(p_threat);
+            list_threats.push_back(std::move(p_threat));
         }
     }
 
     //              -  THREAT 3 -
-    ThreatsObject *dynamic_threats_2 = new ThreatsObject[NUM_THREATS_LIST];
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        ThreatsObject *p_threat = (dynamic_threats_2 + i);
+        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
 
         if (p_threat != NULL)
         {
@@ -908,16 +1001,14 @@ std::vector<ThreatsObject *> MakeThreats()
             int pos2 = p_threat->get_x_pos() + 100;
             p_threat->SetAnimationPos(pos1, pos2);
             p_threat->set_input_left(1);
-            list_threats.push_back(p_threat);
+            list_threats.push_back(std::move(p_threat));
         }
     }
 
     //              -  THREAT 4 -
-    ThreatsObject *ThreatFly_2 = new ThreatsObject[NUM_THREATS_LIST];
-
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        ThreatsObject *p_threat = (ThreatFly_2 + i);
+        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
         if (p_threat != NULL)
         {
             p_threat->LoadImg("res/pic/threats/threat_4.png", g_screen); //  Pterosaurs
@@ -926,7 +1017,7 @@ std::vector<ThreatsObject *> MakeThreats()
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
             p_threat->set_type_move(ThreatsObject::THREATS_FLY_STATIC);
 
-            list_threats.push_back(p_threat);
+            list_threats.push_back(std::move(p_threat));
         }
     }
 
