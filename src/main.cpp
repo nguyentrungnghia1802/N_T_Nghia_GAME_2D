@@ -4,14 +4,12 @@
 #include "BaseObject.h"
 #include "gamemap.h"
 #include "MainObject.h"
-#include "ImpTimer.h"
 #include "ThreatObject.h"
 #include "PlayHealth.h"
 #include "TextObject.h"
 #include "Profiler.h"
-#include <chrono>
+#include <algorithm>
 #include <memory>
-#include <thread>
 
 BaseObject g_background;
 BaseObject gMonster;
@@ -25,7 +23,6 @@ BaseObject gThreat3LeftTexture;
 BaseObject gThreat3RightTexture;
 BaseObject gThreat4Texture;
 
-ImpTimer fps_timer;
 GameMap game_map;
 MainObject p_player;
 PlayerPower player_power; // HP survival
@@ -101,6 +98,21 @@ int num_die = 0;
 int heart_count = 0;
 int high_score = 0;
 
+enum class GameState
+{
+    MENU,
+    PLAYING,
+    GAME_OVER,
+    WIN,
+    JOURNEY,
+    QUIT
+};
+
+const float MAX_DELTA_TIME = 0.05f;
+GameState game_state = GameState::MENU;
+Uint32 last_frame_ticks = 0;
+float delta_time = 0.0f;
+
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power);
 bool InitData();
 bool LoadBackground();
@@ -127,6 +139,9 @@ Mix_Chunk *LoadProfiledWav(const char *path);
 void LoadRuntimeTextures();
 void FreeRuntimeTextures();
 void ConfigureDynamicThreat(ThreatsObject *p_threat);
+float UpdateDeltaTime();
+void CapFrameRate(Uint32 frame_start_ticks);
+bool WaitWithEventPump(Uint32 wait_ms);
 
 int main(int argc, char *argv[])
 {
@@ -176,10 +191,14 @@ int main(int argc, char *argv[])
 
     Create_texture();
     Profiler::StartInterval();
+    game_state = GameState::PLAYING;
+    last_frame_ticks = SDL_GetTicks();
 
     //      _START_GAME_
     while (!is_quit)
     {
+        const Uint32 frame_start_ticks = SDL_GetTicks();
+        delta_time = UpdateDeltaTime();
         Profiler::BeginFrame();
 
         //      CHECK RESTART
@@ -191,7 +210,6 @@ int main(int argc, char *argv[])
             isRestarting = !isRestarting;
         }
 
-        fps_timer.start();
         while (SDL_PollEvent(&g_event) != 0)
         {
             if (g_event.type == SDL_QUIT)
@@ -279,7 +297,7 @@ int main(int argc, char *argv[])
             {
                 p_player.SetRect(0, 0);
                 p_player.set_comeback_time(3);
-                SDL_Delay(1000);
+                WaitWithEventPump(1000);
                 player_power.Decrease();
                 player_power.Render(g_screen);
                 Profiler::EndFrame();
@@ -287,6 +305,7 @@ int main(int argc, char *argv[])
             }
             else                              // When LOSE
             {
+                game_state = GameState::GAME_OVER;
                 bool quit_game_over = false;
 
                 while (quit_game_over == false)
@@ -302,9 +321,10 @@ int main(int argc, char *argv[])
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_SPACE)         // REPLAY
                         {
                             Mix_PlayChannel(-1, gGame_Start, 0);
-                            SDL_Delay(4000);
-
-                            isRestarting = true;
+                            if (WaitWithEventPump(4000))
+                            {
+                                isRestarting = true;
+                            }
                             quit_game_over = true;
                         }
                         if (eve.type == SDL_KEYDOWN && eve.key.keysym.sym == SDLK_ESCAPE)        // EXIT
@@ -318,13 +338,16 @@ int main(int argc, char *argv[])
                             is_quit = true;
                         }
                     }
+                    SDL_Delay(1);
                 }
+                game_state = is_quit ? GameState::QUIT : GameState::PLAYING;
                 quit_game_over = false;
             }
         }
         //           Win_Game
         if (winner == true)
         {
+            game_state = GameState::WIN;
             start_time = current_time;     //SET_TIME_START_BACK
             Mix_PlayChannel(-1, gCongrat, 0);
             Win_Game();
@@ -336,6 +359,10 @@ int main(int argc, char *argv[])
                 win_and_restart = false;
             }
             winner = false;
+            if (!is_quit)
+            {
+                game_state = GameState::PLAYING;
+            }
         }
 
         //            Bullet
@@ -414,15 +441,7 @@ int main(int argc, char *argv[])
         Profiler::EndFrame();
 
         //        FPS
-        int real_imp_time = fps_timer.get_ticks();
-        int time_one_frame = 1000 / FRAME_PER_SECOND;
-
-        if (real_imp_time < time_one_frame)
-        {
-            int delay_time = time_one_frame - real_imp_time;
-            if (delay_time >= 0)
-                SDL_Delay(delay_time);
-        }
+        CapFrameRate(frame_start_ticks);
     }
     close();
     return 0;
@@ -480,6 +499,61 @@ Mix_Chunk *LoadProfiledWav(const char *path)
 {
     Profiler::CountSoundLoad();
     return Mix_LoadWAV(path);
+}
+
+float UpdateDeltaTime()
+{
+    const Uint32 now = SDL_GetTicks();
+    if (last_frame_ticks == 0)
+    {
+        last_frame_ticks = now;
+        return 1.0f / FRAME_PER_SECOND;
+    }
+
+    const Uint32 elapsed_ticks = now - last_frame_ticks;
+    last_frame_ticks = now;
+
+    const float elapsed_seconds = static_cast<float>(elapsed_ticks) / 1000.0f;
+    return std::min(elapsed_seconds, MAX_DELTA_TIME);
+}
+
+void CapFrameRate(Uint32 frame_start_ticks)
+{
+    const Uint32 target_frame_ms = 1000 / FRAME_PER_SECOND;
+    const Uint32 frame_ticks = SDL_GetTicks() - frame_start_ticks;
+    if (frame_ticks < target_frame_ms)
+    {
+        SDL_Delay(target_frame_ms - frame_ticks);
+    }
+}
+
+bool WaitWithEventPump(Uint32 wait_ms)
+{
+    const Uint32 start_ticks = SDL_GetTicks();
+    SDL_Event wait_event;
+
+    while (!is_quit && SDL_GetTicks() - start_ticks < wait_ms)
+    {
+        while (SDL_PollEvent(&wait_event) != 0)
+        {
+            if (wait_event.type == SDL_QUIT)
+            {
+                is_quit = true;
+                game_state = GameState::QUIT;
+                return false;
+            }
+            if (wait_event.type == SDL_KEYDOWN && wait_event.key.keysym.sym == SDLK_ESCAPE)
+            {
+                is_quit = true;
+                game_state = GameState::QUIT;
+                return false;
+            }
+        }
+
+        SDL_Delay(1);
+    }
+
+    return !is_quit;
 }
 
 void close()
@@ -734,6 +808,7 @@ void renderText(const std::string &text, int x, int y, TTF_Font *font)
 
 void Call_Menu()
 {
+    game_state = GameState::MENU;
     int xm = 0;
     int ym = 0;
     bool selected[2] = {false, false};
@@ -825,14 +900,17 @@ void Call_Menu()
                 {
                     start_Game = true; // Ready to Play Game
                     Mix_PlayChannel(-1, gGame_Start, 0);
-                    SDL_Delay(4000);
-                    Mix_PlayChannel(-1, gMainMusic, -1);
+                    if (WaitWithEventPump(4000))
+                    {
+                        Mix_PlayChannel(-1, gMainMusic, -1);
+                    }
                     FreeMenuResources();
                     break;
                 }
                 else if (selected[0] == true)
                 {
                     is_quit = true;
+                    game_state = GameState::QUIT;
                     start_Game = true;
                     FreeMenuResources();
                     break;
@@ -841,6 +919,7 @@ void Call_Menu()
             if (eve.type == SDL_QUIT)
             {
                 is_quit = true;
+                game_state = GameState::QUIT;
                 start_Game = true;
                 FreeMenuResources();
                 break;
@@ -851,6 +930,7 @@ void Call_Menu()
 
 void Win_Game()
 {
+    game_state = GameState::WIN;
     bool replay_game = false;
     while (replay_game == false)
     {
@@ -869,16 +949,20 @@ void Win_Game()
             if (eve_win.type == SDL_KEYDOWN && eve_win.key.keysym.sym == SDLK_SPACE)
             {
                 Mix_PlayChannel(-1, gGame_Start, 0);
-                SDL_Delay(4000);
-                win_and_restart = true;
+                if (WaitWithEventPump(4000))
+                {
+                    win_and_restart = true;
+                }
                 replay_game = true;
             }
             if (eve_win.type == SDL_QUIT)
             {
                 replay_game = true;
                 is_quit = true;
+                game_state = GameState::QUIT;
             }
         }
+        SDL_Delay(1);
     }
     replay_game = false;
 }
@@ -947,6 +1031,7 @@ void render_journey_img()
         map_data.start_x_ == JOURNEY_EACH_MAP * 3 + 280 ||
         map_data.start_x_ == JOURNEY_EACH_MAP * 4 + 280)
     {
+        game_state = GameState::JOURNEY;
         bool jour_img = false;
         while (jour_img == false)
         {
@@ -989,10 +1074,16 @@ void render_journey_img()
                 {
                     jour_img = true;
                     is_quit = true;
+                    game_state = GameState::QUIT;
                 }
             }
+            SDL_Delay(1);
         }
         jour_img = false;
+        if (!is_quit)
+        {
+            game_state = GameState::PLAYING;
+        }
     }
 }
 
