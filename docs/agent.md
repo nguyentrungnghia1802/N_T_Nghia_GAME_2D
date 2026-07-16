@@ -35,9 +35,8 @@ Only continue when the repository is in a clean state.
 
 Then read ONLY:
 
-1. `docs/agent/AGENTS.md`
-2. `docs/refact.md`
-3. Source files directly related to the current task.
+1. `docs/refact.md`
+2. Source files directly related to the current task.
 
 Do NOT scan the whole repository unless absolutely necessary.
 
