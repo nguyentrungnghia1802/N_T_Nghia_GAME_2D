@@ -20,6 +20,10 @@ ThreatsObject::ThreatsObject()
     animation_b_ = 0;
     input_type_.left_ = 0;
     type_move_ = STATIC_THREAT;
+    threat2_left_ = {NULL, 0, 0};
+    threat2_right_ = {NULL, 0, 0};
+    threat3_left_ = {NULL, 0, 0};
+    threat3_right_ = {NULL, 0, 0};
 }
 
 ThreatsObject::~ThreatsObject()
@@ -35,6 +39,34 @@ bool ThreatsObject::LoadImg(std::string path, SDL_Renderer *screen)
         height_frame_ = rect_.h;
     }
     return ret;
+}
+
+void ThreatsObject::UseCachedTexture(SDL_Texture *texture, int width, int height)
+{
+    if (texture == NULL)
+    {
+        return;
+    }
+    if (p_object_ == texture && rect_.w == width && rect_.h == height)
+    {
+        return;
+    }
+
+    UseTexture(texture, width, height);
+    width_frame_ = rect_.w / THREAT_FRAME_NUM;
+    height_frame_ = rect_.h;
+    set_clips();
+}
+
+void ThreatsObject::SetDynamicTextureRefs(SDL_Texture *threat2_left, int threat2_left_width, int threat2_left_height,
+                                          SDL_Texture *threat2_right, int threat2_right_width, int threat2_right_height,
+                                          SDL_Texture *threat3_left, int threat3_left_width, int threat3_left_height,
+                                          SDL_Texture *threat3_right, int threat3_right_width, int threat3_right_height)
+{
+    threat2_left_ = {threat2_left, threat2_left_width, threat2_left_height};
+    threat2_right_ = {threat2_right, threat2_right_width, threat2_right_height};
+    threat3_left_ = {threat3_left, threat3_left_width, threat3_left_height};
+    threat3_right_ = {threat3_right, threat3_right_width, threat3_right_height};
 }
 
 void ThreatsObject::set_clips()
@@ -291,11 +323,11 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
                 input_type_.right_ = 0;
                 if (change_threats == false)
                 {
-                    LoadImg("res/pic/threats/threat_2_left.png", screen);
+                    UseCachedTexture(threat2_left_.texture, threat2_left_.width, threat2_left_.height);
                 }
                 else if (change_threats==true)
                 {
-                    LoadImg("res/pic/threats/threat_3_left.png", screen);
+                    UseCachedTexture(threat3_left_.texture, threat3_left_.width, threat3_left_.height);
                 }
             }
             else if (x_pos_ < animation_a_)
@@ -304,11 +336,11 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
                 input_type_.right_ = 1;
                 if (change_threats == false)
                 {
-                    LoadImg("res/pic/threats/threat_2_right.png", screen);
+                    UseCachedTexture(threat2_right_.texture, threat2_right_.width, threat2_right_.height);
                 }
                 else if (change_threats == true)
                 {
-                    LoadImg("res/pic/threats/threat_3_right.png", screen);
+                    UseCachedTexture(threat3_right_.texture, threat3_right_.width, threat3_right_.height);
                 }
             }
         }
@@ -318,11 +350,11 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
             {
                 if (change_threats == false)
                 {
-                    LoadImg("res/pic/threats/threat_2_left.png", screen);
+                    UseCachedTexture(threat2_left_.texture, threat2_left_.width, threat2_left_.height);
                 }
                 else if (change_threats == true)
                 {
-                    LoadImg("res/pic/threats/threat_3_left.png", screen);
+                    UseCachedTexture(threat3_left_.texture, threat3_left_.width, threat3_left_.height);
                 }
             }
         }

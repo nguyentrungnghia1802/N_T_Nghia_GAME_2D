@@ -28,6 +28,9 @@ public:
         };
 
         bool LoadImg(std::string path, SDL_Renderer* screen);
+        void SetTextureRefs(SDL_Texture* left_texture, int left_width, int left_height,
+                            SDL_Texture* right_texture, int right_width, int right_height);
+        void SetBulletTextureRef(SDL_Texture* texture, int width, int height);
         void Show(SDL_Renderer* des);
         void HandelInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk* gF);
         void set_clips();
@@ -78,6 +81,18 @@ private:
         bool is_minus_live;
 
         bool check_x=false;
+
+        SDL_Texture* left_texture_;
+        SDL_Texture* right_texture_;
+        SDL_Texture* bullet_texture_;
+        int left_texture_width_;
+        int left_texture_height_;
+        int right_texture_width_;
+        int right_texture_height_;
+        int bullet_texture_width_;
+        int bullet_texture_height_;
+        int loaded_status_;
+        void ApplyTextureForStatus(const int& status);
 };
 
 

@@ -5,6 +5,7 @@
 BaseObject::BaseObject()
 {
     p_object_ = NULL;
+    owns_texture_ = true;
     rect_.x = 0;
     rect_.y = 0;
     rect_.w = 0;
@@ -18,6 +19,7 @@ BaseObject::~BaseObject()
 bool BaseObject::LoadImg(std::string path, SDL_Renderer *screen)
 {
     Free();
+    owns_texture_ = true;
     SDL_Texture *new_texture = NULL;
 
     Profiler::CountImageLoad();
@@ -40,6 +42,20 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer *screen)
     }
     p_object_ = new_texture;
     return p_object_ != NULL;
+}
+
+void BaseObject::UseTexture(SDL_Texture *texture, int width, int height)
+{
+    if (p_object_ == texture && rect_.w == width && rect_.h == height && owns_texture_ == false)
+    {
+        return;
+    }
+
+    Free();
+    p_object_ = texture;
+    rect_.w = width;
+    rect_.h = height;
+    owns_texture_ = false;
 }
 
 void BaseObject::Render1(SDL_Renderer *des, const SDL_Rect *clip)
@@ -65,10 +81,14 @@ void BaseObject::Free()
 {
     if (p_object_ != NULL)
     {
-        SDL_DestroyTexture(p_object_);
+        if (owns_texture_)
+        {
+            SDL_DestroyTexture(p_object_);
+        }
         p_object_ = NULL;
         rect_.w = 0;
         rect_.h = 0;
     }
+    owns_texture_ = true;
 }
 

@@ -40,6 +40,11 @@ class ThreatsObject: public BaseObject
 
         void set_clips();
         bool LoadImg(std::string path, SDL_Renderer* screen);
+        void UseCachedTexture(SDL_Texture* texture, int width, int height);
+        void SetDynamicTextureRefs(SDL_Texture* threat2_left, int threat2_left_width, int threat2_left_height,
+                                   SDL_Texture* threat2_right, int threat2_right_width, int threat2_right_height,
+                                   SDL_Texture* threat3_left, int threat3_left_width, int threat3_left_height,
+                                   SDL_Texture* threat3_right, int threat3_right_width, int threat3_right_height);
         void Show(SDL_Renderer* des);
         int get_width_frame() const {return width_frame_;}
         int get_height_frame() const{return height_frame_;}
@@ -55,6 +60,13 @@ class ThreatsObject: public BaseObject
        SDL_Rect GetRectFrame(); 
 
     private:
+        struct TextureRef
+        {
+            SDL_Texture* texture;
+            int width;
+            int height;
+        };
+
         bool on_ground_;
         float x_pos_;
         float y_pos_;
@@ -75,6 +87,10 @@ class ThreatsObject: public BaseObject
         int animation_a_;
         int animation_b_;
         Input input_type_;
+        TextureRef threat2_left_;
+        TextureRef threat2_right_;
+        TextureRef threat3_left_;
+        TextureRef threat3_right_;
 
 
 

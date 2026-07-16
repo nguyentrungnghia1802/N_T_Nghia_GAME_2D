@@ -24,6 +24,16 @@ MainObject::MainObject()
     come_back_time_ = 0;
     heart_count = 0;
     is_minus_live = false;
+    left_texture_ = NULL;
+    right_texture_ = NULL;
+    bullet_texture_ = NULL;
+    left_texture_width_ = 0;
+    left_texture_height_ = 0;
+    right_texture_width_ = 0;
+    right_texture_height_ = 0;
+    bullet_texture_width_ = 0;
+    bullet_texture_height_ = 0;
+    loaded_status_ = -1;
 }
 
 MainObject::~MainObject()
@@ -43,6 +53,51 @@ bool MainObject::LoadImg(std::string path, SDL_Renderer *screen)
 
     return ret;
 };
+
+void MainObject::SetTextureRefs(SDL_Texture *left_texture, int left_width, int left_height,
+                                SDL_Texture *right_texture, int right_width, int right_height)
+{
+    left_texture_ = left_texture;
+    left_texture_width_ = left_width;
+    left_texture_height_ = left_height;
+    right_texture_ = right_texture;
+    right_texture_width_ = right_width;
+    right_texture_height_ = right_height;
+    ApplyTextureForStatus(WALK_RIGHT);
+}
+
+void MainObject::SetBulletTextureRef(SDL_Texture *texture, int width, int height)
+{
+    bullet_texture_ = texture;
+    bullet_texture_width_ = width;
+    bullet_texture_height_ = height;
+}
+
+void MainObject::ApplyTextureForStatus(const int &status)
+{
+    if (loaded_status_ == status && p_object_ != NULL)
+    {
+        return;
+    }
+
+    if (status == WALK_LEFT && left_texture_ != NULL)
+    {
+        UseTexture(left_texture_, left_texture_width_, left_texture_height_);
+    }
+    else if (right_texture_ != NULL)
+    {
+        UseTexture(right_texture_, right_texture_width_, right_texture_height_);
+    }
+    else
+    {
+        return;
+    }
+
+    width_frame_ = rect_.w / MAX_FRAME_PLAYER;
+    height_frame_ = rect_.h;
+    set_clips();
+    loaded_status_ = status;
+}
 
 SDL_Rect MainObject::GetRectFrame()
 {
@@ -94,14 +149,8 @@ int delay_frame = 0;
 
 void MainObject::Show(SDL_Renderer *des)
 {
-    if (status_ == WALK_LEFT)
-    {
-        LoadImg("res/pic/img/player_left1.png", des);
-    }
-    else
-    {
-        LoadImg("res/pic/img/player_right1.png", des);
-    }
+    int show_status = status_ == WALK_LEFT ? WALK_LEFT : WALK_RIGHT;
+    ApplyTextureForStatus(show_status);
 
     if (input_type_.left_ == 1 ||
         input_type_.right_ == 1)
@@ -186,7 +235,10 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
         {
             Mix_PlayChannel(-1, gFire_ball, 0);
             BulletObject *p_bullet = new BulletObject();
-            p_bullet->LoadImg("res/pic/img/fire.png", screen);
+            if (bullet_texture_ != NULL)
+            {
+                p_bullet->UseTexture(bullet_texture_, bullet_texture_width_, bullet_texture_height_);
+            }
 
             if (status_ == WALK_LEFT)
             {

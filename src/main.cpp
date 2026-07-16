@@ -15,6 +15,15 @@
 
 BaseObject g_background;
 BaseObject gMonster;
+BaseObject gPlayerLeftTexture;
+BaseObject gPlayerRightTexture;
+BaseObject gBulletTexture;
+BaseObject gThreat1Texture;
+BaseObject gThreat2LeftTexture;
+BaseObject gThreat2RightTexture;
+BaseObject gThreat3LeftTexture;
+BaseObject gThreat3RightTexture;
+BaseObject gThreat4Texture;
 
 ImpTimer fps_timer;
 GameMap game_map;
@@ -115,6 +124,9 @@ TTF_Font *OpenProfiledFont(const char *path, int size);
 SDL_Surface *LoadProfiledSurface(const char *path);
 SDL_Texture *CreateProfiledTextureFromSurface(SDL_Renderer *screen, SDL_Surface *surface);
 Mix_Chunk *LoadProfiledWav(const char *path);
+void LoadRuntimeTextures();
+void FreeRuntimeTextures();
+void ConfigureDynamicThreat(ThreatsObject *p_threat);
 
 int main(int argc, char *argv[])
 {
@@ -137,6 +149,9 @@ int main(int argc, char *argv[])
 
     game_map.LoadTiles(g_screen); // Load Map
 
+    p_player.SetTextureRefs(gPlayerLeftTexture.GetObject(), gPlayerLeftTexture.GetRect().w, gPlayerLeftTexture.GetRect().h,
+                            gPlayerRightTexture.GetObject(), gPlayerRightTexture.GetRect().w, gPlayerRightTexture.GetRect().h);
+    p_player.SetBulletTextureRef(gBulletTexture.GetObject(), gBulletTexture.GetRect().w, gBulletTexture.GetRect().h);
     p_player.set_clips(); // Load Main Player
 
     // Load and set position HP_player  and   Heart_point
@@ -431,8 +446,8 @@ void LoadFromFile()
     journey_Surface_5 = LoadProfiledSurface("res/pic/journey/journey_5.png");
 
     game_map.LoadMap("res/pic/map/map01.txt");
-    p_player.LoadImg("res/pic/img/player_right1.png", g_screen);
     gMonster.LoadImg("res/pic/threats/Monster.png", g_screen);
+    LoadRuntimeTextures();
 
     gMainMusic = LoadProfiledWav("res/Music/through_Map_music.wav");
     gEarn_Heart = LoadProfiledWav("res/Music/earn_Heart.wav");
@@ -488,8 +503,10 @@ void close()
 
     g_background.Free();
     gMonster.Free();
+    p_player.Free();
     player_power.Free();
     player_heart.Free();
+    FreeRuntimeTextures();
 
     FreeMenuResources();
     FreeWinResources();
@@ -589,6 +606,40 @@ void FreeJourneyResources()
     FreeSurface(journey_Surface_3);
     FreeSurface(journey_Surface_4);
     FreeSurface(journey_Surface_5);
+}
+
+void LoadRuntimeTextures()
+{
+    gPlayerLeftTexture.LoadImg("res/pic/img/player_left1.png", g_screen);
+    gPlayerRightTexture.LoadImg("res/pic/img/player_right1.png", g_screen);
+    gBulletTexture.LoadImg("res/pic/img/fire.png", g_screen);
+    gThreat1Texture.LoadImg("res/pic/threats/threat_1.png", g_screen);
+    gThreat2LeftTexture.LoadImg("res/pic/threats/threat_2_left.png", g_screen);
+    gThreat2RightTexture.LoadImg("res/pic/threats/threat_2_right.png", g_screen);
+    gThreat3LeftTexture.LoadImg("res/pic/threats/threat_3_left.png", g_screen);
+    gThreat3RightTexture.LoadImg("res/pic/threats/threat_3_right.png", g_screen);
+    gThreat4Texture.LoadImg("res/pic/threats/threat_4.png", g_screen);
+}
+
+void FreeRuntimeTextures()
+{
+    gPlayerLeftTexture.Free();
+    gPlayerRightTexture.Free();
+    gBulletTexture.Free();
+    gThreat1Texture.Free();
+    gThreat2LeftTexture.Free();
+    gThreat2RightTexture.Free();
+    gThreat3LeftTexture.Free();
+    gThreat3RightTexture.Free();
+    gThreat4Texture.Free();
+}
+
+void ConfigureDynamicThreat(ThreatsObject *p_threat)
+{
+    p_threat->SetDynamicTextureRefs(gThreat2LeftTexture.GetObject(), gThreat2LeftTexture.GetRect().w, gThreat2LeftTexture.GetRect().h,
+                                    gThreat2RightTexture.GetObject(), gThreat2RightTexture.GetRect().w, gThreat2RightTexture.GetRect().h,
+                                    gThreat3LeftTexture.GetObject(), gThreat3LeftTexture.GetRect().w, gThreat3LeftTexture.GetRect().h,
+                                    gThreat3RightTexture.GetObject(), gThreat3RightTexture.GetRect().w, gThreat3RightTexture.GetRect().h);
 }
 
 bool InitData()
@@ -835,7 +886,6 @@ void Win_Game()
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
     game_map.LoadMap_Return("res/pic/map/map01.txt");
-    game_map.LoadTiles(g_screen);
     game_map.ResetMap(map_data);
 
     if (winner == true)
@@ -956,7 +1006,7 @@ ThreatList MakeThreats()
         std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("res/pic/threats/threat_1.png", g_screen); //  Orc_Fly
+            p_threat->UseCachedTexture(gThreat1Texture.GetObject(), gThreat1Texture.GetRect().w, gThreat1Texture.GetRect().h); //  Orc_Fly
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 0 + 2000 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
@@ -972,7 +1022,8 @@ ThreatList MakeThreats()
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("res/pic/threats/threat_2_left.png", g_screen); //  WHITE Dinasaur
+            p_threat->UseCachedTexture(gThreat2LeftTexture.GetObject(), gThreat2LeftTexture.GetRect().w, gThreat2LeftTexture.GetRect().h); //  WHITE Dinasaur
+            ConfigureDynamicThreat(p_threat.get());
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 1 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
@@ -992,7 +1043,8 @@ ThreatList MakeThreats()
 
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("res/pic/threats/threat_3_left.png", g_screen);
+            p_threat->UseCachedTexture(gThreat3LeftTexture.GetObject(), gThreat3LeftTexture.GetRect().w, gThreat3LeftTexture.GetRect().h);
+            ConfigureDynamicThreat(p_threat.get());
             p_threat->set_clips();
             p_threat->set_type_move(ThreatsObject::MOVE_INSPACE_THREAT);
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 2 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
@@ -1011,7 +1063,7 @@ ThreatList MakeThreats()
         std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
         if (p_threat != NULL)
         {
-            p_threat->LoadImg("res/pic/threats/threat_4.png", g_screen); //  Pterosaurs
+            p_threat->UseCachedTexture(gThreat4Texture.GetObject(), gThreat4Texture.GetRect().w, gThreat4Texture.GetRect().h); //  Pterosaurs
             p_threat->set_clips();
             p_threat->set_x_pos(JOURNEY_EACH_MAP * 3 + 500 + i * (780 + 100 * ((rand() % 3) + 3)));
             p_threat->set_y_pos(200 + 10 * (rand() % 5));
