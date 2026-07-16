@@ -7,6 +7,12 @@ bool winner = false;
 int minus = 0;
 bool change_threats = false;
 int map_start = 0;
+Mix_Chunk *gEarn_Heart = NULL;
+Mix_Chunk *gFire_ball = NULL;
+Mix_Chunk *gPlayer_Die = NULL;
+SDL_Window *g_window = NULL;
+SDL_Renderer *g_screen = NULL;
+SDL_Event g_event;
 
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {

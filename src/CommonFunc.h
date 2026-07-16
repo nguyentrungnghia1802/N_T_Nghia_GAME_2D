@@ -1,7 +1,6 @@
 #ifndef COMMON_FUNCTION_H_
 #define COMMON_FUNCTION_H_
 
-#include <windows.h>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -12,13 +11,13 @@
 #include "include/SDL2/SDL_mixer.h"
 #include "TextObject.h"
 
-static Mix_Chunk *gEarn_Heart = NULL;
-static Mix_Chunk *gFire_ball = NULL;
-static Mix_Chunk *gPlayer_Die = NULL;
+extern Mix_Chunk *gEarn_Heart;
+extern Mix_Chunk *gFire_ball;
+extern Mix_Chunk *gPlayer_Die;
 
-static SDL_Window *g_window = NULL;
-static SDL_Renderer *g_screen = NULL;
-static SDL_Event g_event;
+extern SDL_Window *g_window;
+extern SDL_Renderer *g_screen;
+extern SDL_Event g_event;
 
 // Screen
 const int FRAME_PER_SECOND = 60;

@@ -149,6 +149,7 @@ bool IsThreatActive(const ThreatsObject *p_threat, const Map &map_data);
 float UpdateDeltaTime();
 void CapFrameRate(Uint32 frame_start_ticks);
 bool WaitWithEventPump(Uint32 wait_ms);
+void ShowTimeLimitMessage();
 
 int main(int argc, char *argv[])
 {
@@ -434,11 +435,9 @@ int main(int argc, char *argv[])
         //    LIMITED TIME
         if (time_render >= 9999)
         {
-            if (MessageBoxW(NULL, L"T-kun lost her!", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
-            {
-                is_quit = true;
-                break;
-            }
+            ShowTimeLimitMessage();
+            is_quit = true;
+            break;
         }
         else
         {
@@ -581,6 +580,15 @@ bool WaitWithEventPump(Uint32 wait_ms)
     }
 
     return !is_quit;
+}
+
+void ShowTimeLimitMessage()
+{
+    SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+    SDL_RenderClear(g_screen);
+    renderText("T-kun lost her!", SCREEN_WIDTH / 2 - 360, SCREEN_HEIGHT / 2 - 80, gFont3);
+    SDL_RenderPresent(g_screen);
+    WaitWithEventPump(1200);
 }
 
 void close()
