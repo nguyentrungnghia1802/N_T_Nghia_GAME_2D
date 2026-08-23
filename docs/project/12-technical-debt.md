@@ -12,7 +12,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-006 | P0 (resolved) | Headers | Three include guards defined the wrong macro | Corrected and double-include tested in Step 4 | Keep header self-containment checks |
 | TD-007 | P0 (resolved) | SDL lifetime | Tile textures outlived renderer shutdown; audio device was not closed | Fixed in Step 2 with ordered tile/audio cleanup | Preserve documented shutdown order |
 | TD-008 | P0 (resolved) | Ownership | `BaseObject` was shallow-copyable despite owning raw textures | Fixed in Step 2 by deleting copy operations | Add safe move only if a real use requires it |
-| TD-009 | P1 | Timing | `delta_time` is unused; simulation is frame-based; cap targets 16 ms | Gameplay speed depends on frame rate | Introduce fixed step or consistent delta scaling |
+| TD-009 | P1 (resolved) | Timing | `delta_time` was unused; simulation was frame-based; cap targeted 16 ms | Step 5 applies consistent 60 Hz-normalized delta scaling and a fractional 16.667 ms cap | Preserve split-step equivalence tests |
 | TD-010 | P1 | State flow | Menu/journey/game-over/win are nested modal loops | Duplicated input/timing; blocks portable main loop | Central state-driven loop with enter/update/render/exit |
 | TD-011 | P1 | Architecture | `main.cpp` owns nearly everything through globals | High change risk and poor testability | Extract a small top-level `Game`/resource owner incrementally |
 | TD-012 | P1 | Bullets | Raw owning pointer vector; erase loop skips shifted inactive bullet | Fragile lifetime and delayed cleanup | `vector<unique_ptr<BulletObject>>`; iterator/index-safe erase |

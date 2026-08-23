@@ -45,11 +45,11 @@ class ThreatsObject: public BaseObject
                                    SDL_Texture* threat2_right, int threat2_right_width, int threat2_right_height,
                                    SDL_Texture* threat3_left, int threat3_left_width, int threat3_left_height,
                                    SDL_Texture* threat3_right, int threat3_right_width, int threat3_right_height);
-        void Show(SDL_Renderer* des, const SDL_Rect* viewport = NULL);
+        void Show(SDL_Renderer* des, float frame_scale, const SDL_Rect* viewport = NULL);
         int get_width_frame() const {return width_frame_;}
         int get_height_frame() const{return height_frame_;}
-        void DoPlayer (Map& gMap);
-        void CheckToMap(Map& gMap);
+        void DoPlayer (Map& gMap, float frame_scale);
+        void CheckToMap(Map& gMap, float vertical_step);
         void InitThreats();
 
         void set_type_move(const int& typeMove) {type_move_ = typeMove;}
@@ -81,7 +81,8 @@ class ThreatsObject: public BaseObject
         int width_frame_;
         int height_frame_;
         int frame_;
-        int come_back_time_;
+        float come_back_time_;
+        float animation_ticks_;
         
         int type_move_;
         int animation_a_;

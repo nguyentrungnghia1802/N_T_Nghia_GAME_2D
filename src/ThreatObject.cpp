@@ -17,6 +17,7 @@ ThreatsObject::ThreatsObject()
     map_y_ = 0;
     come_back_time_ = 0;
     frame_ = 0;
+    animation_ticks_ = 0.0f;
 
     animation_a_ = 0;
     animation_b_ = 0;
@@ -106,17 +107,17 @@ void ThreatsObject::set_clips()
     }
 }
 
-void ThreatsObject::Show(SDL_Renderer *des, const SDL_Rect *viewport)
+void ThreatsObject::Show(SDL_Renderer *des, float frame_scale, const SDL_Rect *viewport)
 {
     if (come_back_time_ == 0 && des != NULL && p_object_ != NULL)
     {
         rect_.x = x_pos_ - map_x_;
         rect_.y = y_pos_ - map_y_;
-        frame_++;
-
-        if (frame_ >= THREAT_FRAME_NUM)
+        animation_ticks_ += frame_scale;
+        while (animation_ticks_ >= 1.0f)
         {
-            frame_ = 0;
+            frame_ = (frame_ + 1) % THREAT_FRAME_NUM;
+            animation_ticks_ -= 1.0f;
         }
 
         SDL_Rect *currentClip = &frame_clip_[frame_];
@@ -131,35 +132,38 @@ void ThreatsObject::Show(SDL_Renderer *des, const SDL_Rect *viewport)
     }
 }
 
-void ThreatsObject::DoPlayer(Map &gMap)
+void ThreatsObject::DoPlayer(Map &gMap, float frame_scale)
 {
     Profiler::CountEntityUpdate();
 
     if (come_back_time_ == 0)
     {
         x_val_ = 0;
-        y_val_ += THREAT_GRAVITY_SPEED;
+        float vertical_step = y_val_ * frame_scale +
+                              THREAT_GRAVITY_SPEED * frame_scale * (frame_scale + 1.0f) * 0.5f;
+        y_val_ += THREAT_GRAVITY_SPEED * frame_scale;
 
         if (y_val_ >= MAX_FALL_SPEED)
         {
             y_val_ = MAX_FALL_SPEED;
+            vertical_step = y_val_ * frame_scale;
         }
 
         if (input_type_.left_ == 1)
         {
-            x_val_ -= THREAT_SPEED;
+            x_val_ -= THREAT_SPEED * frame_scale;
         }
         else if (input_type_.right_ == 1)
         {
-            x_val_ += THREAT_SPEED;
+            x_val_ += THREAT_SPEED * frame_scale;
         }
 
-        CheckToMap(gMap);
+        CheckToMap(gMap, vertical_step);
     }
     else if (come_back_time_ > 0)
     {
-        come_back_time_--;
-        if (come_back_time_ == 0)
+        come_back_time_ -= frame_scale;
+        if (come_back_time_ <= 0)
         {
             InitThreats();
         }
@@ -185,7 +189,7 @@ void ThreatsObject::InitThreats()
     input_type_.left_ = 1;
 }
 
-void ThreatsObject::CheckToMap(Map &map_data)
+void ThreatsObject::CheckToMap(Map &map_data, float vertical_step)
 {
 
     if (type_move_ != THREATS_FLY_STATIC)
@@ -238,8 +242,8 @@ void ThreatsObject::CheckToMap(Map &map_data)
         x1 = (x_pos_) / TILE_SIZE;
         x2 = (x_pos_ + width_min) / TILE_SIZE;
 
-        y1 = (y_pos_ + y_val_) / TILE_SIZE;
-        y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
+        y1 = (y_pos_ + vertical_step) / TILE_SIZE;
+        y2 = (y_pos_ + vertical_step + height_frame_ - 1) / TILE_SIZE;
 
         if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
         {
@@ -253,6 +257,7 @@ void ThreatsObject::CheckToMap(Map &map_data)
                     y_pos_ = y2 * TILE_SIZE;
                     y_pos_ -= (height_frame_ + 1);
                     y_val_ = 0;
+                    vertical_step = 0;
                     on_ground_ = true;
                 }
             }
@@ -265,12 +270,13 @@ void ThreatsObject::CheckToMap(Map &map_data)
                 {
                     y_pos_ = (y1 + 1) * TILE_SIZE;
                     y_val_ = 0;
+                    vertical_step = 0;
                 }
             }
         }
 
         x_pos_ += x_val_;
-        y_pos_ += y_val_;
+        y_pos_ += vertical_step;
 
         if (x_pos_ < 0)
         {

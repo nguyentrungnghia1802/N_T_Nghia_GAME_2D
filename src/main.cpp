@@ -123,6 +123,8 @@ const int THREAT_ACTIVE_MARGIN = SCREEN_WIDTH;
 GameState game_state = GameState::MENU;
 Uint32 last_frame_ticks = 0;
 float delta_time = 0.0f;
+float background_scroll_remainder = 0.0f;
+double frame_cap_remainder_ms = 0.0;
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power);
 bool InitData();
@@ -219,6 +221,7 @@ int main(int, char *[])
     {
         const Uint32 frame_start_ticks = SDL_GetTicks();
         delta_time = UpdateDeltaTime();
+        const float frame_scale = delta_time * FRAME_PER_SECOND;
         Profiler::BeginFrame();
 
         //      CHECK RESTART
@@ -244,7 +247,10 @@ int main(int, char *[])
         SDL_RenderClear(g_screen);
 
         //        BackGround run
-        minus -= 2;
+        const float background_scroll = 2.0f * frame_scale + background_scroll_remainder;
+        const int background_pixels = static_cast<int>(background_scroll);
+        background_scroll_remainder = background_scroll - background_pixels;
+        minus -= background_pixels;
         if (minus <= -SCREEN_WIDTH)
         {
             minus = 0;
@@ -258,16 +264,16 @@ int main(int, char *[])
         map_data = game_map.getMap();
         if (map_data.start_x_ < MAX_MAP_X * TILE_SIZE - 1500)
         {
-            game_map.MapRun(map_data);
+            game_map.MapRun(map_data, frame_scale);
         }
         map_start = map_data.start_x_;
 
         //            PLAYER
         heart_count = p_player.GetMoneyCount();
-        p_player.HanleBullet(g_screen);
+        p_player.HanleBullet(g_screen, frame_scale);
         p_player.SetMapXY(map_data.start_x_, map_data.start_y_);
-        p_player.DoPlayer(map_data, gEarn_Heart);
-        p_player.Show(g_screen);
+        p_player.DoPlayer(map_data, gEarn_Heart, frame_scale);
+        p_player.Show(g_screen, frame_scale);
 
         //            SET MAP
         game_map.SetMap(map_data);
@@ -295,8 +301,8 @@ int main(int, char *[])
 
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
                 p_threat->ImpMoveType();
-                p_threat->DoPlayer(map_data);
-                p_threat->Show(g_screen, &screen_viewport);
+                p_threat->DoPlayer(map_data, frame_scale);
+                p_threat->Show(g_screen, frame_scale, &screen_viewport);
 
                 SDL_Rect rect_player = p_player.GetRectFrame();
                 SDL_Rect rect_threat = p_threat->GetRectFrame();
@@ -610,11 +616,21 @@ float UpdateDeltaTime()
 
 void CapFrameRate(Uint32 frame_start_ticks)
 {
-    const Uint32 target_frame_ms = 1000 / FRAME_PER_SECOND;
+    const double target_frame_ms = 1000.0 / FRAME_PER_SECOND;
     const Uint32 frame_ticks = SDL_GetTicks() - frame_start_ticks;
-    if (frame_ticks < target_frame_ms)
+    const double remaining_ms = target_frame_ms + frame_cap_remainder_ms - frame_ticks;
+    if (remaining_ms > 0.0)
     {
-        SDL_Delay(target_frame_ms - frame_ticks);
+        const Uint32 delay_ms = static_cast<Uint32>(remaining_ms);
+        frame_cap_remainder_ms = remaining_ms - delay_ms;
+        if (delay_ms > 0)
+        {
+            SDL_Delay(delay_ms);
+        }
+    }
+    else
+    {
+        frame_cap_remainder_ms = 0.0;
     }
 }
 
@@ -644,6 +660,7 @@ bool WaitWithEventPump(Uint32 wait_ms)
         SDL_Delay(1);
     }
 
+    last_frame_ticks = SDL_GetTicks();
     return !is_quit;
 }
 

@@ -87,6 +87,8 @@ Fix:
 
 # Step 5 --- Improve Game Loop
 
+Status: **Completed on 2026-08-24** (`refactor(step-5)`).
+
 Implement:
 
 -   proper frame timing.

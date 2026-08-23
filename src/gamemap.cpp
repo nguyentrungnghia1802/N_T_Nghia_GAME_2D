@@ -10,6 +10,7 @@ GameMap::GameMap()
     game_map_ = {};
     base_map_ = {};
     has_base_map_ = false;
+    map_run_remainder_ = 0.0f;
 }
 
 GameMap::~GameMap()
@@ -150,8 +151,17 @@ void GameMap::ResetFromBaseMap()
     }
 }
 
+void GameMap::MapRun(Map &map_data, float frame_scale)
+{
+    const float movement = MAP_RUN * frame_scale + map_run_remainder_;
+    const int whole_pixels = static_cast<int>(movement);
+    map_run_remainder_ = movement - whole_pixels;
+    map_data.start_x_ += whole_pixels;
+}
+
 void GameMap::ResetMap(Map &map_data)
 {
+    map_run_remainder_ = 0.0f;
     if (winner == true)
     {
         map_data.start_x_ = 0;

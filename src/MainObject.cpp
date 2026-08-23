@@ -31,6 +31,7 @@ MainObject::MainObject()
     map_x_ = 0;
     map_y_ = 0;
     come_back_time_ = 0;
+    animation_ticks_ = 0.0f;
     heart_count = 0;
     is_minus_live = false;
     left_texture_ = NULL;
@@ -150,9 +151,7 @@ void MainObject::set_clips()
     }
 }
 
-int delay_frame = 0;
-
-void MainObject::Show(SDL_Renderer *des)
+void MainObject::Show(SDL_Renderer *des, float frame_scale)
 {
     int show_status = status_ == WALK_LEFT ? WALK_LEFT : WALK_RIGHT;
     ApplyTextureForStatus(show_status);
@@ -160,16 +159,17 @@ void MainObject::Show(SDL_Renderer *des)
     if (input_type_.left_ == 1 ||
         input_type_.right_ == 1)
     {
-        delay_frame++;
-        if (delay_frame == 2)
+        animation_ticks_ += frame_scale;
+        while (animation_ticks_ >= 2.0f)
         {
             frame_++;
-            delay_frame = 0;
+            animation_ticks_ -= 2.0f;
         }
     }
     else
     {
         frame_ = 0;
+        animation_ticks_ = 0.0f;
     }
     if (frame_ >= MAX_FRAME_PLAYER)
     {
@@ -267,7 +267,7 @@ void MainObject::HandelInputAction(const SDL_Event &events, Mix_Chunk *gFire_bal
     }
 }
 
-void MainObject::HanleBullet(SDL_Renderer *des)
+void MainObject::HanleBullet(SDL_Renderer *des, float frame_scale)
 {
     const SDL_Rect viewport = GetScreenViewport();
     for (size_t i = 0; i < p_bullet_list_.size();)
@@ -280,7 +280,7 @@ void MainObject::HanleBullet(SDL_Renderer *des)
         }
 
         Profiler::CountEntityUpdate();
-        p_bullet->HandleMove(SCREEN_WIDTH);
+        p_bullet->HandleMove(SCREEN_WIDTH, frame_scale);
         if (p_bullet->IsVisibleInViewport(viewport))
         {
             Profiler::CountEntityRender();
@@ -303,27 +303,30 @@ void MainObject::ClearBulletList()
     p_bullet_list_.clear();
 }
 
-void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)
+void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart, float frame_scale)
 {
     Profiler::CountEntityUpdate();
 
     if (come_back_time_ == 0)
     {
         x_val_ = 0;
-        y_val_ += GRAVITY_SPEED;
+        float vertical_step = y_val_ * frame_scale +
+                              GRAVITY_SPEED * frame_scale * (frame_scale + 1.0f) * 0.5f;
+        y_val_ += GRAVITY_SPEED * frame_scale;
 
         if (y_val_ >= MAX_FALL_SPEED)
         {
             y_val_ = MAX_FALL_SPEED;
+            vertical_step = y_val_ * frame_scale;
         }
 
         if (input_type_.left_ == 1)
         {
-            x_val_ -= PLAYER_SPEED;
+            x_val_ -= PLAYER_SPEED * frame_scale;
         }
         else if (input_type_.right_ == 1)
         {
-            x_val_ += PLAYER_SPEED;
+            x_val_ += PLAYER_SPEED * frame_scale;
         }
 
         if (input_type_.jump_ == 1)
@@ -331,17 +334,18 @@ void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)
             if (on_ground_ == true)
             {
                 y_val_ = -PLAYER_JUMP_VAL;
+                vertical_step = y_val_ * frame_scale;
             }
             on_ground_ = false;           // DELETE this current to JUMP unlimited
             input_type_.jump_ = 0;
         }
 
-        CheckToMap(map_data, gEarn_Heart);
+        CheckToMap(map_data, gEarn_Heart, vertical_step);
     }
 
     if (come_back_time_ > 0)
     {
-        come_back_time_--;
+        come_back_time_ -= frame_scale;
         if (come_back_time_ <= 0)
         {
             if (check_x == true)
@@ -368,7 +372,7 @@ void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart)
     }
 }
 
-void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
+void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart, float vertical_step)
 {
     int x1 = 0;
     int x2 = 0;
@@ -447,8 +451,8 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
     x1 = (x_pos_) / TILE_SIZE;
     x2 = (x_pos_ + width_min) / TILE_SIZE;
 
-    y1 = (y_pos_ + y_val_) / TILE_SIZE;
-    y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
+    y1 = (y_pos_ + vertical_step) / TILE_SIZE;
+    y2 = (y_pos_ + vertical_step + height_frame_ - 1) / TILE_SIZE;
 
     if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
     {
@@ -470,6 +474,7 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
                     y_pos_ = y2 * TILE_SIZE;
                     y_pos_ -= (height_frame_ + 1);
                     y_val_ = 0;
+                    vertical_step = 0;
                     on_ground_ = true;
                 }
             }
@@ -491,13 +496,14 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart)
                 {
                     y_pos_ = (y1 + 1) * TILE_SIZE;
                     y_val_ = 0;
+                    vertical_step = 0;
                 }
             }
         }
     }
 
     x_pos_ += x_val_;
-    y_pos_ += y_val_;
+    y_pos_ += vertical_step;
 
     if (x_pos_ + width_frame_ > map_data.max_x_)
     {

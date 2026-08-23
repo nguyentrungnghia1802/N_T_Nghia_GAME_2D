@@ -34,21 +34,21 @@ public:
         void SetTextureRefs(SDL_Texture* left_texture, int left_width, int left_height,
                             SDL_Texture* right_texture, int right_width, int right_height);
         void SetBulletTextureRef(SDL_Texture* texture, int width, int height);
-        void Show(SDL_Renderer* des);
+        void Show(SDL_Renderer* des, float frame_scale);
         void HandelInputAction(const SDL_Event& events, Mix_Chunk* gF);
         void set_clips();
 
-        void DoPlayer(Map& map_data, Mix_Chunk *gEarn_Heart);
-        void CheckToMap(Map& map_data, Mix_Chunk *gEarn_Heart);
+        void DoPlayer(Map& map_data, Mix_Chunk *gEarn_Heart, float frame_scale);
+        void CheckToMap(Map& map_data, Mix_Chunk *gEarn_Heart, float vertical_step);
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
         SDL_Rect GetRectFrame();
 
         const BulletList& get_bullet_list() const {return p_bullet_list_;}
-        void HanleBullet(SDL_Renderer* rec);
+        void HanleBullet(SDL_Renderer* rec, float frame_scale);
         void RemoveBullet(size_t idx);
         void ClearBulletList();
         void IncreaseMoney();
-        void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
+        void set_comeback_time(float cb_time){come_back_time_=cb_time;}
         bool GetIsMinusLive() {return is_minus_live;}
         void RetsetMinusLive() {is_minus_live = false;}
         int GetMoneyCount() const {return heart_count;}
@@ -76,7 +76,8 @@ private:
         int map_x_;
         int map_y_;
 
-        int come_back_time_;
+        float come_back_time_;
+        float animation_ticks_;
         bool is_minus_live;
 
         bool check_x=false;

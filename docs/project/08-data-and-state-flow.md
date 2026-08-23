@@ -39,7 +39,7 @@ Bullet positions are screen-space, not world-space. They move against `SCREEN_WI
 ```text
 GameMap::getMap() by value
     -> global map_data
-    -> MapRun adds 6 to start_x_
+    -> MapRun adds 6 * frame_scale with a fractional remainder
     -> MainObject mutates collected tile cells
     -> GameMap::SetMap copies map_data back
     -> GameMap::DrawMap reads game_map_
@@ -90,4 +90,3 @@ Audio chunks are loaded globally and passed selectively: fire/heart/death/win fu
 ## Save/load flow
 
 No save file, serialization, settings file, or persistent high-score flow exists. `GameMap::LoadMap_Return` is a duplicate disk loader used nowhere; it is not a save/load system.
-

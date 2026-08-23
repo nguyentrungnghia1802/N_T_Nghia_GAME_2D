@@ -37,7 +37,7 @@ public:
     void DrawMap(SDL_Renderer *screen);
     Map getMap() const { return game_map_; };
     void SetMap(Map &map_data) { game_map_ = map_data; }
-    void MapRun(Map &map_data) { map_data.start_x_ += MAP_RUN; }
+    void MapRun(Map &map_data, float frame_scale);
     void ResetMap(Map &map_data);
     void ResetFromBaseMap();
     TileRange GetVisibleTileRange(const Map &map_data) const;
@@ -46,6 +46,7 @@ private:
     Map game_map_;
     Map base_map_;
     bool has_base_map_;
+    float map_run_remainder_;
     TileMat tile_mat[MAX_TILES];
 };
 

@@ -2,9 +2,9 @@
 
 ## Loop model
 
-The gameplay loop is a single-threaded, variable-work loop with a delay-based frame cap. It is not a fixed-timestep loop. Although `UpdateDeltaTime` calculates seconds since the prior outer frame and clamps them to 0.05, `delta_time` is never consumed by player, enemy, bullet, camera, or animation code.
+The gameplay loop is a single-threaded, delta-scaled loop with a 60 Hz behavior baseline. `UpdateDeltaTime` measures elapsed seconds, clamps catch-up to 0.05 seconds, and converts it to `frame_scale = delta * 60`. Player/enemy physics, bullets, camera, background, animation, and short respawn counters consume that scale.
 
-All gameplay rates are per-frame constants:
+Gameplay constants retain their original meaning at `frame_scale == 1`:
 
 | Behavior | Current rate source |
 | --- | --- |
@@ -20,11 +20,11 @@ All gameplay rates are per-frame constants:
 | Enemy animation | one frame per `Show` call |
 | Respawn delay | `come_back_time_` counts outer frames, normally three |
 
-Consequently, gameplay speed changes with achieved frame rate.
+Sub-pixel remainders preserve fractional bullet/camera/background motion. Gravity uses an associative discrete-step extension, so two half steps match one original 60 Hz step in focused tests. This preserves the original 60 Hz feel while avoiding proportional slow motion on slower frames.
 
 ## Timing and frame cap
 
-`CapFrameRate` computes `1000 / 60` with integer division, producing a 16 ms target (62.5 Hz before scheduler/render overhead), not 16.666 ms. It sleeps only when update/render work takes less than 16 ms. There is no accumulator, drift correction, vsync flag, or sleep precision compensation.
+`CapFrameRate` uses the fractional `1000.0 / 60` target. A retained millisecond remainder alternates integer delays instead of truncating every frame to 16 ms. Slow frames skip the delay, while delta scaling keeps simulation rates tied to elapsed time.
 
 `Profiler::EndFrame` is called before `CapFrameRate`, so its `frame_ms_*` values measure update/render CPU wall time but exclude the cap delay. Its `fps_avg` uses elapsed interval time and therefore includes delay. These values answer different questions and should not be compared as identical frame durations.
 
@@ -90,4 +90,3 @@ Elapsed game time uses `SDL_GetTicks()/1000`, not `delta_time`. On the first gam
 Confirmed recurring work includes two full `Map` copies, allocation/free of a local active-target vector, tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and text cache checks. HUD text only regenerates when its content changes. The timer string changes once per second; heart/high-score textures change only with score changes.
 
 The menu loop has no explicit delay and the renderer is not created with vsync, so it can busy-render at high CPU usage. Game-over/win loops repeatedly call `renderText`, creating and destroying TTF surfaces/textures each iteration.
-
