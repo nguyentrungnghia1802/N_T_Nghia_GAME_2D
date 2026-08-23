@@ -28,6 +28,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-022 | P2 | Repository | No `.gitignore`; binaries/objects/vendor archives tracked; docs/build commands drift | Large repo and stale artifacts | Define artifact policy, ignore generated files, update canonical build docs |
 | TD-023 | P2 | Naming | Misspellings and mixed heart/money/threat terminology | Search/API comprehension cost | Mechanical rename after behavior is covered |
 | TD-024 | P3 (partial) | Modern C++ | `NULL`, macros, and C-style patterns remain | Step 4 removed all `-Wall -Wextra -Wpedantic` warnings; style modernization remains | Continue only as narrow mechanical cleanup |
+| TD-025 | P2 (resolved) | Portability | Step 10 removed direct Win32 runtime APIs and added platform-selecting build flags | Application source is SDL/standard C++; native Unix compile remains unverified | Keep Win32 APIs outside runtime source; finish TD-010 before Emscripten |
 
 ## Highest-risk dependency clusters
 

@@ -142,6 +142,8 @@ Improve:
 
 # Step 10 --- Portability
 
+Status: **Completed on 2026-08-24** (`refactor(step-10)`).
+
 Prepare:
 
 -   remove Windows-only runtime dependencies.

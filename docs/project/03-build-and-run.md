@@ -2,14 +2,14 @@
 
 ## Supported configuration found in the repository
 
-The packaged build is Windows/MinGW. The source includes SDL headers and MinGW libraries under `src/`, and the required runtime DLLs are placed in the repository root beside `main.exe`. No CMake project, Visual Studio solution, package manager manifest, installer, or CI build was found.
+The packaged and verified build is Windows/MinGW. The source includes SDL headers and MinGW libraries under `src/`, and the required runtime DLLs are placed in the repository root beside `main.exe`. The Makefile also has a native Unix branch that obtains SDL2/image/ttf/mixer flags from `pkg-config`; that branch was dry-run verified but not compiled on this Windows host. No CMake project, Visual Studio solution, package manager manifest, installer, or CI build was found.
 
 The current Makefile requires:
 
 - A C++17-capable `g++`.
 - GNU Make available as `make` if using the Makefile.
-- The checked-in `src/include` and `src/lib` contents.
-- Root SDL/runtime DLLs when running the dynamically linked SDL family libraries.
+- On Windows, the checked-in `src/include`/`src/lib` contents and root SDL runtime DLLs.
+- On native Unix-like systems, development packages exposing `sdl2`, `SDL2_image`, `SDL2_ttf`, and `SDL2_mixer` through `pkg-config`.
 
 During the 2026-08-24 audit, MSYS2 `g++ 14.1.0` was available, but neither `make` nor `mingw32-make` was in PATH.
 
@@ -21,7 +21,7 @@ If GNU Make is available in an MSYS-compatible shell:
 make
 ```
 
-The Makefile builds `main.exe` from all 11 application translation units. Its `clean` recipe uses `rm`, so it assumes a shell that provides that command.
+The Makefile builds `main.exe` on Windows and `main` on native Unix-like systems from all 11 application translation units. Its `clean` recipe uses `rm`, so it assumes a shell that provides that command.
 
 Equivalent direct PowerShell build, derived exactly from the current Makefile source list:
 
@@ -62,21 +62,25 @@ The executable needs the current working directory to contain `res/` with:
 - Background, menu, win, five journey, player, HUD, bullet, tile, and enemy images referenced in source.
 - `pic/map/map01.txt`.
 
-Required fonts, images, audio, map data, textures, and text caches are validated before entering the menu. Missing/corrupt assets now produce a nonzero startup exit after ordered cleanup. The map parser requires exactly 10,110 values and tile IDs supported by the loaded tile cache.
+Required fonts, images, audio, map data, textures, and text caches are validated before entering the menu. Missing/corrupt assets now produce a nonzero startup exit after ordered cleanup. The map parser requires exactly 10,110 values and tile IDs 0-7; blank ID 0 does not allocate a texture.
 
 ## Verification result
 
-The Makefile-equivalent direct build completed with exit code 0 on 2026-08-24. `-Wall -Wextra -Wpedantic -fsyntax-only` also completed with warnings. Confirmed warnings include the single `&` in `MainObject::set_clips`, chained `!=` in `ThreatsObject::CheckToMap`, signed/unsigned loop comparisons, unused parameters/variables, and omitted `SDL_Color::a` initializers.
+The Windows branch was rebuilt with GNU Make and `-Wall -Wextra -Wpedantic` on 2026-08-24 with no diagnostics. The equivalent direct PowerShell build also passed. A non-Windows forced dry run selected `pkg-config` flags and omitted the MinGW libraries as intended; an actual Unix build remains unverified.
 
 Step 1 later completed visible automated runs that opened the SDL window, selected Start in one stress run, entered the outer gameplay/death flow, and shut down with exit code 0. The automation did not complete the level or visually assert every input result; full gameplay, restart, and win acceptance remain **not confirmed from the current codebase**. See `../performance-baseline.md`.
 
 ## Tests and diagnostics
 
-There is no project test suite. For a safe change, at minimum:
+Focused regression sources now exist under `tests/` for collision, runtime allocation, map ownership/ranges, and profiler portability. They are compiled as standalone executables; there is no unified runner or CI. For a safe release, also:
 
 1. Rebuild with `-Wall -Wextra -Wpedantic`.
 2. Launch from the repository root.
 3. Exercise menu start/exit, movement in both directions, jump, firing before and after moving, heart collection, player/enemy and bullet/enemy collision, every journey boundary, death/replay, win/replay, and window close.
 4. Watch the five-second profiler output for unexpected runtime image/texture/font/sound loads.
 
-The last three steps require interactive validation; do not report them as passed unless actually exercised.
+The gameplay exercise steps require interactive validation; do not report them as passed unless actually exercised.
+
+## Emscripten readiness boundary
+
+Application source no longer includes Win32 headers or calls Win32 process APIs, and runtime timing/input/render/audio paths use SDL. This removes an immediate compiler dependency for future ports. The current nested menu/journey/game-over/win loops and blocking waits are not an Emscripten callback-style main loop, so a browser build is not claimed. Complete TD-010/R11 before adding an `em++` target and asset preloading flags.

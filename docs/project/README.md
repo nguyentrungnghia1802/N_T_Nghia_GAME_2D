@@ -1,6 +1,6 @@
 # T-Kun's Journey: Project Knowledge Base
 
-This directory documents the current `main` branch of the SDL2 game as inspected on 2026-08-24. It describes the code that exists now, not the older pre-refactor state recorded in `docs/refact.md`.
+This directory documents the current refactor branch of the SDL2 game as verified on 2026-08-24. It describes the code that exists now, not the older pre-refactor state recorded in `docs/refact.md`.
 
 ## Project at a glance
 
@@ -11,8 +11,8 @@ The implementation is a mixed procedural/object-oriented design. Domain objects 
 ## Current status
 
 - The current sources build successfully with the flags in `Makefile` using MSYS2 `g++ 14.1.0`.
-- The build emits warnings, including warnings on two suspicious boolean expressions.
-- No project test suite is present.
+- The canonical Windows GNU Make build passes `-Wall -Wextra -Wpedantic` without diagnostics.
+- Four focused C++ regression executables are present under `tests/`; there is no unified runner or CI.
 - Step 1 captured a settled-menu CPU sample and one automated gameplay-to-game-over stress run; measured window-close shutdown returned exit code 0. Full-level behavior, replay/win, long-run leaks, and low-end-hardware performance remain **not confirmed from the current codebase**. See the [performance baseline](../performance-baseline.md).
 - Refactor commits 1-10 added profiling, safer enemy ownership, texture caching, active-range filtering, culling, text caching, map reset caching, and removal of the runtime `windows.h` dependency. Important correctness and lifecycle debt remains.
 

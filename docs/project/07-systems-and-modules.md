@@ -54,13 +54,13 @@
 
 **Purpose:** Keyboard/mouse input, player texture selection/animation, gravity/movement/jump, tile collision and heart mutation, death/win detection, bullet creation/update/render/removal.
 
-**Owned data:** Player kinematic/input/animation state, borrowed texture references, raw `std::vector<BulletObject*>`, heart count.
+**Owned data:** Player kinematic/input/animation state, borrowed texture references, active/pooled `unique_ptr` bullet vectors, heart count.
 
 **Dependencies:** Map data, global winner flag, audio chunks, `BaseObject`, `BulletObject`, profiler.
 
-**Lifecycle:** Global object; cache references assigned after load; bullets are uniquely owned and released by vector erase/clear/destruction.
+**Lifecycle:** Global object; cache references assigned after load; inactive/hit/restart bullets are recycled and both vectors release ownership on shutdown.
 
-**Known concerns:** Uninitialized initial fire direction, erase-while-indexing skips a bullet, raw-pointer ownership API, frame-dependent physics, incorrect frame rectangle width, mixed player/bullet/score responsibilities, and several misspelled public names.
+**Known concerns:** Mixed player/bullet/score responsibilities, screen-space bullets, and several misspelled public names. Direction, index-safe recycling, frame rectangles, and delta scaling are covered by completed refactor steps.
 
 ## `BulletObject`
 
@@ -70,7 +70,7 @@
 
 **Caller:** Only `MainObject` creates/updates/owns bullets; `main.cpp` reads the list for enemy collision.
 
-**Known concerns:** `bullet_dir_` is uninitialized, vertical value/border are unused, and ownership is raw/manual.
+**Known concerns:** Vertical value/border are unused. Direction is deterministic and ownership/reuse stays inside `MainObject`.
 
 ## `ThreatsObject`
 
@@ -104,13 +104,13 @@
 
 ## `Profiler`
 
-**Purpose:** Count entity updates/renders, collisions, loads, texture/text creation; time update/render work; log five-second summaries; query Windows process CPU/RAM/thread count. `GAME_PROFILE_LOG` optionally mirrors each line to a file for reproducible capture.
+**Purpose:** Count entity updates/renders, collisions, loads, texture/text creation; time update/render work with SDL performance counters; log five-second summaries. `GAME_PROFILE_LOG` optionally mirrors each line to a file for reproducible capture.
 
 **State:** Internal anonymous-namespace singleton-style counters.
 
 **Lifecycle:** Initialized after SDL; interval starts after gameplay setup.
 
-**Known concerns:** Global mutable counters, Windows-only process metrics (zero elsewhere), `frame_ms` excludes cap delay, and no runtime switch to disable output. CPU is normalized across logical processors and must be interpreted with the machine configuration.
+**Known concerns:** Global mutable counters, `frame_ms` excludes cap delay, and no runtime switch to disable output. CPU/RAM/thread metrics were removed with the Win32 dependency and must be captured externally when needed.
 
 ## `ImpTimer`
 

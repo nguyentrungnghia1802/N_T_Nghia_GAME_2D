@@ -16,21 +16,21 @@ The player starts with three displayed health icons. The fourth death enters the
 - Heart collection, health icons, elapsed-time display, and process-local high score.
 - WAV playback for map music and game events.
 - Five journey image screens, a game-over overlay, and a win screen.
-- Runtime counters for frame work, asset loads, entity work, collisions, memory, and thread count.
+- Portable runtime counters for frame work, asset loads, entity work, and collisions.
 
 ## Technology stack
 
 | Area | Technology found |
 | --- | --- |
 | Language | C++17 plus a small standalone C++ map conversion utility |
-| Platform | Windows/MinGW is the packaged and verified configuration |
+| Platform | Windows/MinGW is packaged and verified; native Unix SDL build flags are prepared but not verified here |
 | Core | SDL2; bundled header reports 2.30.0 and root DLL reports 2.30.1 |
 | Images | SDL_image 2.8.2 |
 | Fonts | SDL_ttf; bundled header/DLL report 2.21.1 |
 | Audio | SDL_mixer 2.6.3 in the active headers/DLL |
 | Build | Hand-written Makefile and direct `g++` command |
 | Map authoring | Tiled 1.10.2 `.tmx`/`.tsx` source plus a comma-to-space converter |
-| Tests | No project tests found |
+| Tests | Focused C++ regression executables under `tests/`; no unified runner/CI |
 
 Archives under `SDL_Make_Pic/` include other SDL release packages, but they are source/material archives, not evidence that those versions are linked by the current build.
 
@@ -39,7 +39,7 @@ Archives under `SDL_Make_Pic/` include other SDL release packages, but they are 
 The runtime is a small object-oriented domain model under procedural orchestration:
 
 - `BaseObject` wraps an SDL texture and rectangle.
-- `MainObject` owns player simulation and a raw-pointer bullet list.
+- `MainObject` owns player simulation and active/pooled `unique_ptr` bullet lists.
 - `ThreatsObject` owns enemy simulation state and borrows cached textures.
 - `GameMap` owns the runtime/base map copies and tile textures.
 - `PlayerPower`, `PlayerMoney`, and `TextObject` render HUD elements.
@@ -63,5 +63,4 @@ This is not an ECS. It has no general scene abstraction, component registry, eve
 
 ## Scope and non-features
 
-Only one map is loaded. There is no confirmed multiplayer, battle thread, persistence, configurable controls, resolution scaling, or multiple level loader. README claims about multithreading are not supported by runtime source: only the profiler queries OS thread count on Windows; no game thread is created.
-
+Only one map is loaded. There is no confirmed multiplayer, battle thread, persistence, configurable controls, resolution scaling, or multiple level loader. README claims about multithreading are not supported by runtime source; no game thread is created.

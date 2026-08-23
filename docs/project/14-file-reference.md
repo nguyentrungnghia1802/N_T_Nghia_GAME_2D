@@ -22,14 +22,14 @@
 | `src/TextObject.h` | Cached text texture API/state | `CommonFunc`, `BaseObject` | Unnecessary BaseObject include/inheritance absent |
 | `src/TextObject.cpp` | TTF render cache and render/free | SDL_ttf, profiler | Clip height uses width |
 | `src/Profiler.h` | Counter API | `<cstdint>` | No enable/disable configuration |
-| `src/Profiler.cpp` | Frame/load counters and five-second log | SDL timers; Win32 process APIs under `_WIN32` | Frame work excludes cap delay |
+| `src/Profiler.cpp` | Portable frame/load counters and five-second log | SDL performance timers, standard streams | Frame work excludes cap delay; process metrics are external |
 | `src/ImpTimer.h/.cpp` | Legacy tick timer | SDL through `CommonFunc` | No application call sites; dead-code candidate |
 
 ## Build, configuration, and documentation
 
 | File/directory | Responsibility | Notes |
 | --- | --- | --- |
-| `Makefile` | Current app source list, flags, link libraries, target | Canonical build definition; `clean` assumes `rm` |
+| `Makefile` | Current app source list plus Windows-bundle/native-pkg-config flags and target | Canonical build definition; `clean` assumes `rm` |
 | `.vscode/c_cpp_properties.json` | IntelliSense compiler/standard | Points at MSYS2 UCRT64 GCC and C++17 |
 | `.vscode/launch.json` | Debug config placeholder | No launch configuration |
 | `README.md`, `README.jp.md`, `#READ_ME.txt` | Player/project descriptions | Build commands omit `Profiler.cpp`; some architecture claims are stale |

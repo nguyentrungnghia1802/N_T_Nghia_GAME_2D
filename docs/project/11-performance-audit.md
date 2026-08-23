@@ -52,11 +52,11 @@ The background fills the screen, then player is drawn, then map tiles, then thre
 
 **Classification:** Potential visual/overdraw issue; probably minor at 1422x800.
 
-### Profiler process queries
+### Profiler process queries (resolved)
 
-Every five seconds on Windows, the profiler snapshots all system threads to count those owned by this process. This is infrequent and outside most frames.
+Step 10 removed the Win32 process CPU/RAM/thread queries and their system thread snapshot. The in-process profiler now records only SDL-timed frame work and engine counters on every platform.
 
-**Classification:** Potential small spike; measure if profiler remains enabled in release builds.
+**Result:** No platform-specific query spike or Win32 source dependency remains. Process CPU/RAM measurements require an external platform tool.
 
 ## Probably negligible at current scale
 
