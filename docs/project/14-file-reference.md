@@ -11,9 +11,9 @@
 | `src/BaseObject.cpp` | Image load, texture borrow/render/free, viewport test | SDL_image, profiler | `Render1` repeats scrolling background |
 | `src/gamemap.h` | `TileMat`, `GameMap`, visible range/reset APIs | `Map`, `BaseObject` | Broken include guard; `getMap` by value |
 | `src/gamemap.cpp` | Map parser, tile loading/drawing, camera/reset/base map | Globals `winner`, `map_start` | Duplicate unused loader; owns tile textures |
-| `src/MainObject.h` | Player interface/state and bullet owner | `BaseObject`, `BulletObject`, `Map` | Mixed responsibilities; raw bullet ownership |
+| `src/MainObject.h` | Player interface/state and active/pooled bullet owner | `BaseObject`, `BulletObject`, `Map` | Mixed responsibilities; explicit `unique_ptr` ownership |
 | `src/MainObject.cpp` | Input, animation, player/bullet update/render, tile collision, score/win/death | Audio globals, profiler | Highest-risk gameplay file |
-| `src/BulletObject.h` | Bullet direction/speed/active state | `BaseObject` | Direction field not initialized |
+| `src/BulletObject.h` | Bullet direction/speed/active state and reuse reset | `BaseObject` | Deterministic right-facing default |
 | `src/BulletObject.cpp` | Horizontal movement and screen deactivation | SDL rectangle from base | Y movement/border unused |
 | `src/ThreatObject.h` | Enemy movement/texture/animation interface/state | `BaseObject`, `Map` | Global appearance coupling remains |
 | `src/ThreatObject.cpp` | Enemy update/render, tile collision, patrol and texture switch | Globals, profiler | Chained predicate bug; active filtering is outside |

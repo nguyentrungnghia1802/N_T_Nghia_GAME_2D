@@ -32,12 +32,11 @@ Long flows use `WaitWithEventPump`, which polls quit/Escape and sleeps 1 ms repe
 
 ## Input timing
 
-The outer loop drains all queued events before simulation. `MainObject::HandelInputAction` updates held-direction flags from key down/up, latches jump until `DoPlayer`, and allocates a bullet on mouse down. It receives every event, including unrelated events.
+The outer loop drains all queued events before simulation. `MainObject::HandelInputAction` updates held-direction flags from key down/up, latches jump until `DoPlayer`, and acquires a pooled bullet on mouse down. It receives every event, including unrelated events.
 
 Risks:
 
-- `MainObject::status_` begins at `-1`. Firing before the first `A`/`D` press does not select either bullet direction branch.
-- `BulletObject::bullet_dir_` is not initialized by its constructor. The resulting projectile reaches `HandleMove` with an indeterminate direction and may remain active indefinitely. Reading that indeterminate value is undefined behavior.
+- `MainObject::status_` and `BulletObject::bullet_dir_` begin right-facing, so firing before the first `A`/`D` press is deterministic.
 - Normal gameplay does not handle Escape directly; Escape is handled in selected modal/wait paths.
 - Input is processed by different code in each modal screen, producing inconsistent controls.
 
@@ -85,6 +84,6 @@ Elapsed game time uses `SDL_GetTicks()/1000`, not `delta_time`. On the first gam
 
 ## Per-frame work
 
-Confirmed recurring work includes two full `Map` copies, allocation/free of a local active-target vector, tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and text cache checks. HUD text only regenerates when its content changes. The timer string changes once per second; heart/high-score textures change only with score changes.
+Confirmed recurring work includes two full `Map` copies, clearing/refilling a retained active-target vector, tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and cached HUD rendering. The timer string changes once per second; heart/high-score strings and textures change only with their values.
 
 Menu/game-over/win/journey loops are paced to 60 Hz. Static modal text is cached, and gameplay updates/renders/collides only enemies inside the camera active margin; render functions additionally apply viewport checks.

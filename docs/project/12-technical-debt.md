@@ -15,7 +15,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-009 | P1 (resolved) | Timing | `delta_time` was unused; simulation was frame-based; cap targeted 16 ms | Step 5 applies consistent 60 Hz-normalized delta scaling and a fractional 16.667 ms cap | Preserve split-step equivalence tests |
 | TD-010 | P1 | State flow | Menu/journey/game-over/win are nested modal loops | Duplicated input/timing; blocks portable main loop | Central state-driven loop with enter/update/render/exit |
 | TD-011 | P1 | Architecture | `main.cpp` owns nearly everything through globals | High change risk and poor testability | Extract a small top-level `Game`/resource owner incrementally |
-| TD-012 | P1 | Bullets | Raw owning pointer vector; erase loop skips shifted inactive bullet | Fragile lifetime and delayed cleanup | `vector<unique_ptr<BulletObject>>`; iterator/index-safe erase |
+| TD-012 | P1 (resolved) | Bullets | Step 8 uses active/pooled `unique_ptr` containers and index-safe recycling | Safe lifetime and reuse after peak concurrency | Preserve pointer-reuse and shifted-element behavior tests |
 | TD-013 | P1 | Time/score | Initial timer includes menu; replay/reset semantics are inconsistent | Displayed completion time is misleading | Define play-time semantics and update only in Playing state |
 | TD-014 | P1 | Map | Full 10x1011 map copied out and back every frame | Unnecessary work and unclear authority | Mutate through `GameMap` reference/API |
 | TD-015 | P1 (resolved) | UI performance | Static modal text was rasterized/uploaded every iteration | Fixed in Step 3 with startup/state-entry text caches | Preserve cache-only modal rendering |

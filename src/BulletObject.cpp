@@ -14,6 +14,16 @@ BulletObject::~BulletObject()
 {
 }
 
+void BulletObject::ResetForReuse()
+{
+    x_val_ = 0;
+    y_val_ = 0;
+    is_move_ = false;
+    bullet_dir_ = DIR_RIGHT;
+    movement_remainder_ = 0.0f;
+    SetRect(0, 0);
+}
+
 void BulletObject::HandleMove(const int &x_border, float frame_scale)
 {
     const float movement = x_val_ * frame_scale + movement_remainder_;

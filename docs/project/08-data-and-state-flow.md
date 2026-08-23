@@ -15,7 +15,7 @@ flowchart LR
     ScreenPos --> Render["SDL renderer"]
     PlayerSim --> PlayerThreat["hard-coded collision helper"]
     ThreatSim --> PlayerThreat
-    Bullets --> BulletThreat["hard-coded collision helper"]
+    Bullets --> BulletThreat["explicit AABB hitboxes"]
     ThreatSim --> BulletThreat
     PlayerThreat --> Lives["num_die / PlayerPower"]
     BulletThreat --> ThreatList["erase unique_ptr threat"]
@@ -28,7 +28,7 @@ flowchart LR
 
 - `A`/`D` key events mutate `Input::left_`/`right_` and facing `status_`.
 - `W` key down sets a jump request consumed on the next `DoPlayer` call.
-- Left mouse down plays fire audio, allocates a bullet, borrows the global bullet texture, and places it using the player's current screen `rect_`.
+- Left mouse down plays fire audio, acquires a recycled bullet when available, borrows the global bullet texture, resets motion state, and places it using the player's current screen `rect_`.
 
 Bullet positions are screen-space, not world-space. They move against `SCREEN_WIDTH`, so camera movement does not affect an existing bullet.
 
@@ -70,7 +70,7 @@ Inactive enemies do not update, animate, or render.
 
 Enemy ownership stays in `ThreatList` (`vector<unique_ptr<ThreatsObject>>`). The per-frame `active_threats` vector stores non-owning raw pointers and precomputed hitboxes. Player collision erases by index before adding the target and breaks. Bullet collision later searches the owning list by raw pointer value before erasing.
 
-Bullets are owned by `MainObject` through `unique_ptr`. `main.cpp` receives a const reference to that vector. On hit, `MainObject::RemoveBullet` erases the bullet; the main loop avoids incrementing its bullet index in that case.
+Bullets are owned by `MainObject` through `unique_ptr`. `main.cpp` receives a const reference to that vector. Inactive, hit, and restart bullets move to a reuse pool; shutdown clears both active and pooled ownership. The main loop avoids incrementing its bullet index after recycling the current element.
 
 ## Screen/progression state
 

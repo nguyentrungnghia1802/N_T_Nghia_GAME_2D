@@ -91,6 +91,7 @@ struct ThreatCollisionTarget
 };
 
 ThreatList threats_list;
+std::vector<ThreatCollisionTarget> active_threats;
 std::string heart_str;
 std::string str_val;
 std::string high_score_str;
@@ -107,6 +108,9 @@ bool g_audio_open = false;
 int num_die = 0;
 int heart_count = 0;
 int high_score = 0;
+Uint32 displayed_time = static_cast<Uint32>(-1);
+int displayed_heart_count = -1;
+int displayed_high_score = -1;
 
 enum class GameState
 {
@@ -211,6 +215,7 @@ int main(int, char *[])
     }
 
     threats_list = MakeThreats();
+    active_threats.reserve(threats_list.size());
 
     Profiler::StartInterval();
     game_state = GameState::PLAYING;
@@ -286,8 +291,7 @@ int main(int, char *[])
         is_minusLinve = p_player.GetIsMinusLive();
         bCol2 = false;
         SDL_Rect screen_viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-        std::vector<ThreatCollisionTarget> active_threats;
-        active_threats.reserve(threats_list.size());
+        active_threats.clear();
         const SDL_Rect player_hitbox = SDLCommonFunc::MakePlayerBulletHitbox(p_player.GetRectFrame());
 
         for (size_t i = 0; i < threats_list.size(); i++)
@@ -460,16 +464,28 @@ int main(int, char *[])
         }
         else
         {
-            str_val = std::to_string(time_render);
-            time_game.SetText("Days: " + str_val);
-            time_game.LoadFromRenderText(font_time, g_screen);
+            if (displayed_time != time_render)
+            {
+                str_val = std::to_string(time_render);
+                time_game.SetText("Days: " + str_val);
+                if (time_game.LoadFromRenderText(font_time, g_screen))
+                {
+                    displayed_time = time_render;
+                }
+            }
             time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
         }
 
         //      HEART_ITEM
-        heart_str = std::to_string(heart_count);
-        heart_game.SetText(heart_str);
-        heart_game.LoadFromRenderText(font_heart, g_screen);
+        if (displayed_heart_count != heart_count)
+        {
+            heart_str = std::to_string(heart_count);
+            heart_game.SetText(heart_str);
+            if (heart_game.LoadFromRenderText(font_heart, g_screen))
+            {
+                displayed_heart_count = heart_count;
+            }
+        }
         heart_game.RenderText(g_screen, SCREEN_WIDTH * 0.5 - 140, 5);
 
         if (heart_count > high_score)
@@ -477,9 +493,15 @@ int main(int, char *[])
             high_score = heart_count;
         }
 
-        high_score_str = std::to_string(high_score);
-        high_score_game.SetText("HIGH SCORE: " + high_score_str);
-        high_score_game.LoadFromRenderText(font_heart, g_screen);
+        if (displayed_high_score != high_score)
+        {
+            high_score_str = std::to_string(high_score);
+            high_score_game.SetText("HIGH SCORE: " + high_score_str);
+            if (high_score_game.LoadFromRenderText(font_heart, g_screen))
+            {
+                displayed_high_score = high_score;
+            }
+        }
         high_score_game.RenderText(g_screen, SCREEN_WIDTH * 0.5 + 40, 5);
 
         SDL_RenderPresent(g_screen);
@@ -690,6 +712,7 @@ void close()
     }
 
     threats_list.clear();
+    std::vector<ThreatCollisionTarget>().swap(active_threats);
     p_player.ClearBulletList();
 
     time_game.Free();
@@ -1061,7 +1084,7 @@ void Win_Game()
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
-    p_player.ClearBulletList();
+    p_player.ResetBulletList();
     game_map.ResetFromBaseMap();
     map_data = game_map.getMap();
     game_map.ResetMap(map_data);
@@ -1205,7 +1228,7 @@ ThreatList MakeThreats()
     //             -  THREAT 1 -
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
+        std::unique_ptr<ThreatsObject> p_threat = std::make_unique<ThreatsObject>();
         if (p_threat != NULL)
         {
             p_threat->UseCachedTexture(gThreat1Texture.GetObject(), gThreat1Texture.GetRect().w, gThreat1Texture.GetRect().h); //  Orc_Fly
@@ -1220,7 +1243,7 @@ ThreatList MakeThreats()
     //              -  THREAT 2 -
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
+        std::unique_ptr<ThreatsObject> p_threat = std::make_unique<ThreatsObject>();
 
         if (p_threat != NULL)
         {
@@ -1241,7 +1264,7 @@ ThreatList MakeThreats()
     //              -  THREAT 3 -
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
+        std::unique_ptr<ThreatsObject> p_threat = std::make_unique<ThreatsObject>();
 
         if (p_threat != NULL)
         {
@@ -1262,7 +1285,7 @@ ThreatList MakeThreats()
     //              -  THREAT 4 -
     for (int i = 0; i < NUM_THREATS_LIST; i++)
     {
-        std::unique_ptr<ThreatsObject> p_threat(new ThreatsObject());
+        std::unique_ptr<ThreatsObject> p_threat = std::make_unique<ThreatsObject>();
         if (p_threat != NULL)
         {
             p_threat->UseCachedTexture(gThreat4Texture.GetObject(), gThreat4Texture.GetRect().w, gThreat4Texture.GetRect().h); //  Pterosaurs

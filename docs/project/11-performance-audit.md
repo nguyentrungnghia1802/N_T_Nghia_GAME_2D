@@ -28,11 +28,11 @@ All movement, gravity, camera, respawn, and animation rates are per frame; calcu
 
 **Remedy:** Choose a fixed update step or consistently scale simulation with clamped delta time, calibrated to preserve current 60-ish-Hz feel.
 
-### Per-frame active-target allocation
+### Per-frame active-target allocation (resolved)
 
-The gameplay loop constructs a new `std::vector<ThreatCollisionTarget>`, calls `reserve`, fills it, and destroys it every frame. `reserve` still allocates because the vector is new each iteration.
+Step 8 retains one `std::vector<ThreatCollisionTarget>`, reserves for the initial threat population, and clears/refills it without releasing capacity each frame.
 
-**Remedy:** Reuse a retained scratch vector and clear it, or consume a filtered view. Expected benefit is modest with 48 enemies.
+**Result:** The recurring active-target heap allocation/free is removed. Expected benefit remains modest with 48 enemies.
 
 ## Potential problems
 
@@ -42,11 +42,11 @@ Collision is O(active bullets x active threats), followed by O(total threats) `f
 
 **Classification:** Potential; measure before adding a grid.
 
-### Raw bullet allocation per shot
+### Raw bullet allocation per shot (resolved)
 
-Every click performs `new`, and each removal performs `delete`. At normal input rates this is unlikely to dominate. Rapid-fire features could make it noisy.
+Step 8 retains removed/inactive bullets in a `unique_ptr` pool and resets/reuses them on later shots. Heap allocation occurs only when simultaneous active bullets exceed the previous pool high-water mark; shutdown releases both containers.
 
-**Classification:** Potential; first change to `unique_ptr` for safety, not a pool for speed.
+**Result:** Focused tests confirm pointer reuse after hit-style removal and restart reset.
 
 ### Renderer state and overdraw
 
@@ -74,7 +74,9 @@ Every five seconds on Windows, the profiler snapshots all system threads to coun
 
 - Character, bullet, and enemy textures are loaded once and borrowed.
 - Temporary image surfaces are freed immediately after texture creation.
-- `TextObject` prevents unchanged HUD strings from recreating textures.
+- HUD value guards prevent unchanged strings from being rebuilt, and `TextObject` prevents unchanged values from recreating textures.
+- Bullet objects are pooled after removal/inactivity/restart and released at shutdown.
+- The active collision scratch vector retains capacity across frames.
 - Map drawing computes a visible tile range.
 - Enemies outside the active camera margin are not updated/rendered/collided.
 - Enemy render applies viewport culling.

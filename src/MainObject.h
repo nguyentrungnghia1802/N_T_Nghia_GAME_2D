@@ -46,6 +46,7 @@ public:
         const BulletList& get_bullet_list() const {return p_bullet_list_;}
         void HanleBullet(SDL_Renderer* rec, float frame_scale);
         void RemoveBullet(size_t idx);
+        void ResetBulletList();
         void ClearBulletList();
         void IncreaseMoney();
         void set_comeback_time(float cb_time){come_back_time_=cb_time;}
@@ -58,6 +59,7 @@ private:
         int heart_count;
 
         BulletList p_bullet_list_;
+        BulletList bullet_pool_;
         float x_val_;
         float y_val_;
         
@@ -93,6 +95,8 @@ private:
         int bullet_texture_height_;
         int loaded_status_;
         void ApplyTextureForStatus(const int& status);
+        std::unique_ptr<BulletObject> AcquireBullet();
+        void RecycleBullet(size_t idx);
 };
 
 

@@ -32,9 +32,9 @@ Resolved in Step 7. `SDLCommonFunc::CheckCollision` now performs a symmetric AAB
 
 Resolved in Step 4. Startup loaders return success, required handles are aggregated, screen conversion only runs after surface validation, and map/tile failures stop before the menu.
 
-### Erasing inactive bullets skips the next element
+### Erasing inactive bullets skips the next element (resolved)
 
-`MainObject::HanleBullet` uses an increasing index. When it erases element `i`, the next element shifts into `i`, but the loop increments to `i+1` (`src/MainObject.cpp:274-303`). Consecutive inactive bullets are processed over multiple frames instead of one; the pattern is fragile for future changes.
+Resolved. `MainObject::HanleBullet` retains the current index after recycling an inactive bullet, so a shifted element is processed immediately. Step 8 also reuses the bullet allocation on later shots.
 
 ## Duplication
 
@@ -112,7 +112,7 @@ Naming cleanup should follow behavior tests so it can be mechanical and low-risk
 - `SDL_Color` alpha fields are omitted.
 - Several function parameters and local variables are unused.
 - Include guards are inconsistent and broken in three headers.
-- Runtime source uses `unique_ptr` for threats but raw owning pointers for bullets/resources.
+- Runtime source uses `unique_ptr` for threats and active/pooled bullets; SDL resources retain explicit owner/borrower handling.
 
 ## Documentation/build drift
 

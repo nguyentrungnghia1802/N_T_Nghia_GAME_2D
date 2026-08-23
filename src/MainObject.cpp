@@ -44,6 +44,8 @@ MainObject::MainObject()
     bullet_texture_width_ = 0;
     bullet_texture_height_ = 0;
     loaded_status_ = -1;
+    p_bullet_list_.reserve(16);
+    bullet_pool_.reserve(16);
 }
 
 MainObject::~MainObject()
@@ -239,7 +241,7 @@ void MainObject::HandelInputAction(const SDL_Event &events, Mix_Chunk *gFire_bal
         if (events.button.button == SDL_BUTTON_LEFT)
         {
             Mix_PlayChannel(-1, gFire_ball, 0);
-            std::unique_ptr<BulletObject> p_bullet = std::make_unique<BulletObject>();
+            std::unique_ptr<BulletObject> p_bullet = AcquireBullet();
             if (bullet_texture_ != NULL)
             {
                 p_bullet->UseTexture(bullet_texture_, bullet_texture_width_, bullet_texture_height_);
@@ -275,7 +277,7 @@ void MainObject::HanleBullet(SDL_Renderer *des, float frame_scale)
         BulletObject *p_bullet = p_bullet_list_.at(i).get();
         if (p_bullet == NULL || p_bullet->get_is_move() == false)
         {
-            p_bullet_list_.erase(p_bullet_list_.begin() + i);
+            RecycleBullet(i);
             continue;
         }
 
@@ -294,13 +296,44 @@ void MainObject::RemoveBullet(size_t idx)
 {
     if (idx < p_bullet_list_.size())
     {
-        p_bullet_list_.erase(p_bullet_list_.begin() + idx);
+        RecycleBullet(idx);
+    }
+}
+
+void MainObject::ResetBulletList()
+{
+    while (!p_bullet_list_.empty())
+    {
+        RecycleBullet(p_bullet_list_.size() - 1);
     }
 }
 
 void MainObject::ClearBulletList()
 {
     p_bullet_list_.clear();
+    bullet_pool_.clear();
+}
+
+std::unique_ptr<BulletObject> MainObject::AcquireBullet()
+{
+    std::unique_ptr<BulletObject> bullet;
+    if (bullet_pool_.empty())
+    {
+        bullet = std::make_unique<BulletObject>();
+    }
+    else
+    {
+        bullet = std::move(bullet_pool_.back());
+        bullet_pool_.pop_back();
+        bullet->ResetForReuse();
+    }
+    return bullet;
+}
+
+void MainObject::RecycleBullet(size_t idx)
+{
+    bullet_pool_.push_back(std::move(p_bullet_list_[idx]));
+    p_bullet_list_.erase(p_bullet_list_.begin() + idx);
 }
 
 void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart, float frame_scale)

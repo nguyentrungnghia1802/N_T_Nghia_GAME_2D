@@ -122,6 +122,8 @@ Do not change difficulty.
 
 # Step 8 --- Reduce Runtime Allocation
 
+Status: **Completed on 2026-08-24** (`refactor(step-8)`).
+
 Remove:
 
 -   unnecessary new/delete.
