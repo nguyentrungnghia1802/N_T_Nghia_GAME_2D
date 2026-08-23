@@ -48,7 +48,7 @@
 
 **Lifecycle:** Map and eight tile textures load once; runtime map is copied out/in each frame; base map restores on replay.
 
-**Known concerns:** Broken header guard, unchecked parse/tile IDs, unused duplicated `LoadMap_Return`, full map copies, and tile textures not explicitly released before renderer shutdown.
+**Known concerns:** Unused duplicated `LoadMap_Return` and full map copies remain. Parsing/tile IDs and shutdown order are validated.
 
 ## `MainObject`: player and bullet owner
 
@@ -58,7 +58,7 @@
 
 **Dependencies:** Map data, global winner flag, audio chunks, `BaseObject`, `BulletObject`, profiler.
 
-**Lifecycle:** Global object; cache references assigned after load; bullets allocated on click and manually deleted on removal/clear/destruction.
+**Lifecycle:** Global object; cache references assigned after load; bullets are uniquely owned and released by vector erase/clear/destruction.
 
 **Known concerns:** Uninitialized initial fire direction, erase-while-indexing skips a bullet, raw-pointer ownership API, frame-dependent physics, incorrect frame rectangle width, mixed player/bullet/score responsibilities, and several misspelled public names.
 
@@ -80,7 +80,7 @@
 
 **Caller:** `main.cpp` creates, activates, updates, renders, collides, and erases enemies.
 
-**Known concerns:** Broken header guard, chained comparison bug in upward collision, unchecked indexes in the flying branch, incorrect frame rectangle width, redundant `screen` parameter, and global `change_threats` coupling.
+**Known concerns:** Global `change_threats` coupling and duplicated tile-response logic remain. Step 4 fixed initialization, guards, indexes, predicate, and frame dimensions.
 
 ## `PlayerPower` and `PlayerMoney`
 
@@ -90,7 +90,7 @@
 
 **Lifecycle:** Cache references are assigned at startup; health positions are reset on replay without image I/O; borrowers are cleared before cache owners in `close`.
 
-**Known concerns:** Broken header guard, no bounds checks before `pop_back`/`back`, and unused public mutators.
+**Known concerns:** Unused public mutators remain; vector edge cases are guarded.
 
 ## `TextObject`
 
@@ -100,7 +100,7 @@
 
 **Lifecycle:** Rebuilds only when cache key changes; destructor/`close` frees texture before fonts are closed.
 
-**Known concerns:** Circular header dependency, null font/renderer not checked, alpha is neither initialized nor part of cache comparison, and clipped height mistakenly uses `clip->w`.
+**Known concerns:** Texture ownership remains manual. Step 4 removed the include cycle and validates font/renderer/texture state, alpha, and clip dimensions.
 
 ## `Profiler`
 

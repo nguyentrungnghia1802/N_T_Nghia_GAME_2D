@@ -13,12 +13,18 @@ ThreatsObject::ThreatsObject()
     x_pos_ = 0.0;
     y_pos_ = 0.0;
     on_ground_ = 0;
+    map_x_ = 0;
+    map_y_ = 0;
     come_back_time_ = 0;
     frame_ = 0;
 
     animation_a_ = 0;
     animation_b_ = 0;
     input_type_.left_ = 0;
+    input_type_.right_ = 0;
+    input_type_.up_ = 0;
+    input_type_.down_ = 0;
+    input_type_.jump_ = 0;
     type_move_ = STATIC_THREAT;
     threat2_left_ = {NULL, 0, 0};
     threat2_right_ = {NULL, 0, 0};
@@ -102,7 +108,7 @@ void ThreatsObject::set_clips()
 
 void ThreatsObject::Show(SDL_Renderer *des, const SDL_Rect *viewport)
 {
-    if (come_back_time_ == 0)
+    if (come_back_time_ == 0 && des != NULL && p_object_ != NULL)
     {
         rect_.x = x_pos_ - map_x_;
         rect_.y = y_pos_ - map_y_;
@@ -255,7 +261,7 @@ void ThreatsObject::CheckToMap(Map &map_data)
                 int val1 = map_data.tile[y1][x1];
                 int val2 = map_data.tile[y1][x2];
 
-                if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE != POINT_ITEM_1))
+                if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE && val2 != POINT_ITEM_1))
                 {
                     y_pos_ = (y1 + 1) * TILE_SIZE;
                     y_val_ = 0;
@@ -300,19 +306,20 @@ void ThreatsObject::CheckToMap(Map &map_data)
         y1 = (y_pos_) / TILE_SIZE;
         y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
 
-        int val1 = map_data.tile[y1][x1];
-        int val2 = map_data.tile[y1][x2];
-        int val3 = map_data.tile[y2][x1];
-        int val4 = map_data.tile[y2][x2];
-
-        if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE && val2 != POINT_ITEM_1))
+        if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
         {
-            y_pos_=(y1+1)*TILE_SIZE;
+            int val1 = map_data.tile[y1][x1];
+            int val2 = map_data.tile[y1][x2];
+
+            if ((val1 != BLANK_TILE && val1 != POINT_ITEM_1) || (val2 != BLANK_TILE && val2 != POINT_ITEM_1))
+            {
+                y_pos_ = (y1 + 1) * TILE_SIZE;
+            }
         }
     }
 }
 
-void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
+void ThreatsObject::ImpMoveType()
 {
     if (type_move_ == STATIC_THREAT)
     {
@@ -373,10 +380,6 @@ void ThreatsObject::ImpMoveType(SDL_Renderer *screen)
 
 SDL_Rect ThreatsObject::GetRectFrame()
 {
-    SDL_Rect rect;
-    rect.x = rect_.x;
-    rect.y = rect_.y;
-    rect.w = rect_.w / width_frame_;
-    rect.h = height_frame_;
+    SDL_Rect rect = {rect_.x, rect_.y, width_frame_, height_frame_};
     return rect;
 }

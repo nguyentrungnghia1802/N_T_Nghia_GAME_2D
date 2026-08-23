@@ -1,12 +1,13 @@
 // Xay dung cau truc map
-#ifndef GMAE_MAP_H
-#define GAME_MAP_H
+#ifndef GAME_MAP_H_
+#define GAME_MAP_H_
 
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
 #define MAX_TILES 20
 #define MAP_RUN 6
+const int LOADED_TILE_COUNT = 8;
 
 class TileMat : public BaseObject
 {
@@ -29,9 +30,9 @@ public:
     GameMap();
     ~GameMap();
 
-    void LoadMap(const char path[]);
-    void LoadMap_Return(const char path[]);
-    void LoadTiles(SDL_Renderer *screen);
+    bool LoadMap(const char path[]);
+    bool LoadMap_Return(const char path[]);
+    bool LoadTiles(SDL_Renderer *screen);
     void FreeTiles();
     void DrawMap(SDL_Renderer *screen);
     Map getMap() const { return game_map_; };

@@ -9,7 +9,6 @@
 #include "include/SDL2/SDL_image.h"
 #include "include/SDL2/SDL_ttf.h"
 #include "include/SDL2/SDL_mixer.h"
-#include "TextObject.h"
 
 extern Mix_Chunk *gEarn_Heart;
 extern Mix_Chunk *gFire_ball;

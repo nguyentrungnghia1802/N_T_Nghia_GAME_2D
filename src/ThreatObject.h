@@ -1,5 +1,5 @@
 #ifndef THREAT_OBJECT_H_
-#define THREAT_OBJECT_h_
+#define THREAT_OBJECT_H_
 
 #include "CommonFunc.h"
 #include "BaseObject.h"
@@ -55,7 +55,7 @@ class ThreatsObject: public BaseObject
         void set_type_move(const int& typeMove) {type_move_ = typeMove;}
         void SetAnimationPos(const int& pos_a, const int& pos_b) { animation_a_=pos_a,animation_b_=pos_b;}
         void set_input_left(const int& ipLeft) {input_type_.left_=ipLeft;};
-        void ImpMoveType (SDL_Renderer* screen);
+        void ImpMoveType();
 
        SDL_Rect GetRectFrame(); 
 

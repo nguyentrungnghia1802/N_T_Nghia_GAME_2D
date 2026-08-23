@@ -6,13 +6,14 @@ BulletObject::BulletObject()
     x_val_ = 0;
     y_val_ = 0;
     is_move_ = false;
+    bullet_dir_ = DIR_RIGHT;
 }
 
 BulletObject::~BulletObject()
 {
 }
 
-void BulletObject::HandleMove(const int &x_border, const int &y_border)
+void BulletObject::HandleMove(const int &x_border)
 {
     if (bullet_dir_ == DIR_RIGHT)
     {

@@ -7,6 +7,8 @@
 
 GameMap::GameMap()
 {
+    game_map_ = {};
+    base_map_ = {};
     has_base_map_ = false;
 }
 
@@ -15,62 +17,85 @@ GameMap::~GameMap()
     FreeTiles();
 }
 
-void GameMap::LoadMap(const char path[])
+bool GameMap::LoadMap(const char path[])
 {
-    std::ifstream file;
-    file.open(path);
+    std::ifstream file(path);
     if (!file.is_open())
     {
-        std::cout << "Uable to load " << path << "\n";
-        return;
+        std::cerr << "Unable to load map " << path << "\n";
+        return false;
     }
 
-    game_map_.max_x_ = 0;
-    game_map_.max_y_ = 0;
+    Map loaded_map = {};
 
     for (int i = 0; i < MAX_MAP_Y; i++)
     {
         for (int j = 0; j < MAX_MAP_X; j++)
         {
-            file >> game_map_.tile[i][j];
-            int val = game_map_.tile[i][j];
+            int val = 0;
+            if (!(file >> val))
+            {
+                std::cerr << "Map " << path << " does not contain " << MAX_MAP_X * MAX_MAP_Y << " tile values\n";
+                return false;
+            }
+            if (val < BLANK_TILE || val >= LOADED_TILE_COUNT)
+            {
+                std::cerr << "Map " << path << " contains unsupported tile id " << val << " at " << j << "," << i << "\n";
+                return false;
+            }
+
+            loaded_map.tile[i][j] = val;
             if (val > 0)
             {
-                if (j > game_map_.max_x_)
+                if (j > loaded_map.max_x_)
                 {
-                    game_map_.max_x_ = j;
+                    loaded_map.max_x_ = j;
                 }
 
-                if (i > game_map_.max_y_)
+                if (i > loaded_map.max_y_)
                 {
-                    game_map_.max_y_ = i;
+                    loaded_map.max_y_ = i;
                 }
             }
         }
     }
 
-    game_map_.max_x_ = (game_map_.max_x_ + 1) * TILE_SIZE;
-    game_map_.max_y_ = (game_map_.max_y_ + 1) * TILE_SIZE;
+    int extra_value = 0;
+    if (file >> extra_value)
+    {
+        std::cerr << "Map " << path << " contains more than " << MAX_MAP_X * MAX_MAP_Y << " tile values\n";
+        return false;
+    }
 
-    game_map_.start_x_ = 0;
-    game_map_.start_y_ = 0;
+    loaded_map.max_x_ = (loaded_map.max_x_ + 1) * TILE_SIZE;
+    loaded_map.max_y_ = (loaded_map.max_y_ + 1) * TILE_SIZE;
 
-    file.close();
+    loaded_map.start_x_ = 0;
+    loaded_map.start_y_ = 0;
+    loaded_map.file_name_ = path;
+
+    game_map_ = loaded_map;
     base_map_ = game_map_;
     has_base_map_ = true;
+    return true;
 }
 
-void GameMap::LoadTiles(SDL_Renderer *screen)
+bool GameMap::LoadTiles(SDL_Renderer *screen)
 {
-    std::vector<std::string> map_path = {"res/pic/map/0.png", "res/pic/map/1.png", "res/pic/map/2.png", "res/pic/map/3.png", "res/pic/map/4.png", "res/pic/map/5.png", "res/pic/map/6.png", "res/pic/map/7.png"};
-    tile_mat[0].LoadImg(map_path[0], screen);
-    tile_mat[1].LoadImg(map_path[1], screen); // heart
-    tile_mat[2].LoadImg(map_path[2], screen);
-    tile_mat[3].LoadImg(map_path[3], screen);
-    tile_mat[4].LoadImg(map_path[4], screen); //  4 + 5 + 6 + 7 is Isha_character_Image
-    tile_mat[5].LoadImg(map_path[5], screen);
-    tile_mat[6].LoadImg(map_path[6], screen);
-    tile_mat[7].LoadImg(map_path[7], screen);
+    const char *map_paths[LOADED_TILE_COUNT] = {
+        "res/pic/map/0.png", "res/pic/map/1.png", "res/pic/map/2.png", "res/pic/map/3.png",
+        "res/pic/map/4.png", "res/pic/map/5.png", "res/pic/map/6.png", "res/pic/map/7.png"};
+
+    for (int i = 0; i < LOADED_TILE_COUNT; ++i)
+    {
+        if (!tile_mat[i].LoadImg(map_paths[i], screen))
+        {
+            std::cerr << "Unable to load tile texture " << map_paths[i] << "\n";
+            FreeTiles();
+            return false;
+        }
+    }
+    return true;
 }
 
 void GameMap::FreeTiles()
@@ -98,7 +123,7 @@ void GameMap::DrawMap(SDL_Renderer *screen)
         for (int map_x = visible_range.first_x; map_x <= visible_range.last_x; map_x++, draw_x += TILE_SIZE)
         {
             int val = game_map_.tile[map_y][map_x];
-            if (val > 0)
+            if (val > BLANK_TILE && val < LOADED_TILE_COUNT)
             {
                 tile_mat[val].SetRect(draw_x, draw_y);
                 tile_mat[val].Render(screen);
@@ -148,62 +173,13 @@ void GameMap::ResetMap(Map &map_data)
     }
 }
 
-void GameMap::LoadMap_Return(const char path[])
+bool GameMap::LoadMap_Return(const char path[])
 {
-    std::ifstream file;
-    file.open(path);
-    if (!file.is_open())
+    if (!LoadMap(path))
     {
-        std::cout << "Uable to load " << path << "\n";
-        return;
+        return false;
     }
 
-    game_map_.max_x_ = 0;
-    game_map_.max_y_ = 0;
-
-    for (int i = 0; i < MAX_MAP_Y; i++)
-    {
-        for (int j = 0; j < MAX_MAP_X; j++)
-        {
-            file >> game_map_.tile[i][j];
-            int val = game_map_.tile[i][j];
-            if (val > 0)
-            {
-                if (j > game_map_.max_x_)
-                {
-                    game_map_.max_x_ = j;
-                }
-
-                if (i > game_map_.max_y_)
-                {
-                    game_map_.max_y_ = i;
-                }
-            }
-        }
-    }
-
-    game_map_.max_x_ = (game_map_.max_x_ + 1) * TILE_SIZE;
-    game_map_.max_y_ = (game_map_.max_y_ + 1) * TILE_SIZE;
-
-    if (winner == true)
-    {
-        game_map_.start_x_ = 0;
-    }
-    else if (winner == false)
-    {
-        if (map_start < JOURNEY_EACH_MAP * 1 + 280)
-        {
-            game_map_.start_x_ = 0;
-        }
-        else if (map_start >= JOURNEY_EACH_MAP * 1 + 280 && map_start < JOURNEY_EACH_MAP * 2 + 280)
-        {
-            game_map_.start_x_ = JOURNEY_EACH_MAP * 1 + 280;
-        }
-        else if (map_start >= JOURNEY_EACH_MAP * 2 + 280)
-        {
-            game_map_.start_x_ = JOURNEY_EACH_MAP * 2 + 280;
-        }
-    }
-
-    file.close();
+    ResetMap(game_map_);
+    return true;
 }

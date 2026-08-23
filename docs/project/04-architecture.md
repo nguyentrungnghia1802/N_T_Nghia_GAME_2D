@@ -48,7 +48,7 @@ flowchart TD
 | Tile textures | `GameMap::tile_mat` owns via `BaseObject` inheritance |
 | UI text | Each `TextObject` owns its current text texture but borrows a `TTF_Font*` |
 
-The distinction between owned and borrowed `BaseObject::p_object_` is encoded only by `owns_texture_`; copy operations are not disabled, so accidental object copies could duplicate an owning pointer.
+The distinction between owned and borrowed `BaseObject::p_object_` is encoded by `owns_texture_`. Copy construction and assignment are disabled, preventing accidental duplicate owners.
 
 ## Dependency direction
 
@@ -102,4 +102,3 @@ flowchart LR
 - A malformed map tile ID can index beyond `tile_mat`.
 
 For this project size, the right target is a small `Game` owner plus a simple state enum/switch and explicit RAII handles—not an ECS, dependency-injection framework, or engine rewrite.
-

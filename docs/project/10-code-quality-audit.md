@@ -28,9 +28,9 @@ Double-including each header was compiler-tested and produced class redefinition
 
 `src/ThreatObject.cpp:258` evaluates `val2 != BLANK_TILE != POINT_ITEM_1`, a left-associative comparison of a boolean with `1`, rather than checking that tile 2 is neither blank nor a heart. `-Wall` explicitly warns on this expression. Upward enemy/tile collision can therefore make the wrong decision.
 
-### Asset failure is not propagated
+### Asset failure propagation (resolved)
 
-`src/main.cpp::LoadFromFile` ignores every returned font/surface/chunk/texture failure and returns `void`. `Call_Menu` and `Create_texture` dereference raw surfaces. Map load also returns `void` and leaves state with no validity marker on failure. Startup is not fail-fast after the background.
+Resolved in Step 4. Startup loaders return success, required handles are aggregated, screen conversion only runs after surface validation, and map/tile failures stop before the menu.
 
 ### Erasing inactive bullets skips the next element
 
@@ -117,4 +117,3 @@ Naming cleanup should follow behavior tests so it can be mechanical and low-risk
 ## Documentation/build drift
 
 The user READMEs and `#rungame.txt` omit `Profiler.cpp`. `docs/refact.md` still describes pre-refactor leaks/reloads that HEAD has addressed. `main.exe` and object files are tracked, and there is no `.gitignore`; a prebuilt binary therefore cannot be assumed to represent current source.
-

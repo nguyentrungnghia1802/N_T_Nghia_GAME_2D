@@ -20,6 +20,12 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer *screen)
 {
     Free();
     owns_texture_ = true;
+    if (screen == NULL)
+    {
+        std::cerr << "Unable to load " << path << ": renderer is null\n";
+        return false;
+    }
+
     SDL_Texture *new_texture = NULL;
 
     Profiler::CountImageLoad();
@@ -69,7 +75,12 @@ bool BaseObject::IsVisibleInViewport(const SDL_Rect &viewport) const
 }
 
 void BaseObject::Render1(SDL_Renderer *des, const SDL_Rect *clip)
-{   
+{
+    if (des == NULL || p_object_ == NULL)
+    {
+        return;
+    }
+
     SDL_Rect renderquad = {rect_.x + minus, rect_.y, rect_.w, rect_.h};
     if(rect_.x<=-SCREEN_WIDTH)
     {
@@ -82,7 +93,12 @@ void BaseObject::Render1(SDL_Renderer *des, const SDL_Rect *clip)
 }
 
 void BaseObject::Render(SDL_Renderer *des, const SDL_Rect *clip)
-{   
+{
+    if (des == NULL || p_object_ == NULL)
+    {
+        return;
+    }
+
     SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w, rect_.h};
     SDL_RenderCopy(des, p_object_, clip, &renderquad);
 }

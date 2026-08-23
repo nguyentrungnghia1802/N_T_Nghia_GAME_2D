@@ -7,7 +7,7 @@
 | `src/main.cpp` | Entry point, resources, screen loops, gameplay orchestration, threat factory, shutdown | All app modules and SDL libraries | Primary control-flow file; 1219 lines |
 | `src/CommonFunc.h` | Shared SDL includes, constants, `Input`, `Map`, extern globals, helper declarations | SDL2/image/ttf/mixer, currently `TextObject.h` | God header and circular include source |
 | `src/CommonFunc.cpp` | Shared global definitions, collision and mouse focus helpers | Profiler | Collision ignores actual rectangle sizes |
-| `src/BaseObject.h` | Texture/rect owning-or-borrowing base class | `CommonFunc.h` | Shallow-copyable ownership type |
+| `src/BaseObject.h` | Texture/rect owning-or-borrowing base class | `CommonFunc.h` | Noncopyable; runtime ownership flag distinguishes owner/borrower |
 | `src/BaseObject.cpp` | Image load, texture borrow/render/free, viewport test | SDL_image, profiler | `Render1` repeats scrolling background |
 | `src/gamemap.h` | `TileMat`, `GameMap`, visible range/reset APIs | `Map`, `BaseObject` | Broken include guard; `getMap` by value |
 | `src/gamemap.cpp` | Map parser, tile loading/drawing, camera/reset/base map | Globals `winner`, `map_start` | Duplicate unused loader; owns tile textures |
@@ -15,7 +15,7 @@
 | `src/MainObject.cpp` | Input, animation, player/bullet update/render, tile collision, score/win/death | Audio globals, profiler | Highest-risk gameplay file |
 | `src/BulletObject.h` | Bullet direction/speed/active state | `BaseObject` | Direction field not initialized |
 | `src/BulletObject.cpp` | Horizontal movement and screen deactivation | SDL rectangle from base | Y movement/border unused |
-| `src/ThreatObject.h` | Enemy movement/texture/animation interface/state | `BaseObject`, `Map` | Broken include guard |
+| `src/ThreatObject.h` | Enemy movement/texture/animation interface/state | `BaseObject`, `Map` | Global appearance coupling remains |
 | `src/ThreatObject.cpp` | Enemy update/render, tile collision, patrol and texture switch | Globals, profiler | Chained predicate bug; active filtering is outside |
 | `src/PlayHealth.h` | Health and heart HUD classes | `BaseObject` | Broken include guard |
 | `src/PlayHealth.cpp` | HUD image load, positions, render/decrement | SDL renderer | `pop_back` assumes nonempty list |
@@ -69,4 +69,3 @@
 | Root `SDL2*.dll`/runtime DLLs | Packaged runtime dependencies | Keep versions compatible with linked import libraries |
 | `src/*.o`, `main.exe` | Generated/packaged build artifacts | Rebuild explicitly; do not infer source status from timestamps alone |
 | `SDL_Make_Pic/` | Art/dependency archive workspace | Not runtime; very large and partly duplicated |
-

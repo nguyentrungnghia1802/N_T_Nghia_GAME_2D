@@ -21,7 +21,7 @@ MainObject::MainObject()
     y_val_ = 0;
     width_frame_ = 0;
     height_frame_ = 0;
-    status_ = -1;
+    status_ = WALK_RIGHT;
     input_type_.left_ = 0;
     input_type_.right_ = 0;
     input_type_.jump_ = 0;
@@ -110,17 +110,13 @@ void MainObject::ApplyTextureForStatus(const int &status)
 
 SDL_Rect MainObject::GetRectFrame()
 {
-    SDL_Rect rect;
-    rect.x = rect_.x;
-    rect.y = rect_.y;
-    rect.w = rect_.w / width_frame_;
-    rect.h = height_frame_;
+    SDL_Rect rect = {rect_.x, rect_.y, width_frame_, height_frame_};
     return rect;
 }
 
 void MainObject::set_clips()
 {
-    if (width_frame_ > 0 & height_frame_ > 0)
+    if (width_frame_ > 0 && height_frame_ > 0)
     {
         frame_clip_[0].x = 0;
         frame_clip_[0].y = 0;
@@ -180,7 +176,7 @@ void MainObject::Show(SDL_Renderer *des)
         frame_ = 0;
     }
 
-    if (come_back_time_ == 0)
+    if (come_back_time_ == 0 && des != NULL && p_object_ != NULL)
     {
         rect_.x = x_pos_ - map_x_;
         rect_.y = y_pos_ - map_y_;
@@ -193,7 +189,7 @@ void MainObject::Show(SDL_Renderer *des)
     }
 }
 
-void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_Chunk *gFire_ball)
+void MainObject::HandelInputAction(const SDL_Event &events, Mix_Chunk *gFire_ball)
 {
     if (events.type == SDL_KEYDOWN)
     {
@@ -284,7 +280,7 @@ void MainObject::HanleBullet(SDL_Renderer *des)
         }
 
         Profiler::CountEntityUpdate();
-        p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+        p_bullet->HandleMove(SCREEN_WIDTH);
         if (p_bullet->IsVisibleInViewport(viewport))
         {
             Profiler::CountEntityRender();

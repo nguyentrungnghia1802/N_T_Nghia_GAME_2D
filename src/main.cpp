@@ -135,19 +135,19 @@ void FreeChunk(Mix_Chunk *&chunk);
 void FreeMenuResources();
 void FreeJourneyResources();
 void FreeWinResources();
-void LoadFromFile();
-void LoadTextCache();
+bool LoadFromFile();
+bool LoadTextCache();
 void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
 void render_journey_img();
-void Create_texture();
+bool Create_texture();
 ThreatList MakeThreats();
 
 TTF_Font *OpenProfiledFont(const char *path, int size);
 SDL_Surface *LoadProfiledSurface(const char *path);
 SDL_Texture *CreateProfiledTextureFromSurface(SDL_Renderer *screen, SDL_Surface *surface);
 Mix_Chunk *LoadProfiledWav(const char *path);
-void LoadRuntimeTextures();
+bool LoadRuntimeTextures();
 void FreeRuntimeTextures();
 void ConfigureDynamicThreat(ThreatsObject *p_threat);
 bool IsThreatActive(const ThreatsObject *p_threat, const Map &map_data);
@@ -156,7 +156,7 @@ void CapFrameRate(Uint32 frame_start_ticks);
 bool WaitWithEventPump(Uint32 wait_ms);
 void ShowTimeLimitMessage();
 
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
     std::srand(time(NULL));
     if (InitData() == false)
@@ -173,11 +173,17 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    LoadFromFile(); // Load Files
-    Create_texture();
-    LoadTextCache();
+    if (!LoadFromFile() || !Create_texture() || !LoadTextCache())
+    {
+        close();
+        return -1;
+    }
 
-    game_map.LoadTiles(g_screen); // Load Map
+    if (!game_map.LoadTiles(g_screen))
+    {
+        close();
+        return -1;
+    }
 
     p_player.SetTextureRefs(gPlayerLeftTexture.GetObject(), gPlayerLeftTexture.GetRect().w, gPlayerLeftTexture.GetRect().h,
                             gPlayerRightTexture.GetObject(), gPlayerRightTexture.GetRect().w, gPlayerRightTexture.GetRect().h);
@@ -231,7 +237,7 @@ int main(int argc, char *argv[])
                 is_quit = true;
             }
 
-            p_player.HandelInputAction(g_event, g_screen, gFire_ball);
+            p_player.HandelInputAction(g_event, gFire_ball);
         }
 
         SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
@@ -288,7 +294,7 @@ int main(int argc, char *argv[])
                 }
 
                 p_threat->SetMapXY(map_data.start_x_, map_data.start_y_);
-                p_threat->ImpMoveType(g_screen);
+                p_threat->ImpMoveType();
                 p_threat->DoPlayer(map_data);
                 p_threat->Show(g_screen, &screen_viewport);
 
@@ -479,60 +485,87 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void LoadFromFile()
+bool LoadFromFile()
 {
+    bool success = true;
     gFont3 = OpenProfiledFont("res/font/1.ttf", 120);
+    success = gFont3 != NULL && success;
     gFont4 = OpenProfiledFont("res/font/2.ttf", 100);
+    success = gFont4 != NULL && success;
     font_time = OpenProfiledFont("res/font/1.ttf", 35);
+    success = font_time != NULL && success;
     font_heart = OpenProfiledFont("res/font/1.ttf", SIZE_FONT_HEART);
+    success = font_heart != NULL && success;
 
     g_img_menu = LoadProfiledSurface("res/pic/menu/menu.png");
+    success = g_img_menu != NULL && success;
     gWin_game = LoadProfiledSurface("res/pic/map/WIN_GAME.png");
+    success = gWin_game != NULL && success;
     journey_Surface_1 = LoadProfiledSurface("res/pic/journey/journey_1.png");
+    success = journey_Surface_1 != NULL && success;
     journey_Surface_2 = LoadProfiledSurface("res/pic/journey/journey_2.png");
+    success = journey_Surface_2 != NULL && success;
     journey_Surface_3 = LoadProfiledSurface("res/pic/journey/journey_3.png");
+    success = journey_Surface_3 != NULL && success;
     journey_Surface_4 = LoadProfiledSurface("res/pic/journey/journey_4.png");
+    success = journey_Surface_4 != NULL && success;
     journey_Surface_5 = LoadProfiledSurface("res/pic/journey/journey_5.png");
+    success = journey_Surface_5 != NULL && success;
 
-    game_map.LoadMap("res/pic/map/map01.txt");
-    gMonster.LoadImg("res/pic/threats/Monster.png", g_screen);
-    LoadRuntimeTextures();
+    success = game_map.LoadMap("res/pic/map/map01.txt") && success;
+    success = gMonster.LoadImg("res/pic/threats/Monster.png", g_screen) && success;
+    success = LoadRuntimeTextures() && success;
 
     gMainMusic = LoadProfiledWav("res/Music/through_Map_music.wav");
+    success = gMainMusic != NULL && success;
     gEarn_Heart = LoadProfiledWav("res/Music/earn_Heart.wav");
+    success = gEarn_Heart != NULL && success;
     gFire_ball = LoadProfiledWav("res/Music/Fire_Ball.wav");
+    success = gFire_ball != NULL && success;
     gPlayer_Die = LoadProfiledWav("res/Music/Player_Die.wav");
+    success = gPlayer_Die != NULL && success;
     gGame_Start = LoadProfiledWav("res/Music/Start.wav");
+    success = gGame_Start != NULL && success;
     gThreats_Die = LoadProfiledWav("res/Music/Threats_Die.wav");
+    success = gThreats_Die != NULL && success;
     gCongrat = LoadProfiledWav("res/Music/Congrats.wav");
+    success = gCongrat != NULL && success;
+
+    if (!success)
+    {
+        std::cerr << "Unable to load one or more required game assets: " << SDL_GetError() << "\n";
+    }
+    return success;
 }
 
-void LoadTextCache()
+bool LoadTextCache()
 {
+    bool success = true;
     text_menu[0].SetText("EXIT");
-    text_menu[0].LoadFromRenderText(gFont3, g_screen);
+    success = text_menu[0].LoadFromRenderText(gFont3, g_screen) && success;
     text_menu[1].SetText("START");
-    text_menu[1].LoadFromRenderText(gFont3, g_screen);
+    success = text_menu[1].LoadFromRenderText(gFont3, g_screen) && success;
 
     text_menu_hover[0].SetText("EXIT");
     text_menu_hover[0].SetColor(TextObject::RED_TEXT);
-    text_menu_hover[0].LoadFromRenderText(gFont3, g_screen);
+    success = text_menu_hover[0].LoadFromRenderText(gFont3, g_screen) && success;
     text_menu_hover[1].SetText("START");
     text_menu_hover[1].SetColor(TextObject::RED_TEXT);
-    text_menu_hover[1].LoadFromRenderText(gFont3, g_screen);
+    success = text_menu_hover[1].LoadFromRenderText(gFont3, g_screen) && success;
 
     game_over_text[0].SetText("SCORE: ");
-    game_over_text[0].LoadFromRenderText(gFont3, g_screen);
+    success = game_over_text[0].LoadFromRenderText(gFont3, g_screen) && success;
     game_over_text[2].SetText("SPACE TO REPLAY!");
-    game_over_text[2].LoadFromRenderText(gFont3, g_screen);
+    success = game_over_text[2].LoadFromRenderText(gFont3, g_screen) && success;
 
     win_text[0].SetText("T-Kun finds Isha after: ");
-    win_text[0].LoadFromRenderText(gFont4, g_screen);
+    success = win_text[0].LoadFromRenderText(gFont4, g_screen) && success;
     win_text[2].SetText("DAYS ");
-    win_text[2].LoadFromRenderText(gFont4, g_screen);
+    success = win_text[2].LoadFromRenderText(gFont4, g_screen) && success;
 
     time_limit_text.SetText("T-kun lost her!");
-    time_limit_text.LoadFromRenderText(gFont3, g_screen);
+    success = time_limit_text.LoadFromRenderText(gFont3, g_screen) && success;
+    return success;
 }
 
 TTF_Font *OpenProfiledFont(const char *path, int size)
@@ -778,19 +811,21 @@ void FreeJourneyResources()
     FreeSurface(journey_Surface_5);
 }
 
-void LoadRuntimeTextures()
+bool LoadRuntimeTextures()
 {
-    gPlayerLeftTexture.LoadImg("res/pic/img/player_left1.png", g_screen);
-    gPlayerRightTexture.LoadImg("res/pic/img/player_right1.png", g_screen);
-    gBulletTexture.LoadImg("res/pic/img/fire.png", g_screen);
-    gThreat1Texture.LoadImg("res/pic/threats/threat_1.png", g_screen);
-    gThreat2LeftTexture.LoadImg("res/pic/threats/threat_2_left.png", g_screen);
-    gThreat2RightTexture.LoadImg("res/pic/threats/threat_2_right.png", g_screen);
-    gThreat3LeftTexture.LoadImg("res/pic/threats/threat_3_left.png", g_screen);
-    gThreat3RightTexture.LoadImg("res/pic/threats/threat_3_right.png", g_screen);
-    gThreat4Texture.LoadImg("res/pic/threats/threat_4.png", g_screen);
-    gPlayerPowerTexture.LoadImg("res/pic/img/player_pw.png", g_screen);
-    gPlayerMoneyTexture.LoadImg("res/pic/img/heart_.png", g_screen);
+    bool success = true;
+    success = gPlayerLeftTexture.LoadImg("res/pic/img/player_left1.png", g_screen) && success;
+    success = gPlayerRightTexture.LoadImg("res/pic/img/player_right1.png", g_screen) && success;
+    success = gBulletTexture.LoadImg("res/pic/img/fire.png", g_screen) && success;
+    success = gThreat1Texture.LoadImg("res/pic/threats/threat_1.png", g_screen) && success;
+    success = gThreat2LeftTexture.LoadImg("res/pic/threats/threat_2_left.png", g_screen) && success;
+    success = gThreat2RightTexture.LoadImg("res/pic/threats/threat_2_right.png", g_screen) && success;
+    success = gThreat3LeftTexture.LoadImg("res/pic/threats/threat_3_left.png", g_screen) && success;
+    success = gThreat3RightTexture.LoadImg("res/pic/threats/threat_3_right.png", g_screen) && success;
+    success = gThreat4Texture.LoadImg("res/pic/threats/threat_4.png", g_screen) && success;
+    success = gPlayerPowerTexture.LoadImg("res/pic/img/player_pw.png", g_screen) && success;
+    success = gPlayerMoneyTexture.LoadImg("res/pic/img/heart_.png", g_screen) && success;
+    return success;
 }
 
 void FreeRuntimeTextures()
@@ -859,7 +894,7 @@ bool InitData()
         {
             SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
             int imgFlags = IMG_INIT_PNG;
-            if (!(IMG_Init(imgFlags) && imgFlags))
+            if ((IMG_Init(imgFlags) & imgFlags) != imgFlags)
                 success = false;
         }
 
@@ -920,12 +955,17 @@ void Call_Menu()
         {
             if (eve.type == SDL_MOUSEMOTION)
             {
-                SDL_GetMouseState(&xm, &ym);
+                xm = eve.motion.x;
+                ym = eve.motion.y;
                 selected[1] = SDLCommonFunc::CheckFocusMouse(xm, ym, start_button);
                 selected[0] = SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button);
             }
             if (eve.type == SDL_MOUSEBUTTONDOWN && eve.button.button == SDL_BUTTON_LEFT)
             {
+                xm = eve.button.x;
+                ym = eve.button.y;
+                selected[1] = SDLCommonFunc::CheckFocusMouse(xm, ym, start_button);
+                selected[0] = SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button);
                 if (selected[1] == true)
                 {
                     start_Game = true; // Ready to Play Game
@@ -1036,7 +1076,7 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
     p_player.set_comeback_time(3);
 }
 
-void Create_texture()
+bool Create_texture()
 {
     menu = CreateProfiledTextureFromSurface(g_screen, g_img_menu);
     menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
@@ -1066,6 +1106,10 @@ void Create_texture()
     FreeSurface(journey_Surface_3);
     FreeSurface(journey_Surface_4);
     FreeSurface(journey_Surface_5);
+
+    return menu != NULL && WinGame != NULL &&
+           journey_Texture_1 != NULL && journey_Texture_2 != NULL && journey_Texture_3 != NULL &&
+           journey_Texture_4 != NULL && journey_Texture_5 != NULL;
 }
 
 void render_journey_img()

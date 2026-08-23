@@ -62,7 +62,7 @@ The executable needs the current working directory to contain `res/` with:
 - Background, menu, win, five journey, player, HUD, bullet, tile, and enemy images referenced in source.
 - `pic/map/map01.txt`.
 
-Asset loading errors are not aggregated or handled safely. Several returned pointers are dereferenced later without validation, so a missing/corrupt asset may cause a crash rather than a clean startup failure.
+Required fonts, images, audio, map data, textures, and text caches are validated before entering the menu. Missing/corrupt assets now produce a nonzero startup exit after ordered cleanup. The map parser requires exactly 10,110 values and tile IDs supported by the loaded tile cache.
 
 ## Verification result
 

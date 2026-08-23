@@ -2,7 +2,6 @@
 #define TEXT_OBJECT_H_
 
 #include "CommonFunc.h"
-#include "BaseObject.h"
 
 #define SIZE_FONT_HEART 40
 

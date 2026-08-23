@@ -35,7 +35,7 @@ public:
                             SDL_Texture* right_texture, int right_width, int right_height);
         void SetBulletTextureRef(SDL_Texture* texture, int width, int height);
         void Show(SDL_Renderer* des);
-        void HandelInputAction(SDL_Event events, SDL_Renderer* screen, Mix_Chunk* gF);
+        void HandelInputAction(const SDL_Event& events, Mix_Chunk* gF);
         void set_clips();
 
         void DoPlayer(Map& map_data, Mix_Chunk *gEarn_Heart);

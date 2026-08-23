@@ -75,6 +75,8 @@ with:
 
 # Step 4 --- Fix Unsafe Code
 
+Status: **Completed on 2026-08-24** (`refactor(step-4)`).
+
 Fix:
 
 -   Undefined behavior.

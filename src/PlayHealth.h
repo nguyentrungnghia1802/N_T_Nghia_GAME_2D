@@ -1,6 +1,6 @@
 
 #ifndef PLAYER_POWER_H_
-#define PLAY_POWER_H_
+#define PLAYER_POWER_H_
 
 #include "CommonFunc.h"
 #include "BaseObject.h"
