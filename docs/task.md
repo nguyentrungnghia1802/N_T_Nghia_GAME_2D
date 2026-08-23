@@ -110,6 +110,8 @@ Implement:
 
 # Step 7 --- Optimize Collision
 
+Status: **Completed on 2026-08-24** (`refactor(step-7)`).
+
 Improve:
 
 -   collision queries.

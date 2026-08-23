@@ -20,9 +20,9 @@ Double-including each header was compiler-tested and produced class redefinition
 
 `BulletObject::bullet_dir_` is not initialized (`src/BulletObject.cpp::BulletObject`). Player facing starts at `-1` (`src/MainObject.cpp:24`). A mouse click before an `A`/`D` event enters neither direction branch (`src/MainObject.cpp:252-261`), then `HandleMove` reads the uninitialized enum-like value. This is undefined behavior and can leave an active bullet that never exits.
 
-### Collision implementation is not rectangle intersection
+### Collision implementation (resolved)
 
-`src/CommonFunc.cpp::SDLCommonFunc::CheckCollision` ignores `w/h`, substitutes 115x95 and 150x100, uses strict corner-inside tests, and is asymmetric. It misses containment and edge-crossing overlap and gives bullets player-sized hitboxes. `MainObject::GetRectFrame` and `ThreatsObject::GetRectFrame` also calculate width as frame count rather than frame width.
+Resolved in Step 7. `SDLCommonFunc::CheckCollision` now performs a symmetric AABB query with supplied dimensions and focused regression coverage. Call sites explicitly preserve the historical 115x95 player/bullet and 150x100 threat footprints, so the correctness fix does not silently alter game difficulty.
 
 ### Chained enemy collision comparison
 
@@ -73,7 +73,7 @@ Resolved in Step 4. Startup loaders return success, required handles are aggrega
 - Enemy spawn formulas repeat values such as 500, 780, 100, and random ranges (`src/main.cpp::MakeThreats`).
 - Player win detection uses `MAX_MAP_X*TILE_SIZE - 16*TILE_SIZE`; the unused `POS_MAP_DATA_START_X_TO_WIN` has a different value.
 - Restart checkpoints use hard-coded `+280`, `+500`, and only three camera ranges (`src/main.cpp::Restart`, `src/gamemap.cpp::ResetMap`).
-- Collision substitutes 115x95 and 150x100 regardless of actual sprites.
+- Collision intentionally uses named 115x95 player/bullet and 150x100 threat hitboxes to preserve established gameplay.
 - Start/replay and death waits use 4000/1000 ms inline.
 
 These constants encode current gameplay. Name/consolidate them before changing values; do not “clean them up” in a way that silently changes feel.

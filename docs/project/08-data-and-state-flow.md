@@ -62,15 +62,15 @@ The global `heart_count` is refreshed from the player before the player's curren
 3. Patrol code selects direction/borrowed texture.
 4. Enemy physics mutates world state against the current map copy.
 5. Render computes screen rectangle and culls against the viewport.
-6. A collision target of raw pointer plus rectangle is appended.
+6. A collision target of non-owning pointer plus explicit threat hitbox is appended only when the player did not consume that enemy.
 
 Inactive enemies do not update, animate, or render.
 
 ## Collision and lifetime flow
 
-Enemy ownership stays in `ThreatList` (`vector<unique_ptr<ThreatsObject>>`). The per-frame `active_threats` vector stores non-owning raw pointers. Player collision erases by index from the owning list and breaks. Bullet collision later searches the owning list by raw pointer value before erasing.
+Enemy ownership stays in `ThreatList` (`vector<unique_ptr<ThreatsObject>>`). The per-frame `active_threats` vector stores non-owning raw pointers and precomputed hitboxes. Player collision erases by index before adding the target and breaks. Bullet collision later searches the owning list by raw pointer value before erasing.
 
-Bullets are owned manually by `MainObject`. `main.cpp` receives a const reference to that raw-pointer vector. On hit, `MainObject::RemoveBullet` erases/deletes the bullet; the main loop avoids incrementing its bullet index in that case.
+Bullets are owned by `MainObject` through `unique_ptr`. `main.cpp` receives a const reference to that vector. On hit, `MainObject::RemoveBullet` erases the bullet; the main loop avoids incrementing its bullet index in that case.
 
 ## Screen/progression state
 

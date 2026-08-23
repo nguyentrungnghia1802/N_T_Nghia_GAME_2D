@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | `src/main.cpp` | Entry point, resources, screen loops, gameplay orchestration, threat factory, shutdown | All app modules and SDL libraries | Primary control-flow file; 1219 lines |
 | `src/CommonFunc.h` | Shared SDL includes, constants, `Input`, `Map`, extern globals, helper declarations | SDL2/image/ttf/mixer, currently `TextObject.h` | God header and circular include source |
-| `src/CommonFunc.cpp` | Shared global definitions, collision and mouse focus helpers | Profiler | Collision ignores actual rectangle sizes |
+| `src/CommonFunc.cpp` | Shared global definitions, explicit hitbox builders, AABB collision, and mouse focus helpers | Profiler | Collision footprints are deliberately retained for gameplay compatibility |
 | `src/BaseObject.h` | Texture/rect owning-or-borrowing base class | `CommonFunc.h` | Noncopyable; runtime ownership flag distinguishes owner/borrower |
 | `src/BaseObject.cpp` | Image load, texture borrow/render/free, viewport test | SDL_image, profiler | `Render1` repeats scrolling background |
 | `src/gamemap.h` | `TileMat`, `GameMap`, visible range/reset APIs | `Map`, `BaseObject` | Broken include guard; `getMap` by value |

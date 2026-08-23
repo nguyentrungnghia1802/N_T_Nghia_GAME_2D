@@ -14,52 +14,41 @@ SDL_Window *g_window = NULL;
 SDL_Renderer *g_screen = NULL;
 SDL_Event g_event;
 
+SDL_Rect SDLCommonFunc::MakePlayerBulletHitbox(const SDL_Rect &object)
+{
+  // Preserve the collision footprint used by the original game for both the
+  // player and bullets. Keeping it explicit prevents sprite-sheet dimensions
+  // from silently changing gameplay difficulty.
+  return {object.x, object.y, 115, 95};
+}
+
+SDL_Rect SDLCommonFunc::MakeThreatHitbox(const SDL_Rect &object)
+{
+  return {object.x, object.y, 150, 100};
+}
+
 bool SDLCommonFunc::CheckCollision(const SDL_Rect &object1, const SDL_Rect &object2)
 {
   Profiler::CountCollisionCheck();
 
-  int left_a = object1.x;
-  int right_a = object1.x + 115;
-  int top_a = object1.y;
-  int bottom_a = object1.y + 95;
-
-  int left_b = object2.x;
-  int right_b = object2.x + 150;
-  int top_b = object2.y;
-  int bottom_b = object2.y + 100;
-
-  if (left_a > left_b && left_a < right_b)
+  if (object1.w <= 0 || object1.h <= 0 || object2.w <= 0 || object2.h <= 0)
   {
-    if (top_a > top_b && top_a < bottom_b)
-    {
-      return true;
-    }
+    return false;
   }
 
-  if (left_a > left_b && left_a < right_b)
-  {
-    if (bottom_a > top_b && bottom_a < bottom_b)
-    {
-      return true;
-    }
-  }
+  const long long left_a = object1.x;
+  const long long right_a = left_a + object1.w;
+  const long long top_a = object1.y;
+  const long long bottom_a = top_a + object1.h;
+  const long long left_b = object2.x;
+  const long long right_b = left_b + object2.w;
+  const long long top_b = object2.y;
+  const long long bottom_b = top_b + object2.h;
 
-  if (right_a > left_b && right_a < right_b)
-  {
-    if (top_a > top_b && top_a < bottom_b)
-    {
-      return true;
-    }
-  }
-
-  if (right_a > left_b && right_a < right_b)
-  {
-    if (bottom_a > top_b && bottom_a < bottom_b)
-    {
-      return true;
-    }
-  }
-  return false;
+  // Strict inequalities retain the original rule that touching edges do not
+  // count as a hit, while correctly handling containment and crossing edges.
+  return left_a < right_b && right_a > left_b &&
+         top_a < bottom_b && bottom_a > top_b;
 }
 
 bool SDLCommonFunc::CheckFocusMouse(const int &x, const int &y,const SDL_Rect& pos)

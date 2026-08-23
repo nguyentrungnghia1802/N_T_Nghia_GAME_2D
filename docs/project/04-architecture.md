@@ -96,7 +96,7 @@ flowchart LR
 - The 1219-line `main.cpp` and broad global state make ordering and lifetime implicit.
 - Screen modes are nested loops, not composable states; this blocks a clean Emscripten callback and complicates event/timing behavior.
 - Physics, camera, respawn, and animation advance per frame even though a delta time is calculated.
-- Collision is a hard-coded helper that ignores supplied rectangle sizes and misses common overlap cases.
+- Collision uses a tested AABB helper with explicit player/bullet and threat hitboxes. The 115x95 and 150x100 footprints preserve the original game's difficulty while containment and edge-crossing overlaps are detected.
 - Map dimensions, win thresholds, journey boundaries, spawn regions, controls, and asset paths are compile-time/hard-coded.
 - Resource load failure is not propagated, and ownership is only partly RAII.
 - A malformed map tile ID can index beyond `tile_mat`.

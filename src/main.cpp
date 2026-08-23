@@ -87,7 +87,7 @@ using ThreatList = std::vector<std::unique_ptr<ThreatsObject>>;
 struct ThreatCollisionTarget
 {
     ThreatsObject *threat;
-    SDL_Rect rect;
+    SDL_Rect hitbox;
 };
 
 ThreatList threats_list;
@@ -288,7 +288,7 @@ int main(int, char *[])
         SDL_Rect screen_viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
         std::vector<ThreatCollisionTarget> active_threats;
         active_threats.reserve(threats_list.size());
-        const SDL_Rect rect_player = p_player.GetRectFrame();
+        const SDL_Rect player_hitbox = SDLCommonFunc::MakePlayerBulletHitbox(p_player.GetRectFrame());
 
         for (size_t i = 0; i < threats_list.size(); i++)
         {
@@ -305,14 +305,15 @@ int main(int, char *[])
                 p_threat->DoPlayer(map_data, frame_scale);
                 p_threat->Show(g_screen, frame_scale, &screen_viewport);
 
-                SDL_Rect rect_threat = p_threat->GetRectFrame();
-                active_threats.push_back({p_threat, rect_threat});
-                bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
+                const SDL_Rect threat_hitbox = SDLCommonFunc::MakeThreatHitbox(p_threat->GetRectFrame());
+                bCol2 = SDLCommonFunc::CheckCollision(player_hitbox, threat_hitbox);
                 if (bCol2 == true)
                 {
                     threats_list.erase(threats_list.begin() + i);
                     break;
                 }
+
+                active_threats.push_back({p_threat, threat_hitbox});
             }
         }
 
@@ -416,9 +417,8 @@ int main(int, char *[])
                         ThreatCollisionTarget &target = active_threats.at(t);
                         if (target.threat != NULL)
                         {
-                            SDL_Rect bRect = p_bullet->GetRect();
-
-                            bool bCol = SDLCommonFunc::CheckCollision(bRect, target.rect);
+                            const SDL_Rect bullet_hitbox = SDLCommonFunc::MakePlayerBulletHitbox(p_bullet->GetRect());
+                            const bool bCol = SDLCommonFunc::CheckCollision(bullet_hitbox, target.hitbox);
 
                             if (bCol)
                             {

@@ -70,14 +70,12 @@ Important consequences:
 - The map is drawn after the player, so nonblank tiles can occlude the player.
 - Bullets and enemies are drawn before bullet/enemy collision erases them.
 - Player/enemy collision uses enemy rectangles gathered during the same update.
-- A player collision erases an enemy and breaks the threat loop, so later active enemies are not processed that frame.
+- A player collision erases an enemy before it is appended to the active collision list and breaks the threat loop, so later active enemies are not processed that frame.
 - Bullet collision checks only the active targets collected before that break.
 
 ## Collision semantics
 
-`SDLCommonFunc::CheckCollision` does not use `SDL_Rect::w/h`. It assumes object 1 is 115x95 and object 2 is 150x100, tests whether any object-1 corner is strictly inside object 2, and excludes touching/equal edges. It misses overlap when object 1 contains object 2 and other edge-crossing cases. Both player/enemy and bullet/enemy checks use this same asymmetric function, so bullet hitboxes are also treated as 115x95.
-
-`MainObject::GetRectFrame` and `ThreatsObject::GetRectFrame` separately set width to sprite-sheet width divided by frame width, yielding the frame count (6 or 5), not frame pixel width. The collision helper currently ignores these incorrect widths, masking the defect.
+`SDLCommonFunc::CheckCollision` uses the supplied `SDL_Rect::w/h` in a symmetric AABB query. Containment and overlap from every direction count as collisions; rectangles that only touch at an edge do not. Call sites build explicit 115x95 player/bullet and 150x100 threat hitboxes, retaining the collision footprint and difficulty of the original game rather than depending on sprite-sheet dimensions.
 
 ## Animation and state timing
 

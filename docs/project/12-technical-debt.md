@@ -6,7 +6,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | --- | --- | --- | --- | --- | --- |
 | TD-001 | P0 | Progression | Journey uses unreachable exact camera equalities | Journey panels and threat-style toggles do not occur in normal scrolling | Detect crossing/ranges and record one-shot journey progress |
 | TD-002 | P0 (resolved) | Input/bullets | Initial player facing and `bullet_dir_` left first-shot direction indeterminate | Fixed in Step 4 with deterministic right-facing defaults | Preserve explicit direction on every shot |
-| TD-003 | P0 | Collision | Shared collision ignores real sizes and misses overlap cases | False hits/misses for player and bullets | Use `SDL_HasIntersection` or a tested AABB helper with explicit hitboxes |
+| TD-003 | P0 (resolved) | Collision | Step 7 replaced corner tests with tested AABB queries and explicit legacy-sized hitboxes | Containment/crossing work without changing difficulty | Preserve edge, containment, directional-overlap, and footprint tests |
 | TD-004 | P0 (resolved) | Enemy physics | Chained enemy tile predicate | Corrected in Step 4 | Retain focused tile-collision regression coverage |
 | TD-005 | P0 (resolved) | Startup | Asset/map failures were ignored before pointer/index use | Step 4 validates required startup resources and fails cleanly | Preserve aggregated startup checks |
 | TD-006 | P0 (resolved) | Headers | Three include guards defined the wrong macro | Corrected and double-include tested in Step 4 | Keep header self-containment checks |
@@ -32,6 +32,6 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 ## Highest-risk dependency clusters
 
 - TD-001, TD-009, TD-010, and TD-013 all touch progression/timing; do not solve them in unrelated patches.
-- TD-003 and TD-018 affect gameplay feel. Preserve explicit current hitbox intent before replacing the flawed implementation.
+- TD-018 affects gameplay feel. Step 7 captured the intended hitbox footprints before resolving TD-003.
 - TD-007 and TD-008 affect destruction order and ownership; change entities/caches only with a documented lifetime sequence.
 - TD-011 and TD-019 should follow P0 fixes. Moving globals before behavior is stabilized would enlarge the regression surface.
