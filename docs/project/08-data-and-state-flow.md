@@ -1,0 +1,93 @@
+# Data and State Flow
+
+## Core state domains
+
+```mermaid
+flowchart LR
+    SDL["SDL_Event"] --> Input["MainObject::input_type_"]
+    Input --> PlayerSim["x/y velocity and world position"]
+    PlayerSim --> MapCollision["Map::tile"]
+    MapCollision --> PlayerSim
+    MapCollision --> Hearts["heart_count + tile -> 0"]
+    Camera["Map::start_x_"] --> ScreenPos["world position - camera"]
+    PlayerSim --> ScreenPos
+    ThreatSim["Threat world state"] --> ScreenPos
+    ScreenPos --> Render["SDL renderer"]
+    PlayerSim --> PlayerThreat["hard-coded collision helper"]
+    ThreatSim --> PlayerThreat
+    Bullets --> BulletThreat["hard-coded collision helper"]
+    ThreatSim --> BulletThreat
+    PlayerThreat --> Lives["num_die / PlayerPower"]
+    BulletThreat --> ThreatList["erase unique_ptr threat"]
+    Hearts --> Text["TextObject cache"]
+```
+
+## Input to player and bullets
+
+`SDL_PollEvent` drains into global `g_event`. The whole event is passed by value to `MainObject::HandelInputAction`:
+
+- `A`/`D` key events mutate `Input::left_`/`right_` and facing `status_`.
+- `W` key down sets a jump request consumed on the next `DoPlayer` call.
+- Left mouse down plays fire audio, allocates a bullet, borrows the global bullet texture, and places it using the player's current screen `rect_`.
+
+Bullet positions are screen-space, not world-space. They move against `SCREEN_WIDTH`, so camera movement does not affect an existing bullet.
+
+## Map/camera exchange
+
+`GameMap` owns `game_map_`, but each gameplay frame uses this copy cycle:
+
+```text
+GameMap::getMap() by value
+    -> global map_data
+    -> MapRun adds 6 to start_x_
+    -> MainObject mutates collected tile cells
+    -> GameMap::SetMap copies map_data back
+    -> GameMap::DrawMap reads game_map_
+```
+
+The player and enemies hold their own world coordinates. Before rendering, each receives `map_data.start_x_/start_y_` and computes `rect_ = world - map offset`. The camera advances independently of player input.
+
+## Player/map collision and score
+
+`MainObject::CheckToMap` samples up to two tiles for horizontal motion and two for vertical motion. Tile ID 0 is blank; ID 1 is a heart; every other positive ID is solid for player/enemy collision. On heart contact, sampled tile cells are set to zero and the player's internal count increments. Horizontal collection plays a sound; vertical collection does not.
+
+The global `heart_count` is refreshed from the player before the player's current-frame map check, so the text/HUD score can lag a newly collected heart by one frame. `high_score` is then updated from that global count and is never persisted.
+
+## Threat flow
+
+`MakeThreats` creates four spatial groups. Global cached textures outlive the list, and each enemy stores borrowed references. Every frame:
+
+1. `IsThreatActive` compares enemy world X/frame width with camera range plus a screen-width margin.
+2. Active enemies receive camera offset.
+3. Patrol code selects direction/borrowed texture.
+4. Enemy physics mutates world state against the current map copy.
+5. Render computes screen rectangle and culls against the viewport.
+6. A collision target of raw pointer plus rectangle is appended.
+
+Inactive enemies do not update, animate, or render.
+
+## Collision and lifetime flow
+
+Enemy ownership stays in `ThreatList` (`vector<unique_ptr<ThreatsObject>>`). The per-frame `active_threats` vector stores non-owning raw pointers. Player collision erases by index from the owning list and breaks. Bullet collision later searches the owning list by raw pointer value before erasing.
+
+Bullets are owned manually by `MainObject`. `main.cpp` receives a const reference to that raw-pointer vector. On hit, `MainObject::RemoveBullet` erases/deletes the bullet; the main loop avoids incrementing its bullet index in that case.
+
+## Screen/progression state
+
+State is distributed among:
+
+- `is_quit`, `start_Game`, `isRestarting`, `win_and_restart` in `main.cpp`.
+- `winner`, `change_threats`, `map_start`, and `minus` in `CommonFunc.cpp`.
+- `game_state`, which is written but not used for dispatch.
+- Local modal-loop flags in menu/game-over/win/journey functions.
+
+This means no single variable defines the complete screen state. Any state refactor must first preserve the exact transitions documented in `05-runtime-flow.md`.
+
+## Audio/data side effects
+
+Audio chunks are loaded globally and passed selectively: fire/heart/death/win functions call `Mix_PlayChannel` directly. Map music loops after Start. There is no audio service, channel policy, volume configuration, or null-handle guard.
+
+## Save/load flow
+
+No save file, serialization, settings file, or persistent high-score flow exists. `GameMap::LoadMap_Return` is a duplicate disk loader used nowhere; it is not a save/load system.
+
