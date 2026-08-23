@@ -41,6 +41,8 @@ Create a before/after comparison.
 
 # Step 2 --- Resource Safety
 
+Status: **Completed on 2026-08-24** (`refactor(step-2)`).
+
 Fix:
 
 -   Memory leaks.

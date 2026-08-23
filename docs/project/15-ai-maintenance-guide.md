@@ -30,7 +30,7 @@ global texture cache owns SDL_Texture
     -> player / threat / bullet BaseObject borrows via UseTexture
 
 ThreatList owns ThreatsObject via unique_ptr
-MainObject owns BulletObject raw pointers (until roadmap migration)
+MainObject owns BulletObject via BulletList unique_ptr entries
 TextObject owns text texture and borrows TTF_Font
 GameMap TileMat owns tile textures
 main.cpp owns window, renderer, raw screen resources, fonts, and audio
@@ -46,7 +46,7 @@ When changing cleanup:
 6. Destroy renderer, then window.
 7. Quit SDL extensions and SDL.
 
-The current code does not fully meet this target because tile textures are not explicitly freed before the renderer and audio is not closed. Do not make the order worse.
+The current `close` path follows this order, including explicit tile cleanup and `Mix_CloseAudio`. Preserve it when adding resources.
 
 Never copy a `BaseObject` or derived object by value until copy operations are made safe. `UseTexture` means non-owning; `LoadImg` means owning.
 
@@ -123,4 +123,3 @@ For collision/timestep changes, create focused pure tests before restructuring. 
 | Performance | Comparable profiler interval before/after in the same map region |
 
 If a result cannot be observed or inferred from code, state: **Not confirmed from the current codebase.**
-

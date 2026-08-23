@@ -27,11 +27,12 @@ public:
     };
 
     GameMap();
-    ~GameMap() { ; }
+    ~GameMap();
 
     void LoadMap(const char path[]);
     void LoadMap_Return(const char path[]);
     void LoadTiles(SDL_Renderer *screen);
+    void FreeTiles();
     void DrawMap(SDL_Renderer *screen);
     Map getMap() const { return game_map_; };
     void SetMap(Map &map_data) { game_map_ = map_data; }

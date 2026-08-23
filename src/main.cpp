@@ -98,6 +98,7 @@ bool bCol2 = false;        // Collide:   Player and  Threats
 bool win_and_restart = false;
 bool is_minusLinve = false;
 bool focus_mouse = false;
+bool g_audio_open = false;
 
 int num_die = 0;
 int heart_count = 0;
@@ -384,10 +385,10 @@ int main(int argc, char *argv[])
         }
 
         //            Bullet
-        const std::vector<BulletObject *> &bullet_arr = p_player.get_bullet_list();
+        const MainObject::BulletList &bullet_arr = p_player.get_bullet_list();
         for (size_t r = 0; r < bullet_arr.size();)
         {
-            BulletObject *p_bullet = bullet_arr.at(r);
+            BulletObject *p_bullet = bullet_arr.at(r).get();
             bool bullet_removed = false;
             {
                 if (p_bullet != NULL)
@@ -600,6 +601,12 @@ void close()
     }
     is_closed = true;
 
+    if (g_audio_open)
+    {
+        Mix_HaltChannel(-1);
+        Mix_HaltMusic();
+    }
+
     threats_list.clear();
     p_player.ClearBulletList();
 
@@ -615,6 +622,7 @@ void close()
     player_power.Free();
     player_heart.Free();
     FreeRuntimeTextures();
+    game_map.FreeTiles();
 
     FreeMenuResources();
     FreeWinResources();
@@ -627,12 +635,6 @@ void close()
     CloseFont(font_time);
     CloseFont(font_heart);
 
-    SDL_DestroyRenderer(g_screen);
-    g_screen = NULL;
-
-    SDL_DestroyWindow(g_window);
-    g_window = NULL;
-
     FreeChunk(gEarn_Heart);
     FreeChunk(gMainMusic);
     FreeChunk(gFire_ball);
@@ -641,8 +643,29 @@ void close()
     FreeChunk(gThreats_Die);
     FreeChunk(gCongrat);
 
-    Mix_FreeMusic(gMusic);
-    gMusic = NULL;
+    if (gMusic != NULL)
+    {
+        Mix_FreeMusic(gMusic);
+        gMusic = NULL;
+    }
+
+    if (g_audio_open)
+    {
+        Mix_CloseAudio();
+        g_audio_open = false;
+    }
+
+    if (g_screen != NULL)
+    {
+        SDL_DestroyRenderer(g_screen);
+        g_screen = NULL;
+    }
+
+    if (g_window != NULL)
+    {
+        SDL_DestroyWindow(g_window);
+        g_window = NULL;
+    }
 
     Mix_Quit();
     IMG_Quit();
@@ -813,6 +836,10 @@ bool InitData()
         {
             printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
             success = false;
+        }
+        else
+        {
+            g_audio_open = true;
         }
     }
 
@@ -1018,6 +1045,7 @@ void Win_Game()
 
 void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
+    p_player.ClearBulletList();
     game_map.ResetFromBaseMap();
     map_data = game_map.getMap();
     game_map.ResetMap(map_data);

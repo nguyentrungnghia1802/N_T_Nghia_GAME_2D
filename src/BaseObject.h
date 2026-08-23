@@ -8,6 +8,8 @@ class BaseObject
 public:
     BaseObject();
     virtual ~BaseObject();
+    BaseObject(const BaseObject &) = delete;
+    BaseObject &operator=(const BaseObject &) = delete;
     void SetRect(const int &x, const int &y) { rect_.x = x, rect_.y = y; }
     SDL_Rect GetRect() const { return rect_; }
     SDL_Texture *GetObject() const { return p_object_; }

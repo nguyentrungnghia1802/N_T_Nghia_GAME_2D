@@ -2,6 +2,7 @@
 #ifndef MAIN_OBJECT_H_
 #define MAIN_OBJECT_H_
 
+#include <memory>
 #include <vector>
 #include "CommonFunc.h"
 #include "BaseObject.h"
@@ -19,6 +20,8 @@
 class MainObject : public BaseObject
 {
 public:
+        using BulletList = std::vector<std::unique_ptr<BulletObject>>;
+
         MainObject();
         ~MainObject();
         enum WalkType
@@ -40,13 +43,9 @@ public:
         void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x; map_y_ = map_y;}
         SDL_Rect GetRectFrame();
 
-        void set_bullet_list(std::vector<BulletObject*>bullet_list)
-        {
-                p_bullet_list_=bullet_list;
-        }
-        const std::vector<BulletObject*>& get_bullet_list() const {return p_bullet_list_;}
+        const BulletList& get_bullet_list() const {return p_bullet_list_;}
         void HanleBullet(SDL_Renderer* rec);
-        void RemoveBullet(const int& idx);
+        void RemoveBullet(size_t idx);
         void ClearBulletList();
         void IncreaseMoney();
         void set_comeback_time(const int& cb_time){come_back_time_=cb_time;}
@@ -58,7 +57,7 @@ public:
 private:
         int heart_count;
 
-        std::vector<BulletObject*> p_bullet_list_;
+        BulletList p_bullet_list_;
         float x_val_;
         float y_val_;
         

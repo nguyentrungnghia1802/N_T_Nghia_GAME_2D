@@ -243,7 +243,7 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
         if (events.button.button == SDL_BUTTON_LEFT)
         {
             Mix_PlayChannel(-1, gFire_ball, 0);
-            BulletObject *p_bullet = new BulletObject();
+            std::unique_ptr<BulletObject> p_bullet = std::make_unique<BulletObject>();
             if (bullet_texture_ != NULL)
             {
                 p_bullet->UseTexture(bullet_texture_, bullet_texture_width_, bullet_texture_height_);
@@ -266,7 +266,7 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
             p_bullet->set_x_val(20);
             p_bullet->set_is_move(true);
 
-            p_bullet_list_.push_back(p_bullet);
+            p_bullet_list_.push_back(std::move(p_bullet));
         }
     }
 }
@@ -274,60 +274,36 @@ void MainObject::HandelInputAction(SDL_Event events, SDL_Renderer *screen, Mix_C
 void MainObject::HanleBullet(SDL_Renderer *des)
 {
     const SDL_Rect viewport = GetScreenViewport();
-    for (int i = 0; i < p_bullet_list_.size(); i++)
+    for (size_t i = 0; i < p_bullet_list_.size();)
     {
-        BulletObject *p_bullet = p_bullet_list_.at(i);
-        if (p_bullet != NULL)
+        BulletObject *p_bullet = p_bullet_list_.at(i).get();
+        if (p_bullet == NULL || p_bullet->get_is_move() == false)
         {
-            if (p_bullet->get_is_move() == true)
-            {
-                Profiler::CountEntityUpdate();
-                p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-                if (p_bullet->IsVisibleInViewport(viewport))
-                {
-                    Profiler::CountEntityRender();
-                    p_bullet->Render(des);
-                }
-            }
-            else
-            {
-                p_bullet_list_.erase(p_bullet_list_.begin() + i);
-                if (p_bullet != NULL)
-                {
-                    delete p_bullet;
-                    p_bullet = NULL;
-                }
-            }
+            p_bullet_list_.erase(p_bullet_list_.begin() + i);
+            continue;
         }
+
+        Profiler::CountEntityUpdate();
+        p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+        if (p_bullet->IsVisibleInViewport(viewport))
+        {
+            Profiler::CountEntityRender();
+            p_bullet->Render(des);
+        }
+        ++i;
     }
 }
 
-void MainObject::RemoveBullet(const int &idx)
+void MainObject::RemoveBullet(size_t idx)
 {
-    int size = p_bullet_list_.size();
-    if (size > 0 && idx < size)
+    if (idx < p_bullet_list_.size())
     {
-        BulletObject *p_bullet = p_bullet_list_.at(idx);
         p_bullet_list_.erase(p_bullet_list_.begin() + idx);
-
-        if (p_bullet)
-        {
-            delete p_bullet;
-            p_bullet = NULL;
-        }
     }
 }
 
 void MainObject::ClearBulletList()
 {
-    for (size_t i = 0; i < p_bullet_list_.size(); i++)
-    {
-        BulletObject *p_bullet = p_bullet_list_.at(i);
-        if (p_bullet != NULL)
-        {
-            delete p_bullet;
-        }
-    }
     p_bullet_list_.clear();
 }
 

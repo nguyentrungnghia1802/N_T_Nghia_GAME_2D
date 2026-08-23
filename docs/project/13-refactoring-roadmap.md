@@ -37,6 +37,8 @@ flowchart LR
 
 ### R3 — Fix SDL/audio ownership order (P0)
 
+**Status:** Completed by refactoring Step 2 on 2026-08-24.
+
 - **Problem/location:** `GameMap` tile textures survive renderer shutdown; no `Mix_CloseAudio`; `BaseObject` can be shallow-copied.
 - **Why it matters:** Invalid destruction, leaks, and future double-free risk.
 - **Proposed solution:** Add explicit tile cleanup or put renderer after all texture-owning members in a top-level owner; close audio before mixer/SDL quit; delete copy operations and add safe move operations only if needed.
@@ -80,6 +82,8 @@ flowchart LR
 - **Estimated scope:** Medium.
 
 ### R7 — Make bullet ownership explicit (P1)
+
+**Status:** Completed early by refactoring Step 2 because raw ownership was part of that task's acceptance criteria.
 
 - **Problem/location:** Raw owning vector and manual deletion in `MainObject`.
 - **Why it matters:** Erase paths are fragile and public setter can duplicate ownership.
@@ -174,4 +178,3 @@ Spatial partitioning and bullet pools are deferred. Current active enemy counts 
 Start with `BulletObject`/the firing path, `CommonFunc::CheckCollision`, the three broken headers, journey boundary logic, and `GameMap` texture cleanup. Refactor `main.cpp` state architecture only after those behaviors are covered.
 
 Do not restructure `MainObject::CheckToMap`, `ThreatsObject::CheckToMap`, `Restart`, or global texture caches until collision, checkpoint, and borrowed-resource behavior are explicitly understood and tested.
-

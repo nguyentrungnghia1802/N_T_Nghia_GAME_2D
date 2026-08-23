@@ -10,6 +10,11 @@ GameMap::GameMap()
     has_base_map_ = false;
 }
 
+GameMap::~GameMap()
+{
+    FreeTiles();
+}
+
 void GameMap::LoadMap(const char path[])
 {
     std::ifstream file;
@@ -66,6 +71,14 @@ void GameMap::LoadTiles(SDL_Renderer *screen)
     tile_mat[5].LoadImg(map_path[5], screen);
     tile_mat[6].LoadImg(map_path[6], screen);
     tile_mat[7].LoadImg(map_path[7], screen);
+}
+
+void GameMap::FreeTiles()
+{
+    for (int i = 0; i < MAX_TILES; ++i)
+    {
+        tile_mat[i].Free();
+    }
 }
 
 void GameMap::DrawMap(SDL_Renderer *screen)

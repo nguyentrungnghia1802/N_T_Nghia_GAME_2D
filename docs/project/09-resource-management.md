@@ -2,23 +2,24 @@
 
 ## Ownership model
 
-The project combines manual raw-pointer cleanup with a small texture wrapper. `BaseObject` is the key ownership mechanism:
+The project combines explicit SDL cleanup with a small texture wrapper. `BaseObject` is the key texture-ownership mechanism:
 
 - `LoadImg` destroys the previous owned texture, loads a temporary surface, creates a texture, frees the surface, and marks the texture owned.
 - `UseTexture` frees prior state, stores a borrowed texture, and sets `owns_texture_ = false`.
 - `Free` destroys only owned textures and always nulls the pointer.
+- Copy construction and copy assignment are deleted, preventing two wrappers from owning the same texture.
 
-This supports global texture caches, but ownership is implicit and copy operations are unsafe.
+This supports global texture caches while keeping owner and borrower destruction distinct.
 
 ## Resource inventory
 
 | Resource | Creation | Owner | Borrowers/users | Destruction | Assessment |
 | --- | --- | --- | --- | --- | --- |
 | `SDL_Window* g_window` | `InitData` | `main.cpp` globals | SDL event/render setup | `close` | Explicit and clear |
-| `SDL_Renderer* g_screen` | `InitData` | `main.cpp` globals | All rendering/loading | `close` | Explicit; destroyed before tile owners |
+| `SDL_Renderer* g_screen` | `InitData` | `main.cpp` globals | All rendering/loading | `close` | Destroyed after every texture owner |
 | Background/Monster textures | `BaseObject::LoadImg` | global `BaseObject`s | direct render | explicit `Free` | Clear |
 | Player/enemy/bullet cache textures | `LoadRuntimeTextures` | global `BaseObject`s | player, threats, bullets borrow | entities cleared, then caches freed | Correct order in `close` |
-| Tile textures | `GameMap::LoadTiles` | `GameMap::tile_mat` objects | `DrawMap` | only global destructors | Unsafe shutdown order |
+| Tile textures | `GameMap::LoadTiles` | `GameMap::tile_mat` objects | `DrawMap` | `GameMap::FreeTiles` before renderer; destructor fallback | Explicit and ordered |
 | Player/HUD textures | `BaseObject::LoadImg` | player/HUD `BaseObject` bases | direct render | explicit `Free` | Clear; restart reloads health texture |
 | Text textures | `TextObject::LoadFromRenderText` | each `TextObject` | text render | cache rebuild/destructor/`close` | Clear while fonts/renderer live |
 | Menu texture/surface | `LoadFromFile`/`Call_Menu` | raw globals | menu loop | `FreeMenuResources` | Explicit; called on all visible menu exits |
@@ -27,28 +28,34 @@ This supports global texture caches, but ownership is implicit and copy operatio
 | Temporary image surfaces | `BaseObject::LoadImg` | local | texture creation | same function | Clear |
 | Temporary text surfaces/textures | `TextObject` or `renderText` | local/object | immediate draw/cache | immediate or object cleanup | Clear, but modal churn is costly |
 | Six `TTF_Font*` | `LoadFromFile` | raw globals | text objects/functions borrow | `CloseFont` in `close` | Explicit; two are unused |
-| Seven `Mix_Chunk*` | `LoadFromFile` | raw globals | direct playback | `FreeChunk` in `close` | Explicit; audio device not closed |
-| `Mix_Music* gMusic` | never loaded | raw global | none | `Mix_FreeMusic(NULL)` | Dead state |
+| Seven `Mix_Chunk*` | `LoadFromFile` | raw globals | direct playback | playback halt, `FreeChunk`, then `Mix_CloseAudio` | Explicit and ordered |
+| `Mix_Music* gMusic` | never loaded | raw global | none | guarded `Mix_FreeMusic` | Dead state |
 | Enemy objects | `MakeThreats` | `ThreatList` unique pointers | per-frame raw targets | erase/clear | Clear ownership |
-| Bullet objects | mouse input `new` | `MainObject` by convention | main collision loop | manual delete | Fragile but mostly centralized |
+| Bullet objects | mouse input `make_unique` | `MainObject::BulletList` | main collision loop borrows with `.get()` | vector erase/clear | Explicit unique ownership |
 
-## Confirmed/credible lifecycle risks
+## Resolved lifecycle risks
 
 ### Tile texture destruction after renderer shutdown
 
-`game_map` is a global object. `close` destroys `g_screen` but never calls a `GameMap` cleanup. Its 20 `TileMat` elements are destroyed only during global teardown after `main` returns; their `BaseObject` destructors call `SDL_DestroyTexture`. This violates the intended “destroy textures before renderer/SDL” ordering. SDL renderer destruction also invalidates associated textures, so later destruction can operate on invalid handles. A crash on this exact runtime was **not confirmed from the current codebase**, but the ownership order is incorrect.
+`close` now calls `game_map.FreeTiles()` before destroying `g_screen`. The `GameMap` destructor calls the same idempotent cleanup as a fallback, so global destruction only sees null texture handles.
 
 ### Audio device not explicitly closed
 
-`Mix_OpenAudio` succeeds during init, but `close` calls `Mix_Quit`/`SDL_Quit` without `Mix_CloseAudio`. Add explicit audio-device closure before quitting mixer/SDL.
+Successful `Mix_OpenAudio` is tracked. Shutdown halts channels/music, frees chunks/music, calls `Mix_CloseAudio`, then quits SDL_mixer and SDL.
+
+### Shallow-copyable texture owners
+
+`BaseObject` copy construction and assignment are deleted. Current derived owners are not copied by value, and the build enforces that constraint.
+
+### Projectile ownership across replay
+
+`MainObject` stores bullets in `vector<unique_ptr<BulletObject>>`. Erase, clear, shutdown, and replay release projectiles automatically; the removed public raw-pointer setter can no longer duplicate ownership.
+
+## Remaining resource-related correctness risk
 
 ### Unchecked partial initialization
 
 `LoadFromFile` does not return success. A null menu surface is dereferenced for `g_img_menu->w/h`; null win/journey surfaces are similarly dereferenced in `Create_texture`. Null fonts/chunks/textures can be passed into SDL APIs. This is a correctness/crash risk during missing/corrupt asset or decoder failure.
-
-### Shallow-copyable texture owners
-
-`BaseObject` defines a destructor but not copy/move operations. The implicit copy constructor/assignment copy `p_object_` and `owns_texture_`, allowing two objects to believe they own one texture. No current application call site was found that copies a `BaseObject`-derived instance, so a current double-free is **not confirmed from the current codebase**. The type should still be made noncopyable or given correct move semantics before future container/value use.
 
 ### Borrowed texture lifetime
 
@@ -58,10 +65,5 @@ Player, enemy, and bullet textures are borrowed. The current `close` order clear
 
 For this small game, use narrow RAII rather than a large resource framework:
 
-1. Make `BaseObject` noncopyable and movable, or replace its flag with distinct owning/borrowing handle types.
-2. Add `GameMap::FreeTiles` or rely on a top-level owner whose members destruct before renderer shutdown.
-3. Wrap window, renderer, textures, surfaces, fonts, chunks, and audio-device state with small custom deleters.
-4. Make `LoadFromFile` return a detailed success/failure result and stop before dereferencing missing resources.
-5. Store bullets as `unique_ptr` (or values if address stability is not required).
-6. Close audio with `Mix_CloseAudio` before `Mix_Quit`/`SDL_Quit`.
-
+1. Wrap window, renderer, textures, surfaces, fonts, chunks, and audio-device state with small custom deleters when a top-level application owner is introduced.
+2. Make `LoadFromFile` return a detailed success/failure result and stop before dereferencing missing resources.
