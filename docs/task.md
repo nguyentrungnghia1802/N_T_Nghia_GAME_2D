@@ -161,3 +161,13 @@ The game must:
 -   use reasonable CPU/RAM.
 -   shutdown cleanly.
 -   preserve gameplay.
+
+# Step 11 --- Stabilize Respawn Input
+
+Status: **Completed on 2026-08-24** (`refactor(step-11)`).
+
+Fix:
+
+-   clear latched movement/jump input when respawn begins.
+-   remove the unconditional 100-pixel forward shift on normal respawn.
+-   retain camera catch-up only when the player has fallen behind the viewport.

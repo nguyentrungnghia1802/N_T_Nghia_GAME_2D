@@ -86,7 +86,7 @@ Simulation and render are interleaved. Player/enemy/bullet visuals are submitted
 | --- | --- | --- |
 | Menu -> Playing | Start click | Four-second pumped wait, return from `Call_Menu` |
 | Playing -> Journey | Exact camera equality | Nested loop until Space/Escape |
-| Playing -> Respawn | Player/enemy collision or fall and deaths <= 3 | One-second pumped wait, decrement health, continue outer loop |
+| Playing -> Respawn | Player/enemy collision or fall and deaths <= 3 | Clear latched movement input, one-second pumped wait, decrement health, continue outer loop without a normal forward X offset |
 | Playing -> Game Over | Fourth death | Nested loop until Space/Escape/window close |
 | Game Over -> Playing | Space | Four-second pumped wait; reset at next outer-loop start |
 | Playing -> Win | `winner == true` | Nested `Win_Game` loop |
@@ -99,6 +99,6 @@ The journey condition uses equality against `280 + n * 16170`, while normal came
 
 ## 5. Restart and shutdown
 
-`Restart` restores `GameMap` from its cached base map, selects one of three camera/player checkpoints from global `map_start`, resets collected hearts and the health HUD, and sets a three-frame player comeback counter. Threats are recreated separately.
+`Restart` restores `GameMap` from its cached base map, selects one of three camera/player checkpoints from global `map_start`, resets collected hearts and the health HUD, clears movement/jump input, and sets a three-frame player comeback counter. Threats are recreated separately.
 
 `close` is guarded against repeat calls. It stops playback, clears threats/bullets and texture borrowers, frees cached/tile/UI textures, closes fonts/chunks/the audio device, destroys renderer/window, and then quits mixer/image/TTF/SDL.

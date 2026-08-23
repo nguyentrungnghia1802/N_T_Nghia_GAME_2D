@@ -333,7 +333,7 @@ int main(int, char *[])
             if (num_die <= 3)
             {
                 p_player.SetRect(0, 0);
-                p_player.set_comeback_time(3);
+                p_player.PrepareRespawn(3);
                 WaitWithEventPump(1000);
                 player_power.Decrease();
                 player_power.Render(g_screen);
@@ -1111,7 +1111,7 @@ void Restart(int &num_die, int &heart_count, MainObject &p_player, PlayerPower &
     heart_count = 0;
 
     p_player.SetRect(0, 0);
-    p_player.set_comeback_time(3);
+    p_player.PrepareRespawn(3);
 }
 
 bool Create_texture()

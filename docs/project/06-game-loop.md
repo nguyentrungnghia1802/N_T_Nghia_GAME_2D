@@ -34,6 +34,8 @@ Long flows use `WaitWithEventPump`, which polls quit/Escape and sleeps 1 ms repe
 
 The outer loop drains all queued events before simulation. `MainObject::HandelInputAction` updates held-direction flags from key down/up, latches jump until `DoPlayer`, and acquires a pooled bullet on mouse down. It receives every event, including unrelated events.
 
+`MainObject::PrepareRespawn` clears all directional/jump flags, horizontal velocity, and movement animation before starting the comeback counter. Normal respawn preserves the player's X position instead of adding 100 pixels. The existing 500-pixel catch-up remains only for the invalid state where the auto-scrolling camera has already passed the player, preventing an immediate repeated death.
+
 Risks:
 
 - `MainObject::status_` and `BulletObject::bullet_dir_` begin right-facing, so firing before the first `A`/`D` press is deterministic.

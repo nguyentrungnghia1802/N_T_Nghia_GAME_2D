@@ -314,6 +314,24 @@ void MainObject::ClearBulletList()
     bullet_pool_.clear();
 }
 
+void MainObject::PrepareRespawn(float comeback_time)
+{
+    ResetMovementInput();
+    come_back_time_ = comeback_time;
+}
+
+void MainObject::ResetMovementInput()
+{
+    input_type_.left_ = 0;
+    input_type_.right_ = 0;
+    input_type_.jump_ = 0;
+    input_type_.down_ = 0;
+    input_type_.up_ = 0;
+    x_val_ = 0;
+    frame_ = 0;
+    animation_ticks_ = 0.0f;
+}
+
 std::unique_ptr<BulletObject> MainObject::AcquireBullet()
 {
     std::unique_ptr<BulletObject> bullet;
@@ -385,17 +403,6 @@ void MainObject::DoPlayer(Map &map_data, Mix_Chunk *gEarn_Heart, float frame_sca
             {
                 x_pos_ += 500;
                 check_x = false;
-            }
-            else
-            {
-                if (x_pos_ > 1500)
-                {
-                    x_pos_ += 100;
-                }
-                else
-                {
-                    x_pos_ += 100;
-                }
             }
             y_pos_ = 0;
             x_val_ = 0;
@@ -550,7 +557,7 @@ void MainObject::CheckToMap(Map &map_data, Mix_Chunk *gEarn_Heart, float vertica
             {
                 check_x = true;
             }
-            come_back_time_ = 3;
+            PrepareRespawn(3);
             is_minus_live = true;
         }
     }

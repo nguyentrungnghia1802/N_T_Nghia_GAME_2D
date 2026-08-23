@@ -48,11 +48,12 @@ public:
         void RemoveBullet(size_t idx);
         void ResetBulletList();
         void ClearBulletList();
+        void PrepareRespawn(float comeback_time);
         void IncreaseMoney();
-        void set_comeback_time(float cb_time){come_back_time_=cb_time;}
         bool GetIsMinusLive() {return is_minus_live;}
         void RetsetMinusLive() {is_minus_live = false;}
         int GetMoneyCount() const {return heart_count;}
+        float GetXPos() const {return x_pos_;}
         void SetXPos(float x) {x_pos_ = x;}
         void HeartCount(int x) {heart_count=x;}
 private:
@@ -95,6 +96,7 @@ private:
         int bullet_texture_height_;
         int loaded_status_;
         void ApplyTextureForStatus(const int& status);
+        void ResetMovementInput();
         std::unique_ptr<BulletObject> AcquireBullet();
         void RecycleBullet(size_t idx);
 };

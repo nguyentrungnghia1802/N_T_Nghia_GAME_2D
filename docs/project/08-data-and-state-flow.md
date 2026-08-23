@@ -29,6 +29,7 @@ flowchart LR
 - `A`/`D` key events mutate `Input::left_`/`right_` and facing `status_`.
 - `W` key down sets a jump request consumed on the next `DoPlayer` call.
 - Left mouse down plays fire audio, acquires a recycled bullet when available, borrows the global bullet texture, resets motion state, and places it using the player's current screen `rect_`.
+- Death/restart enters `PrepareRespawn`, which clears latched movement and jump state so key events consumed by modal waits cannot move the revived player.
 
 Bullet positions are screen-space, not world-space. They move against `SCREEN_WIDTH`, so camera movement does not affect an existing bullet.
 
