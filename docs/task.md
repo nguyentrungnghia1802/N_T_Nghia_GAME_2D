@@ -99,6 +99,8 @@ Preserve current gameplay feeling.
 
 # Step 6 --- Reduce CPU Usage
 
+Status: **Completed on 2026-08-24** (`refactor(step-6)`).
+
 Implement:
 
 -   active entity processing.

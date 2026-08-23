@@ -10,9 +10,9 @@ Game-over, win, time-limit, and menu labels now use retained `TextObject` caches
 
 ### Uncapped menu rendering
 
-`Call_Menu` continuously copies/presents the same screen with no delay and the renderer is not vsynced. On drivers where `SDL_RenderPresent` does not block, the menu can consume a full CPU core.
+Resolved in Step 6. Menu and static modal loops use the shared 60 Hz frame cap. A five-second settled-menu sample used 0.176% of the whole 16-logical-processor machine (2.81% single-core equivalent), down from the Step 1 7.23% whole-machine sample.
 
-**Remedy:** Use the same central loop/frame pacing for all states, or wait for events/redraw only when hover state changes.
+An event-driven redraw model could reduce this further, but is not required at the observed load.
 
 ### Full map copies every gameplay frame
 

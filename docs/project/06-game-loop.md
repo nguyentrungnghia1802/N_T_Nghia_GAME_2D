@@ -28,7 +28,7 @@ Sub-pixel remainders preserve fractional bullet/camera/background motion. Gravit
 
 `Profiler::EndFrame` is called before `CapFrameRate`, so its `frame_ms_*` values measure update/render CPU wall time but exclude the cap delay. Its `fps_avg` uses elapsed interval time and therefore includes delay. These values answer different questions and should not be compared as identical frame durations.
 
-Long flows use `WaitWithEventPump`, which polls quit/Escape and sleeps 1 ms repeatedly. This is more responsive than one long `SDL_Delay`, but it still suspends gameplay/update/render. Menu, journey, game-over, and win are independent modal loops.
+Long flows use `WaitWithEventPump`, which polls quit/Escape and sleeps 1 ms repeatedly. Menu, journey, game-over, and win remain independent modal loops, but Step 6 applies the same 60 Hz frame budget to each so static states no longer busy-render.
 
 ## Input timing
 
@@ -89,4 +89,4 @@ Elapsed game time uses `SDL_GetTicks()/1000`, not `delta_time`. On the first gam
 
 Confirmed recurring work includes two full `Map` copies, allocation/free of a local active-target vector, tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and text cache checks. HUD text only regenerates when its content changes. The timer string changes once per second; heart/high-score textures change only with score changes.
 
-The menu loop has no explicit delay and the renderer is not created with vsync, so it can busy-render at high CPU usage. Game-over/win loops repeatedly call `renderText`, creating and destroying TTF surfaces/textures each iteration.
+Menu/game-over/win/journey loops are paced to 60 Hz. Static modal text is cached, and gameplay updates/renders/collides only enemies inside the camera active margin; render functions additionally apply viewport checks.

@@ -288,6 +288,7 @@ int main(int, char *[])
         SDL_Rect screen_viewport = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
         std::vector<ThreatCollisionTarget> active_threats;
         active_threats.reserve(threats_list.size());
+        const SDL_Rect rect_player = p_player.GetRectFrame();
 
         for (size_t i = 0; i < threats_list.size(); i++)
         {
@@ -304,7 +305,6 @@ int main(int, char *[])
                 p_threat->DoPlayer(map_data, frame_scale);
                 p_threat->Show(g_screen, frame_scale, &screen_viewport);
 
-                SDL_Rect rect_player = p_player.GetRectFrame();
                 SDL_Rect rect_threat = p_threat->GetRectFrame();
                 active_threats.push_back({p_threat, rect_threat});
                 bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat);
@@ -348,6 +348,7 @@ int main(int, char *[])
 
                 while (quit_game_over == false)
                 {
+                    const Uint32 modal_frame_start = SDL_GetTicks();
                     game_over_text[0].RenderText(g_screen, SCREEN_WIDTH / 2 - 280, 220);
                     game_over_text[1].RenderText(g_screen, SCREEN_WIDTH / 2 + 40, 220);
                     game_over_text[2].RenderText(g_screen, SCREEN_WIDTH / 2 - 420, 380);
@@ -374,7 +375,7 @@ int main(int, char *[])
                             is_quit = true;
                         }
                     }
-                    SDL_Delay(1);
+                    CapFrameRate(modal_frame_start);
                 }
                 game_state = is_quit ? GameState::QUIT : GameState::PLAYING;
                 quit_game_over = false;
@@ -962,6 +963,7 @@ void Call_Menu()
 
     while (start_Game == false)
     {
+        const Uint32 menu_frame_start = SDL_GetTicks();
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
         (selected[1] ? text_menu_hover[1] : text_menu[1]).RenderText(g_screen, SCREEN_WIDTH - 350, 420);
@@ -1012,6 +1014,7 @@ void Call_Menu()
                 break;
             }
         }
+        CapFrameRate(menu_frame_start);
     }
 }
 
@@ -1025,6 +1028,7 @@ void Win_Game()
     win_text[3].LoadFromRenderText(gFont3, g_screen);
     while (replay_game == false)
     {
+        const Uint32 modal_frame_start = SDL_GetTicks();
         SDL_RenderCopy(g_screen, WinGame, NULL, &WinGameRect);
         win_text[0].RenderText(g_screen, SCREEN_WIDTH / 2 - 676, 180);
         win_text[1].RenderText(g_screen, SCREEN_WIDTH / 2 + 290, 180);
@@ -1050,7 +1054,7 @@ void Win_Game()
                 game_state = GameState::QUIT;
             }
         }
-        SDL_Delay(1);
+        CapFrameRate(modal_frame_start);
     }
     replay_game = false;
 }
@@ -1141,6 +1145,7 @@ void render_journey_img()
         bool jour_img = false;
         while (jour_img == false)
         {
+            const Uint32 modal_frame_start = SDL_GetTicks();
             if (map_data.start_x_ == JOURNEY_EACH_MAP * 0 + 280)
             {
                 SDL_RenderCopy(g_screen, journey_Texture_1, NULL, &journey_Rect_1);
@@ -1183,7 +1188,7 @@ void render_journey_img()
                     game_state = GameState::QUIT;
                 }
             }
-            SDL_Delay(1);
+            CapFrameRate(modal_frame_start);
         }
         jour_img = false;
         if (!is_quit)

@@ -19,7 +19,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-013 | P1 | Time/score | Initial timer includes menu; replay/reset semantics are inconsistent | Displayed completion time is misleading | Define play-time semantics and update only in Playing state |
 | TD-014 | P1 | Map | Full 10x1011 map copied out and back every frame | Unnecessary work and unclear authority | Mutate through `GameMap` reference/API |
 | TD-015 | P1 (resolved) | UI performance | Static modal text was rasterized/uploaded every iteration | Fixed in Step 3 with startup/state-entry text caches | Preserve cache-only modal rendering |
-| TD-016 | P1 | Menu performance | Menu loop has no pacing/vsync | Possible high idle CPU | Event-driven redraw or central cap |
+| TD-016 | P1 (resolved) | Menu performance | Menu/modal loops had no shared pacing | Step 6 applies the fractional 60 Hz cap to all static loops | Preserve settled-menu CPU measurement |
 | TD-017 | P2 (resolved) | Map safety | Parser did not verify 10,110 reads or tile range before indexing | Step 4 validates exact count and IDs 0-7; drawing also bounds-checks IDs | Preserve malformed-map tests |
 | TD-018 | P2 | Duplication | Player/enemy tile collision and map loaders duplicate logic | Divergent fixes and subtle bugs | Share small tile-query/predicate helpers; remove unused loader |
 | TD-019 | P2 | Includes | `CommonFunc.h`/`TextObject.h` cycle and broad SDL/global exposure | Fragile includes and slow/broad recompilation | Split constants/types/globals; use direct includes/forward declarations |
