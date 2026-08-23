@@ -14,13 +14,11 @@ Resolved in Step 6. Menu and static modal loops use the shared 60 Hz frame cap. 
 
 An event-driven redraw model could reduce this further, but is not required at the observed load.
 
-### Full map copies every gameplay frame
+### Full map copies every gameplay frame (resolved)
 
-`Map` contains 10,110 integers (about 40 KB before `std::string`/padding). `GameMap::getMap` returns it by value and `SetMap` copies it back each frame. This performs roughly 80 KB of explicit map copying per frame, around 4.8 MB/s at 60 Hz.
+Step 9 makes `GameMap` the sole runtime-map owner and gives the loop a stable mutable reference. Camera, collected tiles, collision, and drawing now share that instance, removing roughly 80 KB of explicit copying per frame (about 4.8 MB/s at 60 Hz).
 
-This bandwidth is probably small on a desktop, but it is confirmed unnecessary work and obscures ownership.
-
-**Remedy:** Let the orchestrator obtain a mutable/reference view or move map update/draw behind `GameMap` methods.
+Restart still performs one intentional base-to-runtime copy and resets the camera remainder; no map file or tile texture is reloaded.
 
 ### Frame-rate-dependent simulation
 
@@ -82,6 +80,8 @@ Every five seconds on Windows, the profiler snapshots all system threads to coun
 - Enemy render applies viewport culling.
 - Bullet list is returned by const reference rather than copied.
 - Restart restores cached map memory rather than re-reading/reloading tiles.
+- The main loop mutates one authoritative map instance without copy-out/copy-back.
+- Visible tile bounds exclude fully off-screen rows/columns, and blank tile ID 0 has no texture allocation.
 
 ## Measurement limitations
 

@@ -40,7 +40,6 @@ Resolved. `MainObject::HanleBullet` retains the current index after recycling an
 
 | Duplication | Evidence | Impact |
 | --- | --- | --- |
-| Map file parsing | `GameMap::LoadMap` and unused `LoadMap_Return` repeat nearly the entire parser | Fixes/validation can diverge |
 | Tile collision | Player and enemy each implement similar horizontal/vertical tile sampling | Bugs such as the chained comparison survive in one copy |
 | Clip construction | Player assigns 6 rectangles manually; enemy assigns 5 manually | Verbose and error-prone if frame count changes |
 | Modal screen loops | Menu, journey, game-over, win each own render/event/quit loops | Inconsistent input/timing and difficult transition changes |
@@ -62,7 +61,7 @@ Resolved. `MainObject::HanleBullet` retains the current index after recycling an
 | --- | --- | --- |
 | SDL platform | `g_window`, `g_screen`, three event globals | Hidden lifetime and broad reach |
 | Resource repository | 11 global `BaseObject`s, 6 fonts, surfaces/textures, 8 audio pointers | Initialization order and cleanup are manual |
-| World | `game_map`, `map_data`, `p_player`, `threats_list` | No explicit top-level owner |
+| World | `game_map`, local runtime-map reference, `p_player`, `threats_list` | Map authority is explicit; no top-level application owner |
 | HUD/progress | `player_power`, `player_heart`, text objects, scores/deaths | State transitions mutate distant globals |
 | Control | `winner`, `is_quit`, `start_Game`, restart flags, `change_threats`, `game_state` | No single authoritative screen state |
 | Timing/render | `start_time`, `current_time`, `time_render`, `minus`, `delta_time` | Some values have no behavioral consumer |
@@ -83,7 +82,6 @@ These constants encode current gameplay. Name/consolidate them before changing v
 Strong call-site evidence identifies:
 
 - Entire `ImpTimer` module: compiled, no runtime call sites.
-- `GameMap::LoadMap_Return`: declared/defined, no call sites.
 - `PlayerPower::SetNum` and `InitCrease`: no call sites.
 - `MainObject::set_bullet_list`: no call sites and unsafe ownership semantics.
 - `gFont1`, `gFont2`: loaded/freed, never used to render.

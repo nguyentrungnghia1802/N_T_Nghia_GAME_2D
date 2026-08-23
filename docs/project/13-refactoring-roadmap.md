@@ -63,7 +63,7 @@ flowchart LR
 
 ### R5 — Remove strong dead code and stale state (P1/P2)
 
-- **Problem/location:** `ImpTimer`, `LoadMap_Return`, unused fonts/music/state/APIs/constants listed in `10-code-quality-audit.md`.
+- **Problem/location:** `ImpTimer` and unused fonts/music/state/APIs/constants listed in `10-code-quality-audit.md`. Step 9 removed the unused `LoadMap_Return` API.
 - **Why it matters:** Dead paths misrepresent the architecture and expand maintenance surface.
 - **Proposed solution:** Remove one dead group per commit after call-site search and build. Do not delete unreferenced art indiscriminately.
 - **Affected modules:** `Makefile`, `ImpTimer.*`, `gamemap.*`, `main.cpp`, relevant headers.
@@ -72,6 +72,8 @@ flowchart LR
 - **Estimated scope:** Small.
 
 ### R6 — Establish one authoritative map mutation path (P1)
+
+**Status:** Completed by refactoring Step 9 with a stable `GameMap`-owned runtime-map reference and restart regression tests.
 
 - **Problem/location:** `getMap`/global copy/`SetMap` round-trip every frame.
 - **Why it matters:** Ownership is unclear and work is duplicated.

@@ -87,7 +87,8 @@ bool GameMap::LoadTiles(SDL_Renderer *screen)
         "res/pic/map/0.png", "res/pic/map/1.png", "res/pic/map/2.png", "res/pic/map/3.png",
         "res/pic/map/4.png", "res/pic/map/5.png", "res/pic/map/6.png", "res/pic/map/7.png"};
 
-    for (int i = 0; i < LOADED_TILE_COUNT; ++i)
+    // Tile zero is blank and DrawMap deliberately never renders it.
+    for (int i = 1; i < LOADED_TILE_COUNT; ++i)
     {
         if (!tile_mat[i].LoadImg(map_paths[i], screen))
         {
@@ -101,7 +102,7 @@ bool GameMap::LoadTiles(SDL_Renderer *screen)
 
 void GameMap::FreeTiles()
 {
-    for (int i = 0; i < MAX_TILES; ++i)
+    for (int i = 0; i < LOADED_TILE_COUNT; ++i)
     {
         tile_mat[i].Free();
     }
@@ -137,9 +138,9 @@ GameMap::TileRange GameMap::GetVisibleTileRange(const Map &map_data) const
 {
     TileRange range;
     range.first_x = std::max(0, map_data.start_x_ / TILE_SIZE);
-    range.last_x = std::min(MAX_MAP_X - 1, (map_data.start_x_ + SCREEN_WIDTH + TILE_SIZE - 1) / TILE_SIZE);
+    range.last_x = std::min(MAX_MAP_X - 1, (map_data.start_x_ + SCREEN_WIDTH - 1) / TILE_SIZE);
     range.first_y = std::max(0, map_data.start_y_ / TILE_SIZE);
-    range.last_y = std::min(MAX_MAP_Y - 1, (map_data.start_y_ + SCREEN_HEIGHT + TILE_SIZE - 1) / TILE_SIZE);
+    range.last_y = std::min(MAX_MAP_Y - 1, (map_data.start_y_ + SCREEN_HEIGHT - 1) / TILE_SIZE);
     return range;
 }
 
@@ -148,48 +149,38 @@ void GameMap::ResetFromBaseMap()
     if (has_base_map_)
     {
         game_map_ = base_map_;
+        map_run_remainder_ = 0.0f;
     }
 }
 
-void GameMap::MapRun(Map &map_data, float frame_scale)
+void GameMap::MapRun(float frame_scale)
 {
     const float movement = MAP_RUN * frame_scale + map_run_remainder_;
     const int whole_pixels = static_cast<int>(movement);
     map_run_remainder_ = movement - whole_pixels;
-    map_data.start_x_ += whole_pixels;
+    game_map_.start_x_ += whole_pixels;
 }
 
-void GameMap::ResetMap(Map &map_data)
+void GameMap::ResetMap()
 {
     map_run_remainder_ = 0.0f;
     if (winner == true)
     {
-        map_data.start_x_ = 0;
+        game_map_.start_x_ = 0;
     }
     else if (winner == false)
     {
         if (map_start < JOURNEY_EACH_MAP * 1 + 280)
         {
-            map_data.start_x_ = 0;
+            game_map_.start_x_ = 0;
         }
         else if (map_start >= JOURNEY_EACH_MAP * 1 + 280 && map_start < JOURNEY_EACH_MAP * 2 + 280)
         {
-            map_data.start_x_ = JOURNEY_EACH_MAP * 1 + 280;
+            game_map_.start_x_ = JOURNEY_EACH_MAP * 1 + 280;
         }
         else if (map_start >= JOURNEY_EACH_MAP * 2 + 280)
         {
-            map_data.start_x_ = JOURNEY_EACH_MAP * 2 + 280;
+            game_map_.start_x_ = JOURNEY_EACH_MAP * 2 + 280;
         }
     }
-}
-
-bool GameMap::LoadMap_Return(const char path[])
-{
-    if (!LoadMap(path))
-    {
-        return false;
-    }
-
-    ResetMap(game_map_);
-    return true;
 }

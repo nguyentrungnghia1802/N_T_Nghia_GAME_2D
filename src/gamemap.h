@@ -5,7 +5,6 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 
-#define MAX_TILES 20
 #define MAP_RUN 6
 const int LOADED_TILE_COUNT = 8;
 
@@ -31,14 +30,13 @@ public:
     ~GameMap();
 
     bool LoadMap(const char path[]);
-    bool LoadMap_Return(const char path[]);
     bool LoadTiles(SDL_Renderer *screen);
     void FreeTiles();
     void DrawMap(SDL_Renderer *screen);
-    Map getMap() const { return game_map_; };
-    void SetMap(Map &map_data) { game_map_ = map_data; }
-    void MapRun(Map &map_data, float frame_scale);
-    void ResetMap(Map &map_data);
+    Map &GetMap() { return game_map_; }
+    const Map &GetMap() const { return game_map_; }
+    void MapRun(float frame_scale);
+    void ResetMap();
     void ResetFromBaseMap();
     TileRange GetVisibleTileRange(const Map &map_data) const;
 
@@ -47,7 +45,7 @@ private:
     Map base_map_;
     bool has_base_map_;
     float map_run_remainder_;
-    TileMat tile_mat[MAX_TILES];
+    TileMat tile_mat[LOADED_TILE_COUNT];
 };
 
 #endif

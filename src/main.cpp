@@ -38,8 +38,6 @@ TextObject game_over_text[3];
 TextObject win_text[4];
 TextObject time_limit_text;
 
-Map map_data;
-
 TTF_Font *font_time = NULL;
 TTF_Font *font_heart = NULL;
 TTF_Font *gFont3 = NULL;
@@ -130,7 +128,7 @@ float delta_time = 0.0f;
 float background_scroll_remainder = 0.0f;
 double frame_cap_remainder_ms = 0.0;
 
-void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power);
+void Restart(int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power);
 bool InitData();
 bool LoadBackground();
 void close();
@@ -145,7 +143,7 @@ bool LoadFromFile();
 bool LoadTextCache();
 void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
-void render_journey_img();
+void render_journey_img(const Map &map_data);
 bool Create_texture();
 ThreatList MakeThreats();
 
@@ -190,6 +188,7 @@ int main(int, char *[])
         close();
         return -1;
     }
+    Map &map_data = game_map.GetMap();
 
     p_player.SetTextureRefs(gPlayerLeftTexture.GetObject(), gPlayerLeftTexture.GetRect().w, gPlayerLeftTexture.GetRect().h,
                             gPlayerRightTexture.GetObject(), gPlayerRightTexture.GetRect().w, gPlayerRightTexture.GetRect().h);
@@ -234,7 +233,7 @@ int main(int, char *[])
         {
             threats_list.clear();          // Delete old Threats
             threats_list = MakeThreats();
-            Restart(map_data, num_die, heart_count, p_player, player_power);
+            Restart(num_die, heart_count, p_player, player_power);
             isRestarting = !isRestarting;
         }
 
@@ -263,13 +262,12 @@ int main(int, char *[])
         g_background.Render1(g_screen, NULL);
 
         //          Journey
-        render_journey_img();
+        render_journey_img(map_data);
 
         //             MAP
-        map_data = game_map.getMap();
         if (map_data.start_x_ < MAX_MAP_X * TILE_SIZE - 1500)
         {
-            game_map.MapRun(map_data, frame_scale);
+            game_map.MapRun(frame_scale);
         }
         map_start = map_data.start_x_;
 
@@ -280,8 +278,6 @@ int main(int, char *[])
         p_player.DoPlayer(map_data, gEarn_Heart, frame_scale);
         p_player.Show(g_screen, frame_scale);
 
-        //            SET MAP
-        game_map.SetMap(map_data);
         game_map.DrawMap(g_screen);
 
         //      SHOW_GAME_INFORMATION
@@ -397,7 +393,7 @@ int main(int, char *[])
             {
                 threats_list.clear();
                 threats_list = MakeThreats();
-                Restart(map_data, num_die, heart_count, p_player, player_power);
+                Restart(num_die, heart_count, p_player, player_power);
                 win_and_restart = false;
             }
             winner = false;
@@ -1082,13 +1078,11 @@ void Win_Game()
     replay_game = false;
 }
 
-void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
+void Restart(int &num_die, int &heart_count, MainObject &p_player, PlayerPower &player_power)
 {
     p_player.ResetBulletList();
     game_map.ResetFromBaseMap();
-    map_data = game_map.getMap();
-    game_map.ResetMap(map_data);
-    game_map.SetMap(map_data);
+    game_map.ResetMap();
 
     if (winner == true)
     {
@@ -1156,7 +1150,7 @@ bool Create_texture()
            journey_Texture_4 != NULL && journey_Texture_5 != NULL;
 }
 
-void render_journey_img()
+void render_journey_img(const Map &map_data)
 {
     if (map_data.start_x_ == JOURNEY_EACH_MAP * 0 + 280 ||
         map_data.start_x_ == JOURNEY_EACH_MAP * 1 + 280 ||

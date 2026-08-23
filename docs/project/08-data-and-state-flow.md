@@ -34,15 +34,13 @@ Bullet positions are screen-space, not world-space. They move against `SCREEN_WI
 
 ## Map/camera exchange
 
-`GameMap` owns `game_map_`, but each gameplay frame uses this copy cycle:
+`GameMap` is the sole owner of the mutable runtime map. The gameplay loop obtains one stable reference after startup:
 
 ```text
-GameMap::getMap() by value
-    -> global map_data
-    -> MapRun adds 6 * frame_scale with a fractional remainder
-    -> MainObject mutates collected tile cells
-    -> GameMap::SetMap copies map_data back
-    -> GameMap::DrawMap reads game_map_
+GameMap::GetMap() by reference
+    -> MapRun mutates camera by 6 * frame_scale with a fractional remainder
+    -> MainObject mutates collected tile cells through the same reference
+    -> GameMap::DrawMap reads the same runtime map
 ```
 
 The player and enemies hold their own world coordinates. Before rendering, each receives `map_data.start_x_/start_y_` and computes `rect_ = world - map offset`. The camera advances independently of player input.
@@ -60,7 +58,7 @@ The global `heart_count` is refreshed from the player before the player's curren
 1. `IsThreatActive` compares enemy world X/frame width with camera range plus a screen-width margin.
 2. Active enemies receive camera offset.
 3. Patrol code selects direction/borrowed texture.
-4. Enemy physics mutates world state against the current map copy.
+4. Enemy physics reads the current runtime map reference.
 5. Render computes screen rectangle and culls against the viewport.
 6. A collision target of non-owning pointer plus explicit threat hitbox is appended only when the player did not consume that enemy.
 
@@ -89,4 +87,4 @@ Audio chunks are loaded globally and passed selectively: fire/heart/death/win fu
 
 ## Save/load flow
 
-No save file, serialization, settings file, or persistent high-score flow exists. `GameMap::LoadMap_Return` is a duplicate disk loader used nowhere; it is not a save/load system.
+No save file, serialization, settings file, or persistent high-score flow exists. Restart restores the validated startup snapshot in memory; it does not reload from disk.

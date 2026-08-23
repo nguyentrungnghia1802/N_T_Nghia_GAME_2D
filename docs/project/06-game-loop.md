@@ -84,6 +84,6 @@ Elapsed game time uses `SDL_GetTicks()/1000`, not `delta_time`. On the first gam
 
 ## Per-frame work
 
-Confirmed recurring work includes two full `Map` copies, clearing/refilling a retained active-target vector, tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and cached HUD rendering. The timer string changes once per second; heart/high-score strings and textures change only with their values.
+Confirmed recurring work includes direct mutation of the `GameMap` runtime map, clearing/refilling a retained active-target vector, tight visible-tile culling/draw, active enemy update/draw/collision, bullet update/draw/collision, and cached HUD rendering. The timer string changes once per second; heart/high-score strings and textures change only with their values.
 
 Menu/game-over/win/journey loops are paced to 60 Hz. Static modal text is cached, and gameplay updates/renders/collides only enemies inside the camera active margin; render functions additionally apply viewport checks.

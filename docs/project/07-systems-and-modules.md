@@ -42,13 +42,13 @@
 
 **Purpose:** Parse the 10x1011 integer map, retain base/runtime copies, advance/reset camera, calculate visible tile range, own tile textures, and render visible nonblank tiles.
 
-**Owned data:** `Map game_map_`, `Map base_map_`, `TileMat tile_mat[20]`, base-map flag.
+**Owned data:** `Map game_map_`, `Map base_map_`, seven nonblank `TileMat` textures in an eight-ID array, base-map flag.
 
 **Dependencies:** `Map`/constants/globals from `CommonFunc`, `BaseObject`.
 
-**Lifecycle:** Map and eight tile textures load once; runtime map is copied out/in each frame; base map restores on replay.
+**Lifecycle:** Map and seven nonblank tile textures load once; gameplay mutates the runtime map through a stable reference; the cached base map restores tiles/camera on replay without disk I/O.
 
-**Known concerns:** Unused duplicated `LoadMap_Return` and full map copies remain. Parsing/tile IDs and shutdown order are validated.
+**Known concerns:** Parsing/tile IDs, tight visible ranges, restart restoration, and shutdown order are validated. Player/enemy tile-sampling logic remains duplicated.
 
 ## `MainObject`: player and bullet owner
 

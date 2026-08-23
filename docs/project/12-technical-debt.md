@@ -17,7 +17,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-011 | P1 | Architecture | `main.cpp` owns nearly everything through globals | High change risk and poor testability | Extract a small top-level `Game`/resource owner incrementally |
 | TD-012 | P1 (resolved) | Bullets | Step 8 uses active/pooled `unique_ptr` containers and index-safe recycling | Safe lifetime and reuse after peak concurrency | Preserve pointer-reuse and shifted-element behavior tests |
 | TD-013 | P1 | Time/score | Initial timer includes menu; replay/reset semantics are inconsistent | Displayed completion time is misleading | Define play-time semantics and update only in Playing state |
-| TD-014 | P1 | Map | Full 10x1011 map copied out and back every frame | Unnecessary work and unclear authority | Mutate through `GameMap` reference/API |
+| TD-014 | P1 (resolved) | Map | Step 9 uses one `GameMap`-owned runtime instance through a stable reference | Removed two full map copies per frame | Preserve reference-stability and restart-restoration tests |
 | TD-015 | P1 (resolved) | UI performance | Static modal text was rasterized/uploaded every iteration | Fixed in Step 3 with startup/state-entry text caches | Preserve cache-only modal rendering |
 | TD-016 | P1 (resolved) | Menu performance | Menu/modal loops had no shared pacing | Step 6 applies the fractional 60 Hz cap to all static loops | Preserve settled-menu CPU measurement |
 | TD-017 | P2 (resolved) | Map safety | Parser did not verify 10,110 reads or tile range before indexing | Step 4 validates exact count and IDs 0-7; drawing also bounds-checks IDs | Preserve malformed-map tests |

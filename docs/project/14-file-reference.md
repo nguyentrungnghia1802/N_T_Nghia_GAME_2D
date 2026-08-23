@@ -9,8 +9,8 @@
 | `src/CommonFunc.cpp` | Shared global definitions, explicit hitbox builders, AABB collision, and mouse focus helpers | Profiler | Collision footprints are deliberately retained for gameplay compatibility |
 | `src/BaseObject.h` | Texture/rect owning-or-borrowing base class | `CommonFunc.h` | Noncopyable; runtime ownership flag distinguishes owner/borrower |
 | `src/BaseObject.cpp` | Image load, texture borrow/render/free, viewport test | SDL_image, profiler | `Render1` repeats scrolling background |
-| `src/gamemap.h` | `TileMat`, `GameMap`, visible range/reset APIs | `Map`, `BaseObject` | Broken include guard; `getMap` by value |
-| `src/gamemap.cpp` | Map parser, tile loading/drawing, camera/reset/base map | Globals `winner`, `map_start` | Duplicate unused loader; owns tile textures |
+| `src/gamemap.h` | `TileMat`, `GameMap`, stable runtime-map reference and visible range/reset APIs | `Map`, `BaseObject` | Owns runtime/base map authority |
+| `src/gamemap.cpp` | Validated parser, nonblank tile loading/drawing, camera/reset/base map | Globals `winner`, `map_start` | Restart restores cached base state |
 | `src/MainObject.h` | Player interface/state and active/pooled bullet owner | `BaseObject`, `BulletObject`, `Map` | Mixed responsibilities; explicit `unique_ptr` ownership |
 | `src/MainObject.cpp` | Input, animation, player/bullet update/render, tile collision, score/win/death | Audio globals, profiler | Highest-risk gameplay file |
 | `src/BulletObject.h` | Bullet direction/speed/active state and reuse reset | `BaseObject` | Deterministic right-facing default |
@@ -43,7 +43,7 @@
 | Path | Responsibility | Notes |
 | --- | --- | --- |
 | `res/pic/map/map01.txt` | Canonical runtime 1011x10 tile IDs | Exactly 10,110 IDs; differs from source/export copies |
-| `res/pic/map/0.png` ... `7.png` | Runtime tile textures | ID 0 is loaded but blank tiles are not rendered; IDs 1-7 used |
+| `res/pic/map/0.png` ... `7.png` | Runtime tile assets | ID 0 is blank and not loaded/rendered; IDs 1-7 are loaded once |
 | `res/pic/map/TILE_MAP/untitled.tmx` | Tiled 1.10.2 authoring map | Same declared 1011x10/80x80 geometry |
 | `res/pic/map/TILE_MAP/*.tsx` | Tiled tileset descriptors | One image per tileset |
 | `res/pic/map/TILE_MAP/Build Map/main.cpp` | CSV comma-to-space converter | Not in game build; output is not runtime map |

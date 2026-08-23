@@ -44,7 +44,7 @@ flowchart TD
 | Cached character/enemy/bullet textures | Global `BaseObject` instances own; player, enemies, bullets borrow |
 | Enemy objects | `ThreatList` owns through `std::unique_ptr` |
 | Bullet objects | `MainObject` owns raw pointers by convention and manually deletes them |
-| Map data | `GameMap` owns runtime/base copies; a global `map_data` is copied out and back each frame |
+| Map data | `GameMap` owns runtime/base copies; the loop holds a stable reference to the runtime map |
 | Tile textures | `GameMap::tile_mat` owns via `BaseObject` inheritance |
 | UI text | Each `TextObject` owns its current text texture but borrows a `TTF_Font*` |
 

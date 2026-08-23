@@ -132,6 +132,8 @@ Remove:
 
 # Step 9 --- Optimize Map System
 
+Status: **Completed on 2026-08-24** (`refactor(step-9)`).
+
 Improve:
 
 -   map ownership.

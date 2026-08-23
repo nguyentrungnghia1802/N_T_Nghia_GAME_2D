@@ -48,7 +48,7 @@ flowchart TD
 
 Failures from `InitData`, background loading, `LoadFromFile`, screen-texture/text-cache creation, or tile loading stop startup, run ordered cleanup, and return a nonzero exit. `LoadFromFile` aggregates required font, surface, texture, map, and audio results.
 
-`LoadFromFile` loads four font handles, menu/win/journey surfaces, the map, Monster image, cached character/bullet/enemy/HUD textures, and seven WAV chunks. `Create_texture` converts all screen surfaces to textures and releases the surfaces before the menu starts. `GameMap::LoadTiles` adds eight tile textures. Player, enemy, bullet, and HUD objects borrow the cached textures.
+`LoadFromFile` loads four font handles, menu/win/journey surfaces, the map, Monster image, cached character/bullet/enemy/HUD textures, and seven WAV chunks. `Create_texture` converts all screen surfaces to textures and releases the surfaces before the menu starts. `GameMap::LoadTiles` adds the seven rendered tile textures; blank tile ID 0 needs no texture. Player, enemy, bullet, and HUD objects borrow the cached textures.
 
 ## 2. Menu and game creation
 
