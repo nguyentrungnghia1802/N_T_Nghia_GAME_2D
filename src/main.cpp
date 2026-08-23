@@ -22,6 +22,8 @@ BaseObject gThreat2RightTexture;
 BaseObject gThreat3LeftTexture;
 BaseObject gThreat3RightTexture;
 BaseObject gThreat4Texture;
+BaseObject gPlayerPowerTexture;
+BaseObject gPlayerMoneyTexture;
 
 GameMap game_map;
 MainObject p_player;
@@ -31,13 +33,15 @@ TextObject time_game;
 TextObject heart_game;
 TextObject high_score_game;
 TextObject text_menu[2];
+TextObject text_menu_hover[2];
+TextObject game_over_text[3];
+TextObject win_text[4];
+TextObject time_limit_text;
 
 Map map_data;
 
 TTF_Font *font_time = NULL;
 TTF_Font *font_heart = NULL;
-TTF_Font *gFont1 = NULL;
-TTF_Font *gFont2 = NULL;
 TTF_Font *gFont3 = NULL;
 TTF_Font *gFont4 = NULL;
 
@@ -131,8 +135,8 @@ void FreeChunk(Mix_Chunk *&chunk);
 void FreeMenuResources();
 void FreeJourneyResources();
 void FreeWinResources();
-void renderText(const std::string &text, int x, int y, TTF_Font *font);
 void LoadFromFile();
+void LoadTextCache();
 void Call_Menu();
 void Win_Game(); // Win_Game when Main Player reach the goal
 void render_journey_img();
@@ -170,6 +174,8 @@ int main(int argc, char *argv[])
     }
 
     LoadFromFile(); // Load Files
+    Create_texture();
+    LoadTextCache();
 
     game_map.LoadTiles(g_screen); // Load Map
 
@@ -179,8 +185,8 @@ int main(int argc, char *argv[])
     p_player.set_clips(); // Load Main Player
 
     // Load and set position HP_player  and   Heart_point
-    player_power.Init(g_screen);
-    player_heart.Init(g_screen);
+    player_power.Init(gPlayerPowerTexture.GetObject(), gPlayerPowerTexture.GetRect().w, gPlayerPowerTexture.GetRect().h);
+    player_heart.Init(gPlayerMoneyTexture.GetObject(), gPlayerMoneyTexture.GetRect().w, gPlayerMoneyTexture.GetRect().h);
     player_heart.SetPos(SCREEN_WIDTH * 0.5 - 191, 5);
 
     // Text
@@ -198,7 +204,6 @@ int main(int argc, char *argv[])
 
     threats_list = MakeThreats();
 
-    Create_texture();
     Profiler::StartInterval();
     game_state = GameState::PLAYING;
     last_frame_ticks = SDL_GetTicks();
@@ -326,14 +331,14 @@ int main(int argc, char *argv[])
             {
                 game_state = GameState::GAME_OVER;
                 bool quit_game_over = false;
+                game_over_text[1].SetText(std::to_string(heart_count));
+                game_over_text[1].LoadFromRenderText(gFont3, g_screen);
 
                 while (quit_game_over == false)
                 {
-
-                    renderText("SCORE: ", SCREEN_WIDTH / 2 - 280, 220, gFont3);
-                    renderText(std::to_string(heart_count).c_str(), SCREEN_WIDTH / 2 + 40, 220, gFont3);
-
-                    renderText("SPACE TO REPLAY!", SCREEN_WIDTH / 2 - 420, 380, gFont3);
+                    game_over_text[0].RenderText(g_screen, SCREEN_WIDTH / 2 - 280, 220);
+                    game_over_text[1].RenderText(g_screen, SCREEN_WIDTH / 2 + 40, 220);
+                    game_over_text[2].RenderText(g_screen, SCREEN_WIDTH / 2 - 420, 380);
                     SDL_RenderPresent(g_screen);
                     while (SDL_PollEvent(&eve))
                     {
@@ -476,8 +481,6 @@ int main(int argc, char *argv[])
 
 void LoadFromFile()
 {
-    gFont1 = OpenProfiledFont("res/font/2.ttf", 30);
-    gFont2 = OpenProfiledFont("res/font/2.ttf", 30);
     gFont3 = OpenProfiledFont("res/font/1.ttf", 120);
     gFont4 = OpenProfiledFont("res/font/2.ttf", 100);
     font_time = OpenProfiledFont("res/font/1.ttf", 35);
@@ -502,6 +505,34 @@ void LoadFromFile()
     gGame_Start = LoadProfiledWav("res/Music/Start.wav");
     gThreats_Die = LoadProfiledWav("res/Music/Threats_Die.wav");
     gCongrat = LoadProfiledWav("res/Music/Congrats.wav");
+}
+
+void LoadTextCache()
+{
+    text_menu[0].SetText("EXIT");
+    text_menu[0].LoadFromRenderText(gFont3, g_screen);
+    text_menu[1].SetText("START");
+    text_menu[1].LoadFromRenderText(gFont3, g_screen);
+
+    text_menu_hover[0].SetText("EXIT");
+    text_menu_hover[0].SetColor(TextObject::RED_TEXT);
+    text_menu_hover[0].LoadFromRenderText(gFont3, g_screen);
+    text_menu_hover[1].SetText("START");
+    text_menu_hover[1].SetColor(TextObject::RED_TEXT);
+    text_menu_hover[1].LoadFromRenderText(gFont3, g_screen);
+
+    game_over_text[0].SetText("SCORE: ");
+    game_over_text[0].LoadFromRenderText(gFont3, g_screen);
+    game_over_text[2].SetText("SPACE TO REPLAY!");
+    game_over_text[2].LoadFromRenderText(gFont3, g_screen);
+
+    win_text[0].SetText("T-Kun finds Isha after: ");
+    win_text[0].LoadFromRenderText(gFont4, g_screen);
+    win_text[2].SetText("DAYS ");
+    win_text[2].LoadFromRenderText(gFont4, g_screen);
+
+    time_limit_text.SetText("T-kun lost her!");
+    time_limit_text.LoadFromRenderText(gFont3, g_screen);
 }
 
 TTF_Font *OpenProfiledFont(const char *path, int size)
@@ -587,7 +618,7 @@ void ShowTimeLimitMessage()
 {
     SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
     SDL_RenderClear(g_screen);
-    renderText("T-kun lost her!", SCREEN_WIDTH / 2 - 360, SCREEN_HEIGHT / 2 - 80, gFont3);
+    time_limit_text.RenderText(g_screen, SCREEN_WIDTH / 2 - 360, SCREEN_HEIGHT / 2 - 80);
     SDL_RenderPresent(g_screen);
     WaitWithEventPump(1200);
 }
@@ -615,6 +646,16 @@ void close()
     high_score_game.Free();
     text_menu[0].Free();
     text_menu[1].Free();
+    text_menu_hover[0].Free();
+    text_menu_hover[1].Free();
+    game_over_text[0].Free();
+    game_over_text[1].Free();
+    game_over_text[2].Free();
+    win_text[0].Free();
+    win_text[1].Free();
+    win_text[2].Free();
+    win_text[3].Free();
+    time_limit_text.Free();
 
     g_background.Free();
     gMonster.Free();
@@ -628,8 +669,6 @@ void close()
     FreeWinResources();
     FreeJourneyResources();
 
-    CloseFont(gFont1);
-    CloseFont(gFont2);
     CloseFont(gFont3);
     CloseFont(gFont4);
     CloseFont(font_time);
@@ -750,6 +789,8 @@ void LoadRuntimeTextures()
     gThreat3LeftTexture.LoadImg("res/pic/threats/threat_3_left.png", g_screen);
     gThreat3RightTexture.LoadImg("res/pic/threats/threat_3_right.png", g_screen);
     gThreat4Texture.LoadImg("res/pic/threats/threat_4.png", g_screen);
+    gPlayerPowerTexture.LoadImg("res/pic/img/player_pw.png", g_screen);
+    gPlayerMoneyTexture.LoadImg("res/pic/img/heart_.png", g_screen);
 }
 
 void FreeRuntimeTextures()
@@ -763,6 +804,8 @@ void FreeRuntimeTextures()
     gThreat3LeftTexture.Free();
     gThreat3RightTexture.Free();
     gThreat4Texture.Free();
+    gPlayerPowerTexture.Free();
+    gPlayerMoneyTexture.Free();
 }
 
 void ConfigureDynamicThreat(ThreatsObject *p_threat)
@@ -855,47 +898,12 @@ bool LoadBackground()
     return true;
 }
 
-void renderText(const std::string &text, int x, int y, TTF_Font *font)
-{
-    SDL_Color textColor = {255, 255, 255}; // White color
-    Profiler::CountTextRender();
-    SDL_Surface *textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
-    if (textSurface == nullptr)
-    {
-        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
-        return;
-    }
-
-    Profiler::CountTextureCreate();
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_screen, textSurface);
-    if (texture == nullptr)
-    {
-        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
-        SDL_FreeSurface(textSurface);
-        return;
-    }
-
-    SDL_Rect dstRect = {x, y, textSurface->w, textSurface->h};
-    SDL_RenderCopy(g_screen, texture, nullptr, &dstRect);
-
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(texture);
-}
-
 void Call_Menu()
 {
     game_state = GameState::MENU;
     int xm = 0;
     int ym = 0;
     bool selected[2] = {false, false};
-    menu = CreateProfiledTextureFromSurface(g_screen, g_img_menu); //    Load background_menu
-    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};           //    set menu_position
-
-    text_menu[0].SetText("EXIT");
-    text_menu[0].LoadFromRenderText(gFont3, g_screen);
-
-    text_menu[1].SetText("START");
-    text_menu[1].LoadFromRenderText(gFont3, g_screen);
 
     start_button = {SCREEN_WIDTH - 350, 420, 350, 200};
     quit_button = {50, 420, 220, 200};
@@ -904,8 +912,8 @@ void Call_Menu()
     {
         SDL_RenderCopy(g_screen, menu, NULL, &menuRect);
 
-        text_menu[1].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
-        text_menu[0].RenderText(g_screen, 50, 420);
+        (selected[1] ? text_menu_hover[1] : text_menu[1]).RenderText(g_screen, SCREEN_WIDTH - 350, 420);
+        (selected[0] ? text_menu_hover[0] : text_menu[0]).RenderText(g_screen, 50, 420);
 
         SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve))
@@ -913,62 +921,8 @@ void Call_Menu()
             if (eve.type == SDL_MOUSEMOTION)
             {
                 SDL_GetMouseState(&xm, &ym);
-                for (int i = 0; i < 2; i++)
-                {
-                    if (i == 1) // START_BUTTON
-                    {
-                        if (SDLCommonFunc::CheckFocusMouse(xm, ym, start_button))
-                        {
-                            if (selected[i] == false)
-                            {
-                                selected[i] = true;
-                                text_menu[i].SetColor(TextObject::RED_TEXT);
-                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
-                                text_menu[i].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
-                                SDL_RenderPresent(g_screen);
-                            }
-                        }
-
-                        else
-                        {
-                            if (selected[i] == true)
-                            {
-                                selected[i] = false;
-                                text_menu[i].SetColor(TextObject::WHITE_TEXT);
-                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
-                                text_menu[i].RenderText(g_screen, SCREEN_WIDTH - 350, 420);
-                                SDL_RenderPresent(g_screen);
-                            }
-                        }
-                    }
-
-                    if (i == 0) // QUIT_BUTTON
-                    {
-                        if (SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button))
-                        {
-                            if (selected[i] == false)
-                            {
-                                selected[i] = true;
-                                text_menu[i].SetColor(TextObject::RED_TEXT);
-                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
-                                text_menu[i].RenderText(g_screen, 50, 420);
-                                SDL_RenderPresent(g_screen);
-                            }
-                        }
-
-                        else
-                        {
-                            if (selected[i] == true)
-                            {
-                                selected[i] = false;
-                                text_menu[i].SetColor(TextObject::WHITE_TEXT);
-                                text_menu[i].LoadFromRenderText(gFont3, g_screen);
-                                text_menu[i].RenderText(g_screen, 50, 420);
-                                SDL_RenderPresent(g_screen);
-                            }
-                        }
-                    }
-                }
+                selected[1] = SDLCommonFunc::CheckFocusMouse(xm, ym, start_button);
+                selected[0] = SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button);
             }
             if (eve.type == SDL_MOUSEBUTTONDOWN && eve.button.button == SDL_BUTTON_LEFT)
             {
@@ -1008,16 +962,17 @@ void Win_Game()
 {
     game_state = GameState::WIN;
     bool replay_game = false;
+    win_text[1].SetText(str_val);
+    win_text[1].LoadFromRenderText(gFont4, g_screen);
+    win_text[3].SetText("SCORE: " + heart_str);
+    win_text[3].LoadFromRenderText(gFont3, g_screen);
     while (replay_game == false)
     {
         SDL_RenderCopy(g_screen, WinGame, NULL, &WinGameRect);
-        renderText("T-Kun finds Isha after: ", SCREEN_WIDTH / 2 - 676, 180, gFont4);
-        renderText(str_val, SCREEN_WIDTH / 2 + 290, 180, gFont4);
-        renderText("DAYS ", SCREEN_WIDTH / 2 + 455, 180, gFont4);
-
-        heart_game.SetText("SCORE: " + heart_str);
-        heart_game.LoadFromRenderText(gFont3, g_screen);
-        heart_game.RenderText(g_screen, SCREEN_WIDTH / 2 - 252, 30);
+        win_text[0].RenderText(g_screen, SCREEN_WIDTH / 2 - 676, 180);
+        win_text[1].RenderText(g_screen, SCREEN_WIDTH / 2 + 290, 180);
+        win_text[2].RenderText(g_screen, SCREEN_WIDTH / 2 + 455, 180);
+        win_text[3].RenderText(g_screen, SCREEN_WIDTH / 2 - 252, 30);
 
         SDL_RenderPresent(g_screen);
         while (SDL_PollEvent(&eve_win))
@@ -1072,7 +1027,7 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
         }
     }
     p_player.HeartCount(0);
-    player_power.Init(g_screen);
+    player_power.Init(gPlayerPowerTexture.GetObject(), gPlayerPowerTexture.GetRect().w, gPlayerPowerTexture.GetRect().h);
 
     num_die = 0;
     heart_count = 0;
@@ -1083,6 +1038,9 @@ void Restart(Map &map_data, int &num_die, int &heart_count, MainObject &p_player
 
 void Create_texture()
 {
+    menu = CreateProfiledTextureFromSurface(g_screen, g_img_menu);
+    menuRect = {0, 0, g_img_menu->w, g_img_menu->h};
+
     WinGame = CreateProfiledTextureFromSurface(g_screen, gWin_game); //    Load background Win_Game
     WinGameRect = {0, 0, gWin_game->w, gWin_game->h};
 
@@ -1100,6 +1058,14 @@ void Create_texture()
 
     journey_Texture_5 = CreateProfiledTextureFromSurface(g_screen, journey_Surface_5);
     journey_Rect_5 = {0, 0, journey_Surface_5->w, journey_Surface_5->h};
+
+    FreeSurface(g_img_menu);
+    FreeSurface(gWin_game);
+    FreeSurface(journey_Surface_1);
+    FreeSurface(journey_Surface_2);
+    FreeSurface(journey_Surface_3);
+    FreeSurface(journey_Surface_4);
+    FreeSurface(journey_Surface_5);
 }
 
 void render_journey_img()

@@ -57,6 +57,8 @@ No RAM growth after restart or long sessions.
 
 # Step 3 --- Remove Runtime Asset Loading
 
+Status: **Completed on 2026-08-24** (`refactor(step-3)`).
+
 Never load textures during gameplay.
 
 Replace:

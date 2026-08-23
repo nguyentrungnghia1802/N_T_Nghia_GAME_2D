@@ -18,7 +18,7 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 | TD-012 | P1 | Bullets | Raw owning pointer vector; erase loop skips shifted inactive bullet | Fragile lifetime and delayed cleanup | `vector<unique_ptr<BulletObject>>`; iterator/index-safe erase |
 | TD-013 | P1 | Time/score | Initial timer includes menu; replay/reset semantics are inconsistent | Displayed completion time is misleading | Define play-time semantics and update only in Playing state |
 | TD-014 | P1 | Map | Full 10x1011 map copied out and back every frame | Unnecessary work and unclear authority | Mutate through `GameMap` reference/API |
-| TD-015 | P1 | UI performance | Static modal text is rasterized/uploaded every iteration | CPU/allocation/texture churn | Cache screen text on state entry/change |
+| TD-015 | P1 (resolved) | UI performance | Static modal text was rasterized/uploaded every iteration | Fixed in Step 3 with startup/state-entry text caches | Preserve cache-only modal rendering |
 | TD-016 | P1 | Menu performance | Menu loop has no pacing/vsync | Possible high idle CPU | Event-driven redraw or central cap |
 | TD-017 | P2 | Map safety | Parser does not verify 10,110 reads or tile range before indexing | Malformed data can access wrong tile texture | Validate count, stream state, and IDs 0-7/array bounds |
 | TD-018 | P2 | Duplication | Player/enemy tile collision and map loaders duplicate logic | Divergent fixes and subtle bugs | Share small tile-query/predicate helpers; remove unused loader |
@@ -35,4 +35,3 @@ Severity uses P0 for correctness/crash/memory-safety work, P1 for major maintain
 - TD-003 and TD-018 affect gameplay feel. Preserve explicit current hitbox intent before replacing the flawed implementation.
 - TD-007 and TD-008 affect destruction order and ownership; change entities/caches only with a documented lifetime sequence.
 - TD-011 and TD-019 should follow P0 fixes. Moving globals before behavior is stabilized would enlarge the regression surface.
-

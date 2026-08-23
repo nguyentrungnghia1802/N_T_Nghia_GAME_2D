@@ -84,13 +84,13 @@
 
 ## `PlayerPower` and `PlayerMoney`
 
-**Purpose:** Load/render health icons and the heart icon.
+**Purpose:** Render health icons and the heart icon from startup texture caches.
 
-**Owned data:** Each owns a texture via `BaseObject`; health owns a list of X positions.
+**Owned data:** Each borrows a cached texture via `BaseObject`; health owns a list of X positions.
 
-**Lifecycle:** Initialized at startup; health is reinitialized on restart; explicitly freed in `close`.
+**Lifecycle:** Cache references are assigned at startup; health positions are reset on replay without image I/O; borrowers are cleared before cache owners in `close`.
 
-**Known concerns:** Broken header guard, no bounds checks before `pop_back`/`back`, image-load result ignored, and unused public mutators.
+**Known concerns:** Broken header guard, no bounds checks before `pop_back`/`back`, and unused public mutators.
 
 ## `TextObject`
 

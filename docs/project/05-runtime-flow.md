@@ -48,13 +48,13 @@ flowchart TD
 
 Only failure of `InitData` or background loading reaches an immediate error return. `LoadFromFile` returns `void` and does not validate fonts, surfaces, textures, map data, or audio chunks as a group.
 
-`LoadFromFile` loads six font handles, menu/win/journey surfaces, the map, Monster image, cached character/bullet/enemy textures, and seven WAV chunks. `GameMap::LoadTiles` adds eight tile textures. Player and enemy objects borrow the cached textures; HUD images own separate textures.
+`LoadFromFile` loads four font handles, menu/win/journey surfaces, the map, Monster image, cached character/bullet/enemy/HUD textures, and seven WAV chunks. `Create_texture` converts all screen surfaces to textures and releases the surfaces before the menu starts. `GameMap::LoadTiles` adds eight tile textures. Player, enemy, bullet, and HUD objects borrow the cached textures.
 
 ## 2. Menu and game creation
 
-`Call_Menu` creates the menu texture from the retained menu surface and creates two cached text labels. Its loop renders continuously and polls mouse/quit events. Clicking Start plays the start sound, runs a four-second event-pumping wait, starts looping map music, frees menu resources, and returns. Clicking Exit or closing the window frees menu resources and sets quit flags.
+`Call_Menu` reuses the preloaded menu texture plus white/red cached label variants. Its loop renders continuously and polls mouse/quit events. Clicking Start plays the start sound, runs a four-second event-pumping wait, starts looping map music, frees menu resources, and returns. Clicking Exit or closing the window frees menu resources and sets quit flags.
 
-After Start, `MakeThreats` creates 48 enemies as four groups of 12 `unique_ptr` objects. `Create_texture` converts the win and five journey surfaces into long-lived textures. Profiling begins and control enters the gameplay loop.
+After Start, `MakeThreats` creates 48 enemies as four groups of 12 `unique_ptr` objects. Profiling begins and control enters the gameplay loop. Game-over/win/time-limit labels reuse `TextObject` caches; only dynamic values rebuild when their content changes.
 
 ## 3. One gameplay frame
 
@@ -101,12 +101,4 @@ The journey condition uses equality against `280 + n * 16170`, while normal came
 
 `Restart` restores `GameMap` from its cached base map, selects one of three camera/player checkpoints from global `map_start`, resets collected hearts and the health HUD, and sets a three-frame player comeback counter. Threats are recreated separately.
 
-`close` is guarded against repeat calls. It clears threats and bullets; frees text, global image objects, player/HUD objects, cached textures, raw menu/win/journey resources, fonts, renderer/window, audio chunks/music; then quits mixer/image/TTF/SDL.
-
-Two lifecycle concerns remain:
-
-- `GameMap`'s owned `TileMat` textures are not freed before `SDL_DestroyRenderer`; the global `GameMap` destructor runs later, after SDL shutdown.
-- `Mix_CloseAudio()` is never called.
-
-Whether the first issue crashes on this SDL build during normal exit was **not confirmed from the current codebase** because graceful shutdown was not completed in the smoke test.
-
+`close` is guarded against repeat calls. It stops playback, clears threats/bullets and texture borrowers, frees cached/tile/UI textures, closes fonts/chunks/the audio device, destroys renderer/window, and then quits mixer/image/TTF/SDL.

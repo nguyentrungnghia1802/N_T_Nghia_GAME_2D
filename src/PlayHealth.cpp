@@ -16,9 +16,9 @@ void PlayerPower::AddPos(const int &xp)
     pos_list_.push_back(xp);
 }
 
-void PlayerPower::Init(SDL_Renderer *screen)
+void PlayerPower::Init(SDL_Texture *texture, int width, int height)
 {
-    LoadImg("res/pic/img/player_pw.png", screen);
+    UseTexture(texture, width, height);
     number_ = 3;
     if (pos_list_.size() > 0)
     {
@@ -64,9 +64,9 @@ PlayerMoney::~PlayerMoney()
 {
 }
 
-void PlayerMoney::Init(SDL_Renderer *screen)
+void PlayerMoney::Init(SDL_Texture *texture, int width, int height)
 {
-    bool ret = LoadImg("res/pic/img/heart_.png", screen);
+    UseTexture(texture, width, height);
 }
 
 void PlayerMoney::Show(SDL_Renderer *screen)

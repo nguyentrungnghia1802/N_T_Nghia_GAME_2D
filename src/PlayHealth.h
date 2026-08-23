@@ -14,7 +14,7 @@ public:
     void SetNum(const int &num) { number_ = num; }
     void AddPos(const int &xPos);
     void Show(SDL_Renderer *screen);
-    void Init(SDL_Renderer *screen);
+    void Init(SDL_Texture *texture, int width, int height);
 
     void InitCrease();
     void Decrease();
@@ -30,7 +30,7 @@ public:
     PlayerMoney();
     ~PlayerMoney();
 
-    void Init(SDL_Renderer *screen);
+    void Init(SDL_Texture *texture, int width, int height);
     void Show(SDL_Renderer *screen);
     void SetPos(const int &x, const int &y) { x_pos_ = x, y_pos_ = y; }
 

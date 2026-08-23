@@ -1,12 +1,12 @@
 # Performance Audit
 
-## Confirmed problems
+## Resolved in Step 3
 
 ### Modal text rendering churn
 
-`main.cpp::renderText` renders a new TTF surface, uploads a new texture, draws, and destroys both on every call. Game-over invokes it three times per modal-loop iteration; win invokes it three times. Those loops repeat until input with only a 1 ms delay. This is confirmed repeated CPU work, allocation, and texture upload during otherwise static screens.
+Game-over, win, time-limit, and menu labels now use retained `TextObject` caches. Static variants are prepared during startup; dynamic score/day values rebuild only when entering a state with changed content. The immediate `renderText` allocation path was removed.
 
-**Remedy:** Build static screen text textures once on state entry, update only dynamic values, and render cached textures each frame.
+## Remaining confirmed problems
 
 ### Uncapped menu rendering
 
