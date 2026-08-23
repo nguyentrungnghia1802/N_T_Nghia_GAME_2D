@@ -104,13 +104,13 @@
 
 ## `Profiler`
 
-**Purpose:** Count entity updates/renders, collisions, loads, texture/text creation; time update/render work; log five-second summaries; query Windows process RAM/thread count.
+**Purpose:** Count entity updates/renders, collisions, loads, texture/text creation; time update/render work; log five-second summaries; query Windows process CPU/RAM/thread count. `GAME_PROFILE_LOG` optionally mirrors each line to a file for reproducible capture.
 
 **State:** Internal anonymous-namespace singleton-style counters.
 
 **Lifecycle:** Initialized after SDL; interval starts after gameplay setup.
 
-**Known concerns:** Global mutable counters, Windows-only process metrics (zero elsewhere), `frame_ms` excludes cap delay, and no runtime switch to disable output.
+**Known concerns:** Global mutable counters, Windows-only process metrics (zero elsewhere), `frame_ms` excludes cap delay, and no runtime switch to disable output. CPU is normalized across logical processors and must be interpreted with the machine configuration.
 
 ## `ImpTimer`
 
@@ -123,4 +123,3 @@
 ## Map conversion utility
 
 `res/pic/map/TILE_MAP/Build Map/main.cpp` is a separate tiny console tool that converts commas in `input.txt` to spaces in `map.txt`. It is not part of the game Makefile. Its output differs from the current runtime `map01.txt`, so the promotion step into the game is **not confirmed from the current codebase**.
-

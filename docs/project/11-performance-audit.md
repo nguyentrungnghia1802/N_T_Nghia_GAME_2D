@@ -83,5 +83,4 @@ Every five seconds on Windows, the profiler snapshots all system threads to coun
 
 ## Measurement limitations
 
-The profiler measures update/render time before the frame-cap sleep. No captured five-second gameplay log was available in this audit because the interactive game was not played through. Performance severity beyond the confirmed code paths above is therefore **not confirmed from the current codebase**. Do not claim FPS/RAM improvements without collecting comparable scenarios.
-
+The profiler measures update/render time before the frame-cap sleep. Step 1 captured menu-idle and gameplay-to-game-over stress data in `../performance-baseline.md`; it did not produce a full-level or low-end-hardware result. Performance severity beyond those exact scenarios is therefore **not confirmed from the current codebase**. Do not claim FPS/RAM improvements without rerunning a comparable scenario.

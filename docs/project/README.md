@@ -13,7 +13,7 @@ The implementation is a mixed procedural/object-oriented design. Domain objects 
 - The current sources build successfully with the flags in `Makefile` using MSYS2 `g++ 14.1.0`.
 - The build emits warnings, including warnings on two suspicious boolean expressions.
 - No project test suite is present.
-- A short smoke launch remained live for two seconds. Because it ran hidden, no rendered screen was visually confirmed and the process exposed no window handle for a graceful close; end-to-end startup UI and shutdown are **not confirmed from the current codebase**.
+- Step 1 captured a settled-menu CPU sample and one automated gameplay-to-game-over stress run; measured window-close shutdown returned exit code 0. Full-level behavior, replay/win, long-run leaks, and low-end-hardware performance remain **not confirmed from the current codebase**. See the [performance baseline](../performance-baseline.md).
 - Refactor commits 1-10 added profiling, safer enemy ownership, texture caching, active-range filtering, culling, text caching, map reset caching, and removal of the runtime `windows.h` dependency. Important correctness and lifecycle debt remains.
 
 ## High-level architecture

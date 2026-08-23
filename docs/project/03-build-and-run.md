@@ -68,7 +68,7 @@ Asset loading errors are not aggregated or handled safely. Several returned poin
 
 The Makefile-equivalent direct build completed with exit code 0 on 2026-08-24. `-Wall -Wextra -Wpedantic -fsyntax-only` also completed with warnings. Confirmed warnings include the single `&` in `MainObject::set_clips`, chained `!=` in `ThreatsObject::CheckToMap`, signed/unsigned loop comparisons, unused parameters/variables, and omitted `SDL_Color::a` initializers.
 
-A short hidden launch produced a process that remained live for two seconds. No rendered screen was visually confirmed. The process exposed no main-window handle to the test harness and had to be terminated; interactive startup, graceful shutdown, and gameplay completion remain **not confirmed from the current codebase**.
+Step 1 later completed visible automated runs that opened the SDL window, selected Start in one stress run, entered the outer gameplay/death flow, and shut down with exit code 0. The automation did not complete the level or visually assert every input result; full gameplay, restart, and win acceptance remain **not confirmed from the current codebase**. See `../performance-baseline.md`.
 
 ## Tests and diagnostics
 
