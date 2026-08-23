@@ -152,6 +152,8 @@ Prepare:
 
 # Final Acceptance
 
+Status: **Automated acceptance passed on 2026-08-24**. Full-level manual visual validation remains explicitly unconfirmed; see `final-acceptance.md`.
+
 The game must:
 
 -   run smoothly on weak hardware.
