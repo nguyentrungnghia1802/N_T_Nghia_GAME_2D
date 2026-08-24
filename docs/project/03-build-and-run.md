@@ -11,6 +11,8 @@ The current Makefile requires:
 - On Windows, the checked-in `src/include`/`src/lib` contents and root SDL runtime DLLs.
 - On native Unix-like systems, development packages exposing `sdl2`, `SDL2_image`, `SDL2_ttf`, and `SDL2_mixer` through `pkg-config`.
 
+At startup the Windows build queries the first display's usable pixel bounds and chooses a centered window that preserves the 1422x800 logical canvas. The window is always shown in windowed mode and is resizable; it does not use an SDL fullscreen flag. On smaller laptop displays, SDL scales the logical canvas down to leave room for the taskbar and window decorations. Menu mouse coordinates are converted back to the logical canvas after scaling.
+
 During the 2026-08-24 audit, MSYS2 `g++ 14.1.0` was available, but neither `make` nor `mingw32-make` was in PATH.
 
 ## Canonical build

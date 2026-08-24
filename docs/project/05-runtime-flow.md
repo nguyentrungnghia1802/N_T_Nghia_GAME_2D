@@ -39,12 +39,13 @@ flowchart TD
 
 1. `SDL_Init(SDL_INIT_VIDEO)`.
 2. Linear-rendering hint.
-3. 1422x800 shown window.
-4. Accelerated renderer without `SDL_RENDERER_PRESENTVSYNC`.
-5. `IMG_Init(IMG_INIT_PNG)`.
-6. `TTF_Init()`.
-7. A second `SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)`.
-8. `Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048)`.
+3. Query display 0's usable bounds and calculate a centered window that fits while preserving the 1422x800 logical aspect ratio.
+4. Create a shown, resizable window without a fullscreen flag.
+5. Set the accelerated renderer's logical size to 1422x800; physical window resizing is handled by SDL scaling.
+6. `IMG_Init(IMG_INIT_PNG)`.
+7. `TTF_Init()`.
+8. A second `SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)`.
+9. `Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048)`.
 
 Failures from `InitData`, background loading, `LoadFromFile`, screen-texture/text-cache creation, or tile loading stop startup, run ordered cleanup, and return a nonzero exit. `LoadFromFile` aggregates required font, surface, texture, map, and audio results.
 
@@ -52,7 +53,7 @@ Failures from `InitData`, background loading, `LoadFromFile`, screen-texture/tex
 
 ## 2. Menu and game creation
 
-`Call_Menu` reuses the preloaded menu texture plus white/red cached label variants. Its loop renders continuously and polls mouse/quit events. Clicking Start plays the start sound, runs a four-second event-pumping wait, starts looping map music, frees menu resources, and returns. Clicking Exit or closing the window frees menu resources and sets quit flags.
+`Call_Menu` reuses the preloaded menu texture plus white/red cached label variants. Its loop renders continuously and polls mouse/quit events. Mouse positions are converted from physical window pixels to the logical renderer space before hit testing. Clicking Start plays the start sound, runs a four-second event-pumping wait, starts looping map music, frees menu resources, and returns. Clicking Exit or closing the window frees menu resources and sets quit flags.
 
 After Start, `MakeThreats` creates 48 enemies as four groups of 12 `unique_ptr` objects. Profiling begins and control enters the gameplay loop. Game-over/win/time-limit labels reuse `TextObject` caches; only dynamic values rebuild when their content changes.
 

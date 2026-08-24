@@ -8,7 +8,9 @@
 #include "PlayHealth.h"
 #include "TextObject.h"
 #include "Profiler.h"
+#include "WindowConfig.h"
 #include <algorithm>
+#include <cmath>
 #include <memory>
 
 BaseObject g_background;
@@ -159,6 +161,7 @@ float UpdateDeltaTime();
 void CapFrameRate(Uint32 frame_start_ticks);
 bool WaitWithEventPump(Uint32 wait_ms);
 void ShowTimeLimitMessage();
+void GetLogicalMousePosition(int window_x, int window_y, int &logical_x, int &logical_y);
 
 int main(int, char *[])
 {
@@ -912,11 +915,27 @@ bool InitData()
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
+    SDL_Rect usable_bounds = {};
+    const bool has_usable_bounds = SDL_GetDisplayUsableBounds(0, &usable_bounds) == 0 &&
+                                   usable_bounds.w > 0 && usable_bounds.h > 0;
+    const WindowConfig::Size window_size = WindowConfig::CalculateWindowSize(
+        has_usable_bounds ? usable_bounds.w : 0,
+        has_usable_bounds ? usable_bounds.h : 0,
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT);
+    const int window_x = has_usable_bounds
+                             ? usable_bounds.x + (usable_bounds.w - window_size.width) / 2
+                             : SDL_WINDOWPOS_CENTERED_DISPLAY(0);
+    const int window_y = has_usable_bounds
+                             ? usable_bounds.y + (usable_bounds.h - window_size.height) / 2
+                             : SDL_WINDOWPOS_CENTERED_DISPLAY(0);
+
     g_window = SDL_CreateWindow("Game 2d",
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SDL_WINDOWPOS_UNDEFINED,
-                                SCREEN_WIDTH, SCREEN_HEIGHT,
-                                SDL_WINDOW_SHOWN);
+                                window_x,
+                                window_y,
+                                window_size.width,
+                                window_size.height,
+                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (g_window == NULL)
     {
         success = false;
@@ -929,6 +948,10 @@ bool InitData()
             success = false;
         else
         {
+            if (SDL_RenderSetLogicalSize(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT) < 0)
+            {
+                success = false;
+            }
             SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
             int imgFlags = IMG_INIT_PNG;
             if ((IMG_Init(imgFlags) & imgFlags) != imgFlags)
@@ -959,6 +982,15 @@ bool InitData()
     }
 
     return success;
+}
+
+void GetLogicalMousePosition(const int window_x, const int window_y, int &logical_x, int &logical_y)
+{
+    float logical_x_float = static_cast<float>(window_x);
+    float logical_y_float = static_cast<float>(window_y);
+    SDL_RenderWindowToLogical(g_screen, window_x, window_y, &logical_x_float, &logical_y_float);
+    logical_x = static_cast<int>(std::lround(logical_x_float));
+    logical_y = static_cast<int>(std::lround(logical_y_float));
 }
 
 bool LoadBackground()
@@ -993,15 +1025,13 @@ void Call_Menu()
         {
             if (eve.type == SDL_MOUSEMOTION)
             {
-                xm = eve.motion.x;
-                ym = eve.motion.y;
+                GetLogicalMousePosition(eve.motion.x, eve.motion.y, xm, ym);
                 selected[1] = SDLCommonFunc::CheckFocusMouse(xm, ym, start_button);
                 selected[0] = SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button);
             }
             if (eve.type == SDL_MOUSEBUTTONDOWN && eve.button.button == SDL_BUTTON_LEFT)
             {
-                xm = eve.button.x;
-                ym = eve.button.y;
+                GetLogicalMousePosition(eve.button.x, eve.button.y, xm, ym);
                 selected[1] = SDLCommonFunc::CheckFocusMouse(xm, ym, start_button);
                 selected[0] = SDLCommonFunc::CheckFocusMouse(xm, ym, quit_button);
                 if (selected[1] == true)

@@ -10,7 +10,7 @@
 
 ## Behavioral invariants to preserve unless the task explicitly changes them
 
-- Fixed 1422x800 window and 80-pixel tiles.
+- Fixed 1422x800 logical render canvas and 80-pixel tiles; the physical window is adaptive, resizable, and windowed.
 - Runtime map is 1011 columns x 10 rows from `res/pic/map/map01.txt`.
 - IDs: 0 blank, 1 collectible heart, other positive runtime IDs solid/rendered.
 - Controls: `A` left, `D` right, `W` jump, left mouse fire.
@@ -20,6 +20,12 @@
 - Threats and bullets borrow global cached textures; caches must outlive all borrowers.
 - High score is process-local; no persistence contract exists.
 - Renderer/window/SDL must outlive every texture/surface/font draw operation.
+
+Window sizing rules:
+
+- Query `SDL_GetDisplayUsableBounds` and use `WindowConfig::CalculateWindowSize` for the initial physical size.
+- Do not add `SDL_WINDOW_FULLSCREEN` or replace the logical renderer size with physical window dimensions.
+- Convert window-pixel mouse coordinates with `SDL_RenderWindowToLogical` before testing logical UI rectangles.
 
 Known defects are not invariants. In particular, do not preserve unreachable journey equalities, indeterminate first-shot direction, chained enemy collision, or flawed hard-coded AABB simply because they are current behavior. Fix them in explicitly scoped correctness work with regression evidence.
 

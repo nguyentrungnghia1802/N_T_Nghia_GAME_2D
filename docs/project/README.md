@@ -12,10 +12,10 @@ The implementation is a mixed procedural/object-oriented design. Domain objects 
 
 - The current sources build successfully with the flags in `Makefile` using MSYS2 `g++ 14.1.0`.
 - The canonical Windows GNU Make build passes `-Wall -Wextra -Wpedantic` without diagnostics.
-- Four focused C++ regression executables are present under `tests/`; there is no unified runner or CI.
+- Five focused C++ regression executables are present under `tests/`; there is no unified runner or CI.
 - Step 1 captured a settled-menu CPU sample and one automated gameplay-to-game-over stress run; measured window-close shutdown returned exit code 0. Full-level behavior, replay/win, long-run leaks, and low-end-hardware performance remain **not confirmed from the current codebase**. See the [performance baseline](../performance-baseline.md).
-- Refactor commits 1-10 added profiling, safer enemy ownership, texture caching, active-range filtering, culling, text caching, map reset caching, and removal of the runtime `windows.h` dependency. Important correctness and lifecycle debt remains.
-- The final automated acceptance gate rebuilt from HEAD without diagnostics, passed all four retained regression executables, exited cleanly through SDL quit, and recorded the final menu-idle sample in [final-acceptance.md](../final-acceptance.md).
+- Refactor commits 1-12 added profiling, safer enemy ownership, texture caching, active-range filtering, culling, text caching, map reset caching, removal of the runtime `windows.h` dependency, respawn input reset, and adaptive window sizing. Important correctness and lifecycle debt remains.
+- The final automated acceptance gate rebuilt from HEAD without diagnostics, passed the retained regression executables, exited cleanly through SDL quit, and recorded the final menu-idle sample in [final-acceptance.md](../final-acceptance.md). The window-sizing regression is additionally covered by `tests/window_config_tests.cpp`.
 
 ## High-level architecture
 

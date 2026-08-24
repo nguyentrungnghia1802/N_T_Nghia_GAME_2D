@@ -5,6 +5,7 @@
 | File | Responsibility | Important dependencies | Notes |
 | --- | --- | --- | --- |
 | `src/main.cpp` | Entry point, resources, screen loops, gameplay orchestration, threat factory, shutdown | All app modules and SDL libraries | Primary control-flow file; 1219 lines |
+| `src/WindowConfig.h` | Pure adaptive window-size calculation for usable display bounds | Standard C++ only | Preserves the 1422x800 logical aspect ratio and reserves desktop decoration/taskbar space |
 | `src/CommonFunc.h` | Shared SDL includes, constants, `Input`, `Map`, extern globals, helper declarations | SDL2/image/ttf/mixer, currently `TextObject.h` | God header and circular include source |
 | `src/CommonFunc.cpp` | Shared global definitions, explicit hitbox builders, AABB collision, and mouse focus helpers | Profiler | Collision footprints are deliberately retained for gameplay compatibility |
 | `src/BaseObject.h` | Texture/rect owning-or-borrowing base class | `CommonFunc.h` | Noncopyable; runtime ownership flag distinguishes owner/borrower |
@@ -51,8 +52,8 @@
 | `res/pic/threats/threat_*.png` | Five-frame enemy strips | Four enemy regions; types 2/3 have left/right variants |
 | `res/pic/img/fire.png` | Borrowed bullet texture | 63x63 |
 | `res/pic/img/player_pw.png`, `heart_.png` | HUD icons | Owned by HUD objects |
-| `res/pic/img/background.jpg` | Repeating background | Exactly 1422x800 |
-| `res/pic/menu/menu.png` | Menu image | 1422x826 rendered to its own size in 1422x800 window |
+| `res/pic/img/background.jpg` | Repeating background | Exactly 1422x800 logical canvas pixels |
+| `res/pic/menu/menu.png` | Menu image | 1422x826 rendered into the 1422x800 logical canvas and scaled with the window |
 | `res/pic/journey/*.png` | Five journey panels | Each 1422x800 |
 | `res/pic/map/WIN_GAME.png` | Win background | 1422x800 |
 | `res/pic/threats/Monster.png` | Fixed render overlay | 202x765, default rect position 0,0 |

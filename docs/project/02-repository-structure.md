@@ -17,6 +17,7 @@ N_T_Nghia_GAME_2D/
 ├── src/
 │   ├── main.cpp                 # Entry point, global state, all top-level flows
 │   ├── CommonFunc.*             # Shared constants/types/globals and collision helper
+│   ├── WindowConfig.h           # Pure adaptive window-size calculation
 │   ├── BaseObject.*             # Texture/rectangle wrapper and ownership flag
 │   ├── gamemap.*                # Map load/reset/draw and tile texture ownership
 │   ├── MainObject.*             # Player input, physics, bullets, tile interaction
@@ -59,6 +60,6 @@ The runtime map is `res/pic/map/map01.txt`. It contains exactly 10,110 integers 
 
 - Compile configuration: `Makefile` and `.vscode/c_cpp_properties.json`.
 - Runtime configuration files: none; gameplay constants are compile-time macros/constants.
-- Tests: no application test directory or test source was found. Bundled `SDL2_test` headers/libraries are third-party, not project tests.
+- Tests: focused application regressions live under `tests/`; bundled `SDL2_test` headers/libraries are third-party, not project tests.
 - CI/package scripts: none found.
 

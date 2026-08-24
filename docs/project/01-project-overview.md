@@ -9,7 +9,7 @@ The player starts with three displayed health icons. The fourth death enters the
 ## Major features present
 
 - Mouse-driven start/exit menu.
-- Fixed-size 1422x800 accelerated SDL renderer.
+- 1422x800 logical gameplay canvas rendered through an adaptive, resizable windowed SDL renderer.
 - One 1011x10, 80-pixel tile map loaded from text.
 - Frame-strip animation for player and enemies.
 - Tile collision, enemy/player collision, and bullet/enemy collision.
@@ -63,4 +63,4 @@ This is not an ECS. It has no general scene abstraction, component registry, eve
 
 ## Scope and non-features
 
-Only one map is loaded. There is no confirmed multiplayer, battle thread, persistence, configurable controls, resolution scaling, or multiple level loader. README claims about multithreading are not supported by runtime source; no game thread is created.
+Only one map is loaded. There is no confirmed multiplayer, battle thread, persistence, configurable controls, or multiple level loader. The window scales the fixed logical canvas to the display's usable pixel bounds; it does not change the map or gameplay coordinate system. README claims about multithreading are not supported by runtime source; no game thread is created.

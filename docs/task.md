@@ -171,3 +171,14 @@ Fix:
 -   clear latched movement/jump input when respawn begins.
 -   remove the unconditional 100-pixel forward shift on normal respawn.
 -   retain camera catch-up only when the player has fallen behind the viewport.
+
+# Step 12 --- Fit Windowed Display Sizes
+
+Status: **Completed on 2026-08-24** (`refactor(step-12)`).
+
+Fix:
+
+-   create the initial window from the display's usable pixel bounds instead of always requesting 1422x800 physical pixels.
+-   keep the 1422x800 gameplay canvas as SDL's logical render size so physics, camera, and asset coordinates remain unchanged.
+-   keep the game windowed and resizable; no fullscreen flag is used.
+-   convert menu mouse coordinates from the resized window back to logical gameplay coordinates.

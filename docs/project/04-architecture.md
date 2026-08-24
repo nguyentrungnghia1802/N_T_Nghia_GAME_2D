@@ -11,6 +11,7 @@ Calling this a full scene/state architecture would be misleading. `GameState` is
 ```mermaid
 flowchart TD
     Entry["SDL_main in src/main.cpp"] --> Init["InitData + LoadFromFile"]
+    Init --> Window["Adaptive window + 1422x800 logical renderer"]
     Init --> Caches["Global BaseObject texture caches"]
     Init --> Map["GameMap"]
     Init --> UI["TextObject + PlayerPower + PlayerMoney"]
@@ -39,6 +40,7 @@ flowchart TD
 | Boundary | Actual behavior |
 | --- | --- |
 | SDL subsystem ownership | `main.cpp::InitData` initializes; `main.cpp::close` shuts down |
+| Window sizing/render coordinates | `WindowConfig::CalculateWindowSize` fits the window to usable display pixels; SDL keeps a 1422x800 logical render space |
 | Top-level resources | Mostly raw global pointers/objects in `main.cpp` and `CommonFunc.cpp` |
 | General image texture | `BaseObject` owns by default; `UseTexture` switches to a borrowed reference |
 | Cached character/enemy/bullet textures | Global `BaseObject` instances own; player, enemies, bullets borrow |
